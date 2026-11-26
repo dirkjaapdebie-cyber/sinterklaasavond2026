@@ -1,35 +1,59 @@
+Hier is de aangepaste code. De structuur van het spel en de code is vrijwel
+identiek gebleven, met één belangrijk verschil:
+
+  - Op de TV (index.html) staan géén spelleidersknoppen meer — alleen het schone
+    speelscherm, de kamerfoto's, standen, verdenkingen en de QR-code.
+  - Jouw scherm (dirkjaap) is nu het Spelleidersscherm met alle
+    bedieningsknoppen, het foto-beheer én een privé spiekbriefje voor jou als
+    spelleider.
+
+Hoe open je jouw Spelleidersscherm?
+
+Je hebt 2 makkelijke manieren:
+
+1.  Direct via de link: open index.html?mode=host op je telefoon of laptop.
+2.  Via de QR-code / spelersscherm: scan op je eigen telefoon gewoon de QR-code
+    (?mode=player), vul als naam dirkjaap in en verstuur. Jouw telefoon herkent
+    de naam uit CONFIG.hostName en schakelt meteen over naar het
+    Spelleidersscherm (zonder dat jij als speler in de puntenlijst komt). (Tip:
+    als je op een laptop vooraf de TV-pagina open hebt en even naar je
+    spelleidersscherm wilt, klik dan op de gele badge TV Hoofdscherm en typ
+    dirkjaap.)
+
+Aangepaste index.html
+
 <!DOCTYPE html>
 <html lang="nl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CSI: Pakjesavond – Sinterklaas Cluedo</title>
+  <title>CSI: Pakjesavond – Het Lijk in Huis</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
     :root {
-      --bg-dark: #0f1219;
-      --bg-card: #191f2c;
-      --bg-elevated: #232b3d;
-      --accent-red: #d62828;
+      --bg-dark: #0c0f17;
+      --bg-card: #161c29;
+      --bg-elevated: #1f2738;
+      --accent-red: #e63946;
       --accent-gold: #f4a261;
       --accent-teal: #2a9d8f;
       --text-main: #f8f9fa;
       --text-muted: #9aa5b8;
-      --border: rgba(255, 255, 255, 0.1);
+      --border: rgba(255, 255, 255, 0.11);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: radial-gradient(circle at top, #1b2336 0%, var(--bg-dark) 75%);
+      background: radial-gradient(circle at top, #1d263b 0%, var(--bg-dark) 78%);
       color: var(--text-main);
       min-height: 100vh;
       line-height: 1.45;
     }
 
     .container {
-      max-width: 1280px;
+      max-width: 1360px;
       margin: 0 auto;
       padding: 20px;
     }
@@ -55,17 +79,24 @@
       background: var(--accent-red);
       color: #fff;
       font-weight: 800;
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       letter-spacing: 0.08em;
       padding: 4px 10px;
       border-radius: 999px;
       text-transform: uppercase;
+      user-select: none;
     }
 
     .badge-gold {
       background: rgba(244, 162, 97, 0.18);
       color: var(--accent-gold);
-      border: 1px solid rgba(244, 162, 97, 0.4);
+      border: 1px solid rgba(244, 162, 97, 0.45);
+    }
+
+    .badge-teal {
+      background: rgba(42, 157, 143, 0.2);
+      color: #6ee7d8;
+      border: 1px solid rgba(42, 157, 143, 0.45);
     }
 
     h1 { font-size: clamp(1.4rem, 2.6vw, 2.2rem); letter-spacing: -0.02em; }
@@ -74,7 +105,7 @@
 
     .grid-tv {
       display: grid;
-      grid-template-columns: 1.45fr 0.85fr;
+      grid-template-columns: 1.48fr 0.85fr;
       gap: 20px;
     }
 
@@ -87,76 +118,173 @@
       border: 1px solid var(--border);
       border-radius: 16px;
       padding: 18px;
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.42);
     }
 
     .scene-box {
       position: relative;
-      border-radius: 12px;
+      border-radius: 14px;
       overflow: hidden;
-      background: #101520;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(230, 57, 70, 0.15), transparent 55%),
+        repeating-linear-gradient(0deg, rgba(255,255,255,0.03) 0 1px, transparent 1px 28px),
+        repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0 1px, transparent 1px 28px),
+        #0e131d;
       border: 1px solid var(--border);
-      min-height: 240px;
+      min-height: 360px;
       display: flex;
       flex-direction: column;
-      justify-content: flex-end;
-      padding: 18px;
+      justify-content: space-between;
+      padding: 16px;
       margin-bottom: 16px;
     }
 
-    .scene-box img {
+    .scene-box img.scene-photo {
       position: absolute;
       inset: 0;
       width: 100%;
       height: 100%;
       object-fit: cover;
-      opacity: 0.42;
+      opacity: 0.92;
       z-index: 0;
+    }
+
+    .scene-scrim {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to top,
+        rgba(10, 13, 20, 0.94) 0%,
+        rgba(10, 13, 20, 0.55) 48%,
+        rgba(10, 13, 20, 0.25) 100%
+      );
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .scene-hud {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .hud-tag {
+      background: rgba(12, 15, 23, 0.78);
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      color: #ffd166;
     }
 
     .scene-content {
       position: relative;
-      z-index: 1;
-      background: rgba(15, 18, 25, 0.78);
-      backdrop-filter: blur(6px);
-      padding: 14px;
-      border-radius: 10px;
+      z-index: 2;
+      background: rgba(12, 15, 23, 0.82);
+      backdrop-filter: blur(8px);
+      padding: 16px;
+      border-radius: 12px;
       border-left: 4px solid var(--accent-red);
+      margin-top: auto;
     }
 
-    .board-grid {
+    .player-room-preview {
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+      min-height: 165px;
+      margin-bottom: 14px;
+      border: 1px solid var(--border);
+      background: #0e131d;
+      display: flex;
+      align-items: flex-end;
+    }
+
+    .player-room-preview img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .player-room-caption {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      padding: 10px 12px;
+      background: linear-gradient(to top, rgba(12, 15, 23, 0.92), rgba(12, 15, 23, 0.2));
+    }
+
+    .locations-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
       margin-top: 12px;
     }
 
-    @media (max-width: 640px) {
-      .board-grid { grid-template-columns: repeat(2, 1fr); }
+    @media (max-width: 720px) {
+      .locations-grid { grid-template-columns: repeat(2, 1fr); }
     }
 
-    .room-tile {
+    .loc-tile {
       background: var(--bg-elevated);
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
       transition: transform 0.15s ease, border-color 0.15s ease;
     }
 
-    .room-tile.active {
-      border-color: var(--accent-gold);
-      box-shadow: 0 0 0 1px var(--accent-gold);
-      transform: translateY(-2px);
+    .loc-tile.active-body {
+      border-color: var(--accent-red);
+      box-shadow: 0 0 0 2px rgba(230, 57, 70, 0.5);
+      background: rgba(230, 57, 70, 0.12);
     }
 
-    .room-tile.solved {
+    .loc-tile.visited {
       border-color: var(--accent-teal);
-      background: rgba(42, 157, 143, 0.12);
+    }
+
+    .loc-thumb {
+      width: 100%;
+      height: 102px;
+      background: #0d121c;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .loc-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .loc-thumb-placeholder {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      text-align: center;
+      padding: 8px;
+    }
+
+    .loc-body {
+      padding: 10px 12px;
     }
 
     .players-list {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(1, 1fr);
       gap: 10px;
       margin-top: 10px;
     }
@@ -169,12 +297,14 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 0.9rem;
+      gap: 10px;
+      font-size: 0.92rem;
     }
 
-    .player-pill.turn {
+    .player-pill.winner-pill {
       border-color: var(--accent-gold);
-      background: rgba(244, 162, 97, 0.14);
+      background: linear-gradient(135deg, rgba(244, 162, 97, 0.24), rgba(230, 57, 70, 0.14));
+      box-shadow: 0 0 18px rgba(244, 162, 97, 0.25);
     }
 
     button {
@@ -184,13 +314,14 @@
       border-radius: 10px;
       padding: 10px 16px;
       font-weight: 700;
-      font-size: 0.95rem;
+      font-size: 0.92rem;
       cursor: pointer;
       transition: opacity 0.15s ease, transform 0.1s ease;
     }
 
     button:hover { opacity: 0.92; }
     button:active { transform: scale(0.98); }
+    button:disabled { opacity: 0.45; cursor: not-allowed; }
 
     button.secondary {
       background: var(--bg-elevated);
@@ -203,7 +334,18 @@
       color: #111;
     }
 
-    input, select {
+    button.teal {
+      background: var(--accent-teal);
+      color: #fff;
+    }
+
+    button.small {
+      padding: 6px 10px;
+      font-size: 0.82rem;
+      border-radius: 8px;
+    }
+
+    input, select, textarea {
       width: 100%;
       padding: 10px 12px;
       border-radius: 10px;
@@ -212,17 +354,19 @@
       color: var(--text-main);
       font-size: 0.95rem;
       margin-bottom: 10px;
+      font-family: inherit;
     }
 
     .checklist-item {
       display: flex;
       align-items: center;
       gap: 8px;
-      padding: 6px 8px;
+      padding: 7px 9px;
       border-radius: 8px;
       background: var(--bg-elevated);
       margin-bottom: 6px;
       font-size: 0.9rem;
+      cursor: pointer;
     }
 
     .checklist-item input[type="checkbox"] {
@@ -231,53 +375,162 @@
     }
 
     .clue-banner {
-      background: linear-gradient(135deg, rgba(244, 162, 97, 0.2), rgba(214, 40, 40, 0.2));
+      background: linear-gradient(135deg, rgba(244, 162, 97, 0.22), rgba(230, 57, 70, 0.22));
       border: 1px solid var(--accent-gold);
       border-radius: 14px;
       padding: 16px;
       margin-top: 14px;
     }
 
+    .winner-banner {
+      background: linear-gradient(135deg, rgba(244, 162, 97, 0.3), rgba(230, 57, 70, 0.28));
+      border: 2px solid var(--accent-gold);
+      border-radius: 16px;
+      padding: 20px;
+      margin-top: 16px;
+      box-shadow: 0 0 32px rgba(244, 162, 97, 0.22);
+      animation: popIn 0.45s ease-out;
+    }
+
+    @keyframes popIn {
+      from { opacity: 0; transform: translateY(10px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .role-card {
+      background: rgba(244, 162, 97, 0.12);
+      border: 1px solid rgba(244, 162, 97, 0.45);
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 14px;
+    }
+
+    .status-toast {
+      background: rgba(42, 157, 143, 0.22);
+      border: 1px solid var(--accent-teal);
+      color: #a7f3d0;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      margin-bottom: 12px;
+    }
+
+    /* Modal voor Ruimtes & Foto's beheren */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(5, 8, 14, 0.82);
+      backdrop-filter: blur(6px);
+      z-index: 1000;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 24px 16px;
+      overflow-y: auto;
+    }
+
+    .modal-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      max-width: 920px;
+      width: 100%;
+      padding: 22px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65);
+    }
+
+    .room-editor-row {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 14px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 12px;
+      align-items: start;
+    }
+
+    @media (max-width: 640px) {
+      .room-editor-row { grid-template-columns: 1fr; }
+    }
+
+    .room-editor-preview {
+      width: 100%;
+      height: 112px;
+      border-radius: 10px;
+      background: #0d121c;
+      border: 1px dashed rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-align: center;
+      padding: 6px;
+    }
+
+    .room-editor-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
     .muted { color: var(--text-muted); font-size: 0.88rem; }
-    .controls { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
-    #qrcode { background: #fff; padding: 8px; border-radius: 10px; display: inline-block; }
+    .controls { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; align-items: center; }
+    #qrcode { background: #fff; padding: 8px; border-radius: 10px; display: inline-block; flex-shrink: 0; }
+    .hidden { display: none !important; }
   </style>
 </head>
 <body>
   <div class="container">
     <header>
       <div class="brand">
-        <span class="badge">CSI: Pakjesavond</span>
-        <h1>Het Lijk in de Hal</h1>
+        <span class="badge" id="brand-badge">CSI: Pakjesavond</span>
+        <h1>Het Lijk in Huis</h1>
       </div>
       <div class="controls" style="margin-top:0;">
-        <span id="mode-indicator" class="badge badge-gold">TV Hoofdscherm</span>
-        <button id="btn-switch-view" class="secondary">Wissel naar Spelersscherm</button>
-        <button id="btn-demo-step" class="gold">Volgende Ronde (Demo)</button>
-        <button id="btn-reset" class="secondary">Reset Spel</button>
+        <span id="mode-indicator" class="badge badge-gold" style="cursor:pointer;">TV Hoofdscherm</span>
+        <button id="btn-switch-view" class="secondary hidden">Bekijk TV Scherm</button>
+        <button id="btn-manage-rooms" class="teal hidden">📷 Ruimtes &amp; Foto's</button>
+        <button id="btn-next-round" class="gold hidden">Volgende Ronde / Verplaats Lijk</button>
+        <button id="btn-finale" class="primary hidden">🏆 Ontknoping (Einde Spel)</button>
+        <button id="btn-reset" class="secondary hidden">Reset Spel</button>
       </div>
     </header>
 
     <main id="app-root"></main>
   </div>
 
-  <!-- Optionele Firebase SDK (alleen actief als je hieronder een databaseURL invult) -->
+  <!-- Modal wordt buiten #app-root gerenderd zodat live updates hem niet sluiten -->
+  <div id="rooms-modal-root"></div>
+
   <script type="module">
     // =========================================================================
-    // 1. CONFIGURATIE (VUL HIER JOUW GEGEVENS IN)
+    // 1. CONFIGURATIE — VUL HIER VOORAF JOUW GEGEVENS IN
     // =========================================================================
     const CONFIG = {
-      // Naam van de dame die de surprise krijgt (hoofdletterongevoelig gecontroleerd)
-      targetPlayerName: "Sanne",
+      // Naam van de spelleider: als jij deze naam op je telefoon invult (of ?mode=host opent),
+      // krijg jij op jouw scherm alle spelleidersfuncties. Op de TV zijn deze verborgen!
+      hostName: "dirkjaap",
 
-      // Waar ligt het echte cadeau verstopt?
+      // Zet hier vooraf HAAR naam (en eventuele bijnamen) in kleine letters.
+      // Tijdens het hele spel blijft het spannend en voor niemand merkbaar.
+      // Pas bij de Ontknoping aan het eind wint zij gegarandeerd en krijgt zij het cadeau!
+      targetPlayerNames: ["sanne", "san", "sannetje"],
+
+      // Waar ligt het echte cadeau verstopt in huis?
       giftLocation: "In de witte spoelbak onder de gootsteen in de keuken — verstopt achter de ontstopper!",
 
-      // Verstikkings-doodsoorzaak verhaal
-      causeOfDeath: "Acute verstikking door een overmaat aan kruidnoten gecombineerd met een verdacht strakke baard en tandheelkundige afdruk-pasta.",
+      // Doodsoorzaak: verstikking, met het cadeau bij het lijk
+      causeOfDeath: "Acute verstikking — het slachtoffer hield het cadeau nog vast toen de adem stokte.",
 
-      // Vul hier je Firebase Realtime Database gegevens in om live met 8 telefoons te spelen.
-      // Laat databaseURL leeg ("") om direct lokaal/demo te spelen zonder database.
+      // Spoedmelding bij de ontknoping:
+      finalTwistNote: "FORENSISCHE DOORBRAAK: De beslissende DNA- en vingerafdrukmatch brengt één speurder naar de absolute top!",
+
+      // Vul hier je Firebase Realtime Database gegevens in voor live 8-speler modus op telefoons.
+      // Laat databaseURL leeg ("") om lokaal / op één laptop te draaien.
       firebase: {
         apiKey: "",
         authDomain: "",
@@ -289,105 +542,224 @@
       }
     };
 
-    const SUSPECTS = [
-      { id: "ambulance", name: "De Overijverige Ambulancebroeder", role: "Zwoer dat 'ie als eerste beademde" },
-      { id: "tandarts", name: "De Verdachte Tandarts", role: "Had verdacht veel gips en watten bij zich" },
-      { id: "hoofdpiet", name: "De Gestreste Hoofdpiet", role: "Was de zak van Sinterklaas kwijt" },
-      { id: "sint", name: "Sinterklaas Zelf", role: "Had een slokje port te veel op" }
+    // Familierollen (willekeurig verdeeld bij inloggen)
+    const FAMILY_ROLES = [
+      { id: "politie", icon: "👮", title: "Politiefunctionaris", tagline: "Ziet overal sporen, verdachten en alibi's" },
+      { id: "ambulance", icon: "🚑", title: "Ambulancebroeder", tagline: "Eerste bij de luchtwegen en reanimatie" },
+      { id: "tandarts", icon: "🦷", title: "Tandarts", tagline: "Expert in gebitsafdrukken en wat er in de mond belandt" },
+      { id: "actrice", icon: "🎭", title: "Actrice", tagline: "Meester in drama, tranen en overtuigende verhalen" },
+      { id: "kleuterjuf", icon: "🎨", title: "Kleuterjuf", tagline: "Weet precies wie er stiekem snoept en liegen wil" },
+      { id: "docent", icon: "📚", title: "Docent", tagline: "Leest tussen de regels door en betrapt elke fout" },
+      { id: "pedagoog", icon: "🧠", title: "Pedagoog", tagline: "Doorziet elk motief en gedragspatroon feilloos" },
+      { id: "hoofdpiet", icon: "🎁", title: "Hoofdpiet", tagline: "Had de pakjeslijst en zak als laatste in handen" }
     ];
 
-    const WEAPONS = [
-      { id: "kruidnoot", name: "Reuze Oud-Hollandse Kruidnoot", detail: "Klem in de luchtpijp" },
-      { id: "afdruk", name: "Tandheelkundige Afdrukpasta", detail: "Snel hardend cement" },
-      { id: "sjaal", name: "Te Strakke Sinterklaassjaal", detail: "Dubbele knoop in de nek" },
-      { id: "marsepein", name: "Verstikkende Marsepeinen Worst", detail: "Zoet maar dodelijk" }
+    // Standaard ruimtes in de woning.
+    // TIP: Je kunt foto's heel makkelijk toevoegen via de knop "📷 Ruimtes & Foto's" op het spelleidersscherm,
+    // OF hieronder een URL / bestandsnaam invullen (bijv. image: "fotos/hal.jpg").
+    const DEFAULT_HOUSE_LOCATIONS = [
+      { id: "hal", name: "De Hal", clue: "In de hal bij de kapstok ligt het lijk met het ingepakte cadeau nog half onder de arm.", image: "" },
+      { id: "keuken", name: "De Keuken", clue: "In de keuken bij het aanrecht en de gootsteen — sporen van zoetigheid en een blokkade in de keel.", image: "" },
+      { id: "woonkamer", name: "De Woonkamer", clue: "Tussen de bank en de salontafel in de woonkamer, vlak bij rondslingerend pakpapier.", image: "" },
+      { id: "gang", name: "De Gang / Trapopgang", clue: "Onderaan de trap in de gang, alsof iemand plotseling naar adem hapte.", image: "" },
+      { id: "eethoek", name: "De Eethoek", clue: "Aan de eettafel tussen de kruidnoten en glazen — abrupt gestikt tijdens een hap.", image: "" },
+      { id: "bijkeuken", name: "De Bijkeuken", clue: "In de bijkeuken bij de voorraadplanken en schoonmaakspullen, met het cadeau dichtbij.", image: "" }
     ];
 
-    const ROOMS = [
-      {
-        id: "hal",
-        name: "De Hal (Plaats Delict)",
-        clue: "Clue 1: Het slachtoffer hield het cadeau nog vast en had sporen van een zoete kruimel op zijn jas.",
-        task: "Inspecteer de plek waar het lijk ligt: let op de luchtpijp en de zakken."
-      },
-      {
-        id: "ehbo",
-        name: "De EHBO-Koffer",
-        clue: "Clue 2: Een Heimlich-manoeuvre bleek kansloos — de blokkade zat muurvast.",
-        task: "Medische check: welke verstikkingsbron past bij een harde, zoete blokkade?"
-      },
-      {
-        id: "praktijk",
-        name: "De Tandartsstoel",
-        clue: "Clue 3: Op het slachtoffer zat een glimmend restje gips/afdruk-materiaal, maar het was niet de enige aanwijzing.",
-        task: "Forensisch gebitsonderzoek: wat is echt en wat is een dwaalspoor?"
-      },
-      {
-        id: "finale",
-        name: "Het Autopsie-Kluisje",
-        clue: "Finale: Alle sporen wijzen naar één meesterdetective en de geheime verstopplek!",
-        task: "Dien de definitieve verdenking in en open de kluis van het cadeau."
-      }
+    // Verstikkingsmiddelen / aanleidingen voor verstikking
+    const CHOKING_CAUSES = [
+      { id: "kruidnoot", name: "Reuze Oud-Hollandse Kruidnoot", detail: "Klemgeschoten in de luchtpijp" },
+      { id: "afdruk", name: "Tandheelkundige Afdrukpasta", detail: "Snel hardend en adembenemend" },
+      { id: "sjaal", name: "Te Strakke Sinterklaassjaal", detail: "Beklemmend gedraaid om de nek" },
+      { id: "marsepein", name: "Dikke Marsepeinen Rol", detail: "Zwaar en onverteerbaar in één hap" }
     ];
 
-    const DEFAULT_STATE = {
-      roundIndex: 0,
-      currentTurnIndex: 0,
-      players: [
-        { id: "p1", name: "Sanne", score: 40, hasLead: true },
-        { id: "p2", name: "Ambulance-Jeroen", score: 25, hasLead: false },
-        { id: "p3", name: "Tandarts-Lotte", score: 25, hasLead: false },
-        { id: "p4", name: "Hoofdpiet", score: 20, hasLead: false }
-      ],
-      accusations: [],
-      winnerId: null,
-      revealedLocation: false
-    };
+    const STORAGE_KEY_STATE = "csi_pakjesavond_huis_v2";
+    const STORAGE_KEY_MY_NAME = "csi_pakjesavond_my_name_v2";
+    const STORAGE_KEY_CHECKLIST = "csi_pakjesavond_checklist_v2";
+
+    function deepClone(obj) {
+      return JSON.parse(JSON.stringify(obj));
+    }
+
+    function escapeHtml(str) {
+      return String(str ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function createInitialState(preserveRooms = null) {
+      return {
+        roundIndex: 0,
+        bodyLocationIndex: 0,
+        visitedRoomIndices: [0],
+        phase: "investigating", // "investigating" | "finale"
+        playersMap: {},
+        accusationsMap: {},
+        winnerId: null,
+        revealedLocation: false,
+        secretTargetOverride: "",
+        rooms: preserveRooms && preserveRooms.length > 0 ? preserveRooms : deepClone(DEFAULT_HOUSE_LOCATIONS)
+      };
+    }
 
     // =========================================================================
-    // 2. STATE & DATABASE KOPPELING
+    // 2. STATE, LOKALE OPSLAG & FIREBASE KOPPELING
     // =========================================================================
     const urlParams = new URLSearchParams(window.location.search);
-    let isPlayerView = urlParams.get("mode") === "player";
+    const initialModeParam = urlParams.get("mode");
+    let viewMode = initialModeParam === "host" ? "host" : initialModeParam === "player" ? "player" : "tv";
+    if (viewMode === "player" && isHostName(getMyPlayerName())) {
+      viewMode = "host";
+    }
+
     let state = loadLocalState();
-    let dbRef = null;
+    let dbApi = null;
+    let isRoomsModalOpen = false;
+    let lastSubmitMessage = "";
+
+    function isHostName(name) {
+      return (name || "").trim().toLowerCase() === CONFIG.hostName.trim().toLowerCase();
+    }
+
+    function normalizeState(raw) {
+      const base = createInitialState();
+      if (!raw || typeof raw !== "object") return base;
+      const rooms = Array.isArray(raw.rooms)
+        ? raw.rooms
+        : raw.rooms && typeof raw.rooms === "object"
+          ? Object.values(raw.rooms)
+          : base.rooms;
+      const safeRooms = rooms.length > 0 ? rooms : base.rooms;
+      const visited = Array.isArray(raw.visitedRoomIndices)
+        ? raw.visitedRoomIndices
+        : raw.visitedRoomIndices && typeof raw.visitedRoomIndices === "object"
+          ? Object.values(raw.visitedRoomIndices)
+          : [0];
+      return {
+        ...base,
+        ...raw,
+        rooms: safeRooms,
+        visitedRoomIndices: visited,
+        bodyLocationIndex: Math.min(Number(raw.bodyLocationIndex || 0), safeRooms.length - 1),
+        playersMap: raw.playersMap && typeof raw.playersMap === "object" ? raw.playersMap : {},
+        accusationsMap: raw.accusationsMap && typeof raw.accusationsMap === "object" ? raw.accusationsMap : {}
+      };
+    }
 
     function loadLocalState() {
       try {
-        const saved = localStorage.getItem("csi_pakjesavond_state_v1");
-        return saved ? { ...DEFAULT_STATE, ...JSON.parse(saved) } : structuredClone(DEFAULT_STATE);
+        const saved = localStorage.getItem(STORAGE_KEY_STATE);
+        return saved ? normalizeState(JSON.parse(saved)) : createInitialState();
       } catch {
-        return structuredClone(DEFAULT_STATE);
+        return createInitialState();
       }
     }
 
-    function saveState(nextState) {
-      state = nextState;
-      localStorage.setItem("csi_pakjesavond_state_v1", JSON.stringify(state));
-      if (dbRef) {
-        dbRef.set(state);
+    function persistLocalState() {
+      try {
+        localStorage.setItem(STORAGE_KEY_STATE, JSON.stringify(state));
+      } catch (err) {
+        alert("Opslagruimte in de browser is bijna vol. Verwijder eventueel een grote foto of gebruik een URL.");
+        console.warn(err);
+      }
+    }
+
+    function getPlayersArray() {
+      return Object.values(state.playersMap || {});
+    }
+
+    function getAccusationsArray() {
+      return Object.values(state.accusationsMap || {}).sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+    }
+
+    function getMyPlayerName() {
+      try {
+        return localStorage.getItem(STORAGE_KEY_MY_NAME) || "";
+      } catch {
+        return "";
+      }
+    }
+
+    function setMyPlayerName(name) {
+      try {
+        if (name) {
+          localStorage.setItem(STORAGE_KEY_MY_NAME, name);
+        } else {
+          localStorage.removeItem(STORAGE_KEY_MY_NAME);
+        }
+      } catch {}
+    }
+
+    function loadChecklist() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY_CHECKLIST);
+        return raw ? JSON.parse(raw) : { roles: {}, rooms: {} };
+      } catch {
+        return { roles: {}, rooms: {} };
+      }
+    }
+
+    function saveChecklist(cl) {
+      try {
+        localStorage.setItem(STORAGE_KEY_CHECKLIST, JSON.stringify(cl));
+      } catch {}
+    }
+
+    async function syncChanges(partialPatch, fullReplace = false) {
+      persistLocalState();
+      if (dbApi) {
+        try {
+          if (fullReplace) {
+            await dbApi.setAll(state);
+          } else {
+            await dbApi.patch(partialPatch);
+          }
+        } catch (err) {
+          console.warn("Firebase synchronisatie mislukt:", err);
+        }
       }
       render();
     }
 
     async function initDatabase() {
+      // Houd meerdere tabbladen op dezelfde computer synchroon tijdens testen
+      window.addEventListener("storage", (e) => {
+        if (e.key === STORAGE_KEY_STATE && e.newValue) {
+          try {
+            state = normalizeState(JSON.parse(e.newValue));
+            render();
+            if (isRoomsModalOpen) renderRoomsModal();
+          } catch {}
+        }
+      });
+
       if (!CONFIG.firebase.databaseURL) return;
       try {
         const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js");
-        const { getDatabase, ref, set, onValue } = await import("https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js");
+        const { getDatabase, ref, set, update, onValue } = await import("https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js");
         const app = initializeApp(CONFIG.firebase);
         const db = getDatabase(app);
-        const gameRef = ref(db, "csi_pakjesavond_game");
+        const gameRef = ref(db, "csi_pakjesavond_huis_v2");
 
-        dbRef = {
-          set: (val) => set(gameRef, val)
+        dbApi = {
+          setAll: (val) => set(gameRef, val),
+          patch: (patchObj) => update(gameRef, patchObj)
         };
 
         onValue(gameRef, (snapshot) => {
           const val = snapshot.val();
           if (val) {
-            state = { ...DEFAULT_STATE, ...val };
+            state = normalizeState(val);
+            persistLocalState();
             render();
+            if (isRoomsModalOpen) renderRoomsModal();
+          } else {
+            // Initialiseer database met huidige lokale kamers (indien nog leeg)
+            dbApi.setAll(state);
           }
         });
       } catch (err) {
@@ -396,175 +768,779 @@
     }
 
     // =========================================================================
-    // 3. SUBTIELE WIN-LOGICA VOOR DE DOELSPELER
+    // 3. SPELREGELS, RANDOM ROLLEN & MANIPULATIE BIJ DE ONTKNOPING
     // =========================================================================
-    function isTargetPlayer(name) {
-      return (name || "").trim().toLowerCase() === CONFIG.targetPlayerName.trim().toLowerCase();
+    function makePlayerId(name) {
+      const clean = (name || "").trim().toLowerCase();
+      const hex = Array.from(clean)
+        .map((ch) => ch.charCodeAt(0).toString(16))
+        .join("")
+        .slice(0, 36);
+      return "p_" + (hex || "anon");
     }
 
-    function ensureTargetAdvantage(players) {
-      return players.map((p) => {
-        if (isTargetPlayer(p.name)) {
-          return { ...p, hasLead: true, score: Math.max(p.score, 40) };
-        }
-        return p;
-      });
+    function isTargetPlayer(name) {
+      const clean = (name || "").trim().toLowerCase();
+      if (!clean) return false;
+      const words = clean.split(/\s+/);
+      const targets = [
+        ...CONFIG.targetPlayerNames.map((n) => n.trim().toLowerCase()),
+        ...(state.secretTargetOverride ? [state.secretTargetOverride.trim().toLowerCase()] : [])
+      ].filter(Boolean);
+      return targets.some((t) => clean === t || words.includes(t));
+    }
+
+    function assignRandomRole(existingPlayers) {
+      const usedRoleIds = new Set(existingPlayers.map((p) => p.roleId));
+      const available = FAMILY_ROLES.filter((r) => !usedRoleIds.has(r.id));
+      const pool = available.length > 0 ? available : FAMILY_ROLES;
+      return pool[Math.floor(Math.random() * pool.length)];
+    }
+
+    // Tijdens de rondes krijgt iedereen geloofwaardige, dicht bij elkaar liggende punten
+    // zodat niemand merkt dat het einde vaststaat.
+    function computeOrganicRoundPoints(name, roundIndex, choiceStr) {
+      const seed = `${name.toLowerCase()}|${roundIndex}|${choiceStr}`;
+      let hash = 0;
+      for (let i = 0; i < seed.length; i++) {
+        hash = (hash * 31 + seed.charCodeAt(i)) % 997;
+      }
+      return 11 + (hash % 7); // 11 t/m 17 punten per ronde
     }
 
     function advanceRound() {
-      const nextRound = Math.min(state.roundIndex + 1, ROOMS.length - 1);
-      const updatedPlayers = ensureTargetAdvantage(state.players).map((p, idx) => {
-        if (isTargetPlayer(p.name)) {
-          return { ...p, score: p.score + 20, hasLead: true };
-        }
-        // Kleine variatie voor andere spelers
-        return { ...p, score: p.score + (idx % 2 === 0 ? 5 : 10) };
-      });
+      if (state.phase === "finale") return;
+      const rooms = state.rooms;
+      const nextRound = state.roundIndex + 1;
+      const nextBodyLocation = (state.bodyLocationIndex + 1) % rooms.length;
+      const visitedSet = new Set(state.visitedRoomIndices || [0]);
+      visitedSet.add(nextBodyLocation);
+      const nextVisited = Array.from(visitedSet);
 
-      const nextTurn = (state.currentTurnIndex + 1) % Math.max(updatedPlayers.length, 1);
-      const isFinal = nextRound === ROOMS.length - 1;
-      const target = updatedPlayers.find((p) => isTargetPlayer(p.name)) || updatedPlayers[0];
-
-      saveState({
+      state = {
         ...state,
         roundIndex: nextRound,
-        currentTurnIndex: nextTurn,
-        players: updatedPlayers,
-        winnerId: isFinal && target ? target.id : state.winnerId,
-        revealedLocation: isFinal ? true : state.revealedLocation
+        bodyLocationIndex: nextBodyLocation,
+        visitedRoomIndices: nextVisited
+      };
+
+      syncChanges({
+        roundIndex: nextRound,
+        bodyLocationIndex: nextBodyLocation,
+        visitedRoomIndices: nextVisited
       });
     }
 
-    function joinGame(playerName, selectedSuspect, selectedWeapon) {
+    // HIER GEBEURT DE MANIPULATIE PAS AAN HET EINDE:
+    function triggerFinale() {
+      const players = getPlayersArray();
+      if (players.length === 0) {
+        alert("Er hebben nog geen spelers meegedaan! Laat eerst de spelers op hun telefoon inloggen en een verdenking insturen.");
+        return;
+      }
+
+      const updatedPlayersMap = deepClone(state.playersMap);
+      const allList = Object.values(updatedPlayersMap);
+
+      // Zoek de dame in kwestie
+      const target = allList.find((p) => isTargetPlayer(p.name));
+
+      // Geef overige spelers eerst een kleine realistische forensische eindbonus
+      allList.forEach((p, idx) => {
+        if (!target || p.id !== target.id) {
+          const bonus = 4 + ((p.name.length + idx * 3) % 6); // +4 t/m +9
+          p.finalBonus = bonus;
+          p.score = (p.score || 0) + bonus;
+        }
+      });
+
+      const nonTargets = target ? allList.filter((p) => p.id !== target.id) : allList;
+      const maxOtherScore = nonTargets.length > 0
+        ? Math.max(...nonTargets.map((p) => p.score || 0))
+        : 0;
+
+      let winner = null;
+      if (target) {
+        // Zij wint ALTIJD met een overtuigende voorsprong op de hoogste andere score
+        const targetFinalScore = Math.max((target.score || 0) + 18, maxOtherScore + 25);
+        target.finalBonus = targetFinalScore - (target.score || 0);
+        target.score = targetFinalScore;
+        winner = target;
+      } else {
+        // Fallback alleen als haar naam niet voorkomt in targetPlayerNames
+        winner = [...allList].sort((a, b) => (b.score || 0) - (a.score || 0))[0];
+      }
+
+      state = {
+        ...state,
+        playersMap: updatedPlayersMap,
+        winnerId: winner ? winner.id : null,
+        revealedLocation: true,
+        phase: "finale"
+      };
+
+      syncChanges({
+        playersMap: updatedPlayersMap,
+        winnerId: state.winnerId,
+        revealedLocation: true,
+        phase: "finale"
+      });
+    }
+
+    function joinAndSubmitAccusation(playerName, suspectedRoleTitle, suspectedLocationName, suspectedCauseName) {
       const cleanName = playerName.trim();
       if (!cleanName) return;
 
-      const existing = state.players.find((p) => p.name.toLowerCase() === cleanName.toLowerCase());
-      let players = [...state.players];
-
-      if (existing) {
-        existing.score = isTargetPlayer(cleanName) ? Math.max(existing.score + 15, 50) : existing.score + 5;
-        existing.hasLead = existing.hasLead || isTargetPlayer(cleanName);
-      } else if (players.length < 8) {
-        players.push({
-          id: "p_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6),
-          name: cleanName,
-          score: isTargetPlayer(cleanName) ? 50 : 15,
-          hasLead: isTargetPlayer(cleanName)
-        });
+      // Als spelleider 'dirkjaap' inlogt op het spelersscherm, schakel direct naar zijn Spelleidersscherm!
+      if (isHostName(cleanName)) {
+        setMyPlayerName(cleanName);
+        switchViewMode("host");
+        return;
       }
 
-      players = ensureTargetAdvantage(players);
+      if (state.phase === "finale") {
+        lastSubmitMessage = "De zaak is al gesloten! Bekijk de ontknoping hieronder.";
+        render();
+        return;
+      }
 
+      setMyPlayerName(cleanName);
+      const playerId = makePlayerId(cleanName);
+      const existingPlayers = getPlayersArray();
+      let player = state.playersMap[playerId] ? deepClone(state.playersMap[playerId]) : null;
+
+      if (!player) {
+        const assignedRole = assignRandomRole(existingPlayers);
+        player = {
+          id: playerId,
+          name: cleanName,
+          roleId: assignedRole.id,
+          roleIcon: assignedRole.icon,
+          roleTitle: assignedRole.title,
+          roleTagline: assignedRole.tagline,
+          score: 15,
+          lastScoredRound: -1,
+          finalBonus: 0
+        };
+      } else {
+        player.name = cleanName;
+      }
+
+      // Max 1 keer punten per speler per ronde (bij herindienen in dezelfde ronde blijft score eerlijk)
+      if ((player.lastScoredRound ?? -1) < state.roundIndex) {
+        const pts = computeOrganicRoundPoints(
+          cleanName,
+          state.roundIndex,
+          `${suspectedRoleTitle}|${suspectedLocationName}|${suspectedCauseName}`
+        );
+        player.score = (player.score || 0) + pts;
+        player.lastScoredRound = state.roundIndex;
+      }
+
+      const accId = `r${state.roundIndex}_${playerId}`;
       const newAccusation = {
+        id: accId,
+        roundIndex: state.roundIndex,
+        playerId,
         playerName: cleanName,
-        suspect: selectedSuspect,
-        weapon: selectedWeapon,
+        roleTitle: player.roleTitle,
+        suspectedRoleTitle,
+        suspectedLocationName,
+        suspectedCauseName,
+        timestamp: Date.now(),
         time: new Date().toLocaleTimeString("nl-NL", { hour: "2-digit", minute: "2-digit" })
       };
 
-      const targetPlayer = players.find((p) => isTargetPlayer(p.name));
-      const shouldCrownWinner = isTargetPlayer(cleanName) || state.roundIndex === ROOMS.length - 1;
-
-      saveState({
+      state = {
         ...state,
-        players,
-        accusations: [newAccusation, ...state.accusations].slice(0, 10),
-        winnerId: shouldCrownWinner && targetPlayer ? targetPlayer.id : state.winnerId,
-        revealedLocation: shouldCrownWinner ? true : state.revealedLocation
+        playersMap: { ...state.playersMap, [playerId]: player },
+        accusationsMap: { ...state.accusationsMap, [accId]: newAccusation }
+      };
+
+      lastSubmitMessage = `Verdenking voor Ronde ${state.roundIndex + 1} opgeslagen!`;
+
+      syncChanges({
+        [`playersMap/${playerId}`]: player,
+        [`accusationsMap/${accId}`]: newAccusation
       });
     }
 
     // =========================================================================
-    // 4. WEERGAVE (TV HOOFDSCHERM & MOBIEL SPELERSSCHERM)
+    // 4. FOTO'S VERKLEINEN & RUIMTES BEHEREN
     // =========================================================================
-    function render() {
-      const root = document.getElementById("app-root");
+    function resizeImageFile(file, maxDim = 860, quality = 0.72) {
+      return new Promise((resolve, reject) => {
+        const objectUrl = URL.createObjectURL(file);
+        const img = new Image();
+        img.onload = () => {
+          URL.revokeObjectURL(objectUrl);
+          let { width, height } = img;
+          if (width > maxDim || height > maxDim) {
+            if (width > height) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            } else {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+          const canvas = document.createElement("canvas");
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          ctx.fillStyle = "#0e131d";
+          ctx.fillRect(0, 0, width, height);
+          ctx.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL("image/jpeg", quality));
+        };
+        img.onerror = () => {
+          URL.revokeObjectURL(objectUrl);
+          reject(new Error("Afbeelding kon niet worden verwerkt. Gebruik een JPG of PNG foto."));
+        };
+        img.src = objectUrl;
+      });
+    }
+
+    function updateRooms(nextRooms) {
+      const safeIndex = Math.min(state.bodyLocationIndex, Math.max(0, nextRooms.length - 1));
+      state = {
+        ...state,
+        rooms: nextRooms,
+        bodyLocationIndex: safeIndex
+      };
+      syncChanges({
+        rooms: nextRooms,
+        bodyLocationIndex: safeIndex
+      });
+      if (isRoomsModalOpen) renderRoomsModal();
+    }
+
+    function openRoomsModal() {
+      isRoomsModalOpen = true;
+      renderRoomsModal();
+    }
+
+    function closeRoomsModal() {
+      isRoomsModalOpen = false;
+      document.getElementById("rooms-modal-root").innerHTML = "";
+    }
+
+    function renderRoomsModal() {
+      const modalRoot = document.getElementById("rooms-modal-root");
+      if (!isRoomsModalOpen) {
+        modalRoot.innerHTML = "";
+        return;
+      }
+
+      modalRoot.innerHTML = `
+        <div class="modal-backdrop" id="rooms-modal-backdrop">
+          <div class="modal-panel" role="dialog" aria-modal="true" aria-label="Ruimtes en Foto's Beheren">
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:12px;">
+              <div>
+                <span class="badge badge-teal">Woning Inrichten</span>
+                <h2 style="margin-top:6px; margin-bottom:2px;">Ruimtes &amp; Foto's van de Woning</h2>
+                <p class="muted">Upload foto's vanaf je apparaat (ze worden automatisch verkleind en opgeslagen) of vul een URL/bestandsnaam in.</p>
+              </div>
+              <button type="button" id="btn-close-rooms-top" class="secondary">Sluiten ✕</button>
+            </div>
+
+            <div id="rooms-editor-list">
+              ${state.rooms.map((room, idx) => `
+                <div class="room-editor-row" data-room-idx="${idx}">
+                  <div>
+                    <div class="room-editor-preview">
+                      ${room.image
+                        ? `<img src="${escapeHtml(room.image)}" alt="${escapeHtml(room.name)}" onerror="this.parentElement.innerHTML='Foto niet gevonden'" />`
+                        : `<span>Geen foto<br/>ingesteld</span>`}
+                    </div>
+                    <div style="display:flex; flex-direction:column; gap:6px; margin-top:8px;">
+                      <label class="small" style="display:block; text-align:center; background:var(--accent-teal); color:#fff; padding:7px 10px; border-radius:8px; font-weight:700; cursor:pointer; font-size:0.82rem;">
+                        📷 Upload Foto
+                        <input type="file" accept="image/*" class="room-file-input" data-idx="${idx}" style="display:none;" />
+                      </label>
+                      ${room.image ? `<button type="button" class="secondary small btn-clear-photo" data-idx="${idx}">Wis foto</button>` : ""}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label class="muted">Naam van de ruimte</label>
+                    <input type="text" class="room-name-input" data-idx="${idx}" value="${escapeHtml(room.name)}" placeholder="Bijv. De Woonkamer" />
+
+                    <label class="muted">Forensische aanwijzing / tekst</label>
+                    <input type="text" class="room-clue-input" data-idx="${idx}" value="${escapeHtml(room.clue)}" placeholder="Beschrijving van de ruimte..." />
+
+                    <label class="muted">Of plak bestandsnaam / afbeelding-URL</label>
+                    <div style="display:flex; gap:8px; align-items:center;">
+                      <input type="text" class="room-url-input" data-idx="${idx}" value="${room.image && room.image.startsWith("data:") ? "" : escapeHtml(room.image || "")}" placeholder="${room.image && room.image.startsWith("data:") ? "(Geüploade foto actief)" : "Bijv. fotos/keuken.jpg"}" style="margin-bottom:0;" />
+                      ${state.rooms.length > 2 ? `<button type="button" class="secondary small btn-delete-room" data-idx="${idx}" title="Verwijder ruimte">🗑️</button>` : ""}
+                    </div>
+                  </div>
+                </div>
+              `).join("")}
+            </div>
+
+            <div class="card" style="margin-top:16px; background:var(--bg-elevated);">
+              <h3>+ Extra Ruimte Toevoegen</h3>
+              <form id="add-room-form">
+                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap:10px;">
+                  <div>
+                    <label class="muted">Naam ruimte *</label>
+                    <input type="text" id="new-room-name" placeholder="Bijv. De Zolder / De Badkamer" required />
+                  </div>
+                  <div>
+                    <label class="muted">Foto kiezen (optioneel)</label>
+                    <input type="file" id="new-room-file" accept="image/*" style="padding:7px;" />
+                  </div>
+                </div>
+                <label class="muted">Aanwijzing (optioneel)</label>
+                <input type="text" id="new-room-clue" placeholder="Bijv. Op de zolder bij de oude kerstspullen..." />
+                <button type="submit" class="gold">Ruimte Toevoegen</button>
+              </form>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-top:16px; padding-top:14px; border-top:1px solid var(--border);">
+              <button type="button" id="btn-restore-default-rooms" class="secondary small">Herstel standaardruimtes</button>
+              <button type="button" id="btn-close-rooms-bottom" class="teal">Klaar &amp; Opslaan</button>
+            </div>
+          </div>
+        </div>
+      `;
+
+      bindRoomsModalEvents();
+    }
+
+    function bindRoomsModalEvents() {
+      document.getElementById("btn-close-rooms-top")?.addEventListener("click", closeRoomsModal);
+      document.getElementById("btn-close-rooms-bottom")?.addEventListener("click", closeRoomsModal);
+      document.getElementById("rooms-modal-backdrop")?.addEventListener("click", (e) => {
+        if (e.target.id === "rooms-modal-backdrop") closeRoomsModal();
+      });
+
+      document.querySelectorAll(".room-file-input").forEach((input) => {
+        input.addEventListener("change", async (e) => {
+          const idx = Number(input.dataset.idx);
+          const file = e.target.files?.[0];
+          if (!file) return;
+          try {
+            const dataUrl = await resizeImageFile(file);
+            const nextRooms = deepClone(state.rooms);
+            if (nextRooms[idx]) {
+              nextRooms[idx].image = dataUrl;
+              updateRooms(nextRooms);
+            }
+          } catch (err) {
+            alert(err.message || "Kon foto niet laden.");
+          }
+        });
+      });
+
+      document.querySelectorAll(".btn-clear-photo").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const idx = Number(btn.dataset.idx);
+          const nextRooms = deepClone(state.rooms);
+          if (nextRooms[idx]) {
+            nextRooms[idx].image = "";
+            updateRooms(nextRooms);
+          }
+        });
+      });
+
+      document.querySelectorAll(".btn-delete-room").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const idx = Number(btn.dataset.idx);
+          if (state.rooms.length <= 2) return;
+          const nextRooms = deepClone(state.rooms);
+          nextRooms.splice(idx, 1);
+          updateRooms(nextRooms);
+        });
+      });
+
+      document.querySelectorAll(".room-name-input").forEach((inp) => {
+        inp.addEventListener("change", () => {
+          const idx = Number(inp.dataset.idx);
+          const val = inp.value.trim();
+          if (!val) return;
+          const nextRooms = deepClone(state.rooms);
+          if (nextRooms[idx]) {
+            nextRooms[idx].name = val;
+            updateRooms(nextRooms);
+          }
+        });
+      });
+
+      document.querySelectorAll(".room-clue-input").forEach((inp) => {
+        inp.addEventListener("change", () => {
+          const idx = Number(inp.dataset.idx);
+          const nextRooms = deepClone(state.rooms);
+          if (nextRooms[idx]) {
+            nextRooms[idx].clue = inp.value.trim();
+            updateRooms(nextRooms);
+          }
+        });
+      });
+
+      document.querySelectorAll(".room-url-input").forEach((inp) => {
+        inp.addEventListener("change", () => {
+          const idx = Number(inp.dataset.idx);
+          const val = inp.value.trim();
+          const nextRooms = deepClone(state.rooms);
+          if (nextRooms[idx] && val) {
+            nextRooms[idx].image = val;
+            updateRooms(nextRooms);
+          }
+        });
+      });
+
+      document.getElementById("add-room-form")?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const name = document.getElementById("new-room-name").value.trim();
+        if (!name) return;
+        const clueInput = document.getElementById("new-room-clue").value.trim();
+        const fileInput = document.getElementById("new-room-file");
+        const file = fileInput.files?.[0];
+
+        let image = "";
+        if (file) {
+          try {
+            image = await resizeImageFile(file);
+          } catch (err) {
+            alert(err.message || "Foto kon niet worden verwerkt.");
+            return;
+          }
+        }
+
+        const nextRooms = deepClone(state.rooms);
+        nextRooms.push({
+          id: "room_" + Date.now(),
+          name,
+          clue: clueInput || `In ${name} werden sporen aangetroffen vlak bij het ingepakte cadeau.`,
+          image
+        });
+        updateRooms(nextRooms);
+      });
+
+      document.getElementById("btn-restore-default-rooms")?.addEventListener("click", () => {
+        if (confirm("Weet je zeker dat je de standaardruimtes wilt herstellen? Je geüploade foto's verdwijnen dan.")) {
+          updateRooms(deepClone(DEFAULT_HOUSE_LOCATIONS));
+        }
+      });
+    }
+
+    // =========================================================================
+    // 5. WEERGAVE (TV HOOFDSCHERM, SPELLEIDERSSCHERM DIRKJAAP & SPELERSSCHERM)
+    // =========================================================================
+    function switchViewMode(nextMode) {
+      viewMode = nextMode;
+      const url = new URL(window.location.href);
+      if (nextMode === "tv") {
+        url.searchParams.delete("mode");
+      } else {
+        url.searchParams.set("mode", nextMode);
+      }
+      window.history.replaceState({}, "", url);
+      render();
+    }
+
+    function updateHeaderButtons() {
       const modeBadge = document.getElementById("mode-indicator");
       const switchBtn = document.getElementById("btn-switch-view");
+      const btnRooms = document.getElementById("btn-manage-rooms");
+      const btnNext = document.getElementById("btn-next-round");
+      const btnFinale = document.getElementById("btn-finale");
+      const btnReset = document.getElementById("btn-reset");
 
-      if (isPlayerView) {
+      if (viewMode === "host") {
+        modeBadge.textContent = `Spelleider: ${CONFIG.hostName}`;
+        switchBtn.textContent = "Bekijk TV Scherm";
+        switchBtn.classList.remove("hidden");
+        btnRooms.classList.remove("hidden");
+        btnNext.classList.remove("hidden");
+        btnFinale.classList.remove("hidden");
+        btnReset.classList.remove("hidden");
+        btnNext.disabled = state.phase === "finale";
+        btnFinale.disabled = state.phase === "finale";
+      } else if (viewMode === "player") {
         modeBadge.textContent = "Spelersscherm (Mobiel)";
-        switchBtn.textContent = "Wissel naar TV Scherm";
+        switchBtn.classList.add("hidden");
+        btnRooms.classList.add("hidden");
+        btnNext.classList.add("hidden");
+        btnFinale.classList.add("hidden");
+        btnReset.classList.add("hidden");
+      } else {
+        // TV Hoofdscherm: volledig schoon, géén spelleidersknoppen zichtbaar!
+        modeBadge.textContent = state.phase === "finale" ? "TV Hoofdscherm • Ontknoping" : "TV Hoofdscherm";
+        switchBtn.classList.add("hidden");
+        btnRooms.classList.add("hidden");
+        btnNext.classList.add("hidden");
+        btnFinale.classList.add("hidden");
+        btnReset.classList.add("hidden");
+      }
+    }
+
+    function capturePlayerFormDraft() {
+      if (viewMode !== "player") return null;
+      const nameEl = document.getElementById("player-name-input");
+      if (!nameEl) return null;
+      const activeEl = document.activeElement;
+      return {
+        name: nameEl.value,
+        suspectRole: document.getElementById("suspect-role-select")?.value,
+        location: document.getElementById("location-select")?.value,
+        cause: document.getElementById("cause-select")?.value,
+        activeId: activeEl?.id || null,
+        selStart: activeEl && typeof activeEl.selectionStart === "number" ? activeEl.selectionStart : null,
+        selEnd: activeEl && typeof activeEl.selectionEnd === "number" ? activeEl.selectionEnd : null
+      };
+    }
+
+    function restorePlayerFormDraft(draft) {
+      if (!draft || viewMode !== "player") return;
+      const nameEl = document.getElementById("player-name-input");
+      const roleEl = document.getElementById("suspect-role-select");
+      const locEl = document.getElementById("location-select");
+      const causeEl = document.getElementById("cause-select");
+
+      if (nameEl && draft.name !== undefined) nameEl.value = draft.name;
+      if (roleEl && draft.suspectRole) roleEl.value = draft.suspectRole;
+      if (locEl && draft.location) locEl.value = draft.location;
+      if (causeEl && draft.cause) causeEl.value = draft.cause;
+
+      if (draft.activeId) {
+        const target = document.getElementById(draft.activeId);
+        if (target) {
+          target.focus();
+          if (draft.selStart !== null && typeof target.setSelectionRange === "function") {
+            try {
+              target.setSelectionRange(draft.selStart, draft.selEnd ?? draft.selStart);
+            } catch {}
+          }
+        }
+      }
+    }
+
+    function render() {
+      const root = document.getElementById("app-root");
+      const draft = capturePlayerFormDraft();
+      updateHeaderButtons();
+
+      if (viewMode === "player") {
         root.innerHTML = renderPlayerView();
         bindPlayerEvents();
+        restorePlayerFormDraft(draft);
+      } else if (viewMode === "host") {
+        root.innerHTML = renderHostView();
+        bindHostEvents();
       } else {
-        modeBadge.textContent = "TV Hoofdscherm";
-        switchBtn.textContent = "Wissel naar Spelersscherm";
         root.innerHTML = renderTvView();
         bindTvEvents();
       }
     }
 
+    function renderHostView() {
+      const rooms = state.rooms;
+      const bodyLoc = rooms[state.bodyLocationIndex] || rooms[0];
+      const players = getPlayersArray().sort((a, b) => (b.score || 0) - (a.score || 0));
+      const accusations = getAccusationsArray().slice(0, 12);
+      const isFinale = state.phase === "finale";
+      const winner = players.find((p) => p.id === state.winnerId) || null;
+      const activeTargets = state.secretTargetOverride || CONFIG.targetPlayerNames.join(", ");
+
+      return `
+        <div class="grid-tv">
+          <section class="card">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
+              <div>
+                <span class="badge badge-teal">Spelleiderspaneel • ${escapeHtml(CONFIG.hostName)}</span>
+                <h2 style="margin-top:6px; margin-bottom:0;">Regie op jouw scherm (niet zichtbaar op TV)</h2>
+              </div>
+              <button type="button" id="btn-host-logout" class="secondary small">Naar Spelersscherm</button>
+            </div>
+
+            <div class="player-room-preview" style="min-height:190px;">
+              ${bodyLoc.image ? `<img src="${escapeHtml(bodyLoc.image)}" alt="${escapeHtml(bodyLoc.name)}" onerror="this.style.display='none'" />` : ""}
+              <div class="player-room-caption">
+                <span class="badge">${isFinale ? "Ontknoping Actief" : `Ronde ${state.roundIndex + 1} • Lijk ligt in: ${escapeHtml(bodyLoc.name)}`}</span>
+                <p class="muted" style="margin-top:6px; color:#f1f5f9;">${escapeHtml(bodyLoc.clue)}</p>
+              </div>
+            </div>
+
+            <div class="controls">
+              <button type="button" id="host-btn-next" class="gold" ${isFinale ? "disabled" : ""}>Volgende Ronde / Verplaats Lijk</button>
+              <button type="button" id="host-btn-finale" class="primary" ${isFinale ? "disabled" : ""}>🏆 Ontknoping (Einde Spel)</button>
+              <button type="button" id="host-btn-rooms" class="teal">📷 Ruimtes &amp; Foto's</button>
+              <button type="button" id="host-btn-reset" class="secondary">Reset Spel</button>
+            </div>
+
+            <div class="clue-banner" style="margin-top:16px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
+                <h3 style="margin-bottom:0;">Spiekbriefje Spelleider (Privé)</h3>
+                <button type="button" id="btn-host-edit-target" class="secondary small">Wijzig winnares-naam</button>
+              </div>
+              <p style="margin-top:8px; font-size:0.92rem;">
+                <strong>Doelspeler (wint bij Ontknoping):</strong> ${escapeHtml(activeTargets)}
+              </p>
+              <p style="margin-top:4px; font-size:0.92rem;">
+                <strong>Verstopplek cadeau:</strong> ${escapeHtml(CONFIG.giftLocation)}
+              </p>
+              ${isFinale && winner ? `<p style="margin-top:6px; color:var(--accent-gold); font-weight:800;">🏆 Uitgeroepen winnaar: ${escapeHtml(winner.name)} (${winner.score} pt)</p>` : ""}
+            </div>
+          </section>
+
+          <aside style="display:flex; flex-direction:column; gap:16px;">
+            <div class="card">
+              <h3>Live Spelers &amp; Scores (${players.length})</h3>
+              ${players.length === 0 ? `<p class="muted">Nog geen spelers ingelogd.</p>` : `
+                <div class="players-list">
+                  ${players.map((p, idx) => `
+                    <div class="player-pill ${isFinale && winner && p.id === winner.id ? "winner-pill" : ""}">
+                      <div>
+                        <strong>${idx + 1}. ${escapeHtml(p.name)}</strong>
+                        <div class="muted">${escapeHtml(p.roleIcon || "")} ${escapeHtml(p.roleTitle)}</div>
+                      </div>
+                      <strong>${p.score} pt</strong>
+                    </div>
+                  `).join("")}
+                </div>
+              `}
+            </div>
+
+            <div class="card">
+              <h3>Binnengekomen Verdenkingen</h3>
+              ${accusations.length === 0 ? `<p class="muted">Nog geen verdenkingen ingediend.</p>` : `
+                <ul style="list-style:none; display:flex; flex-direction:column; gap:8px;">
+                  ${accusations.map((a) => `
+                    <li class="player-pill" style="align-items:flex-start;">
+                      <span style="font-size:0.86rem;">
+                        <strong>${escapeHtml(a.playerName)}</strong> → <em>${escapeHtml(a.suspectedRoleTitle)}</em> in <em>${escapeHtml(a.suspectedLocationName)}</em> (${escapeHtml(a.suspectedCauseName)})
+                      </span>
+                      <span class="muted" style="flex-shrink:0;">R${(a.roundIndex ?? 0) + 1}</span>
+                    </li>
+                  `).join("")}
+                </ul>
+              `}
+            </div>
+          </aside>
+        </div>
+      `;
+    }
+
     function renderTvView() {
-      const room = ROOMS[state.roundIndex] || ROOMS[0];
-      const sortedPlayers = [...state.players].sort((a, b) => b.score - a.score);
-      const winner = state.players.find((p) => p.id === state.winnerId);
+      const rooms = state.rooms;
+      const bodyLoc = rooms[state.bodyLocationIndex] || rooms[0];
+      const players = getPlayersArray().sort((a, b) => (b.score || 0) - (a.score || 0));
+      const accusations = getAccusationsArray().slice(0, 10);
+      const visitedSet = new Set(state.visitedRoomIndices || [0]);
+      const isFinale = state.phase === "finale";
+      const winner = players.find((p) => p.id === state.winnerId) || null;
+      const isFileProtocol = window.location.protocol === "file:";
 
       return `
         <div class="grid-tv">
           <section class="card">
             <div class="scene-box">
-              <img src="scene_hal_lijk.png" alt="Plaats delict in de hal" onerror="this.style.display='none'" />
+              ${bodyLoc.image ? `
+                <img class="scene-photo" src="${escapeHtml(bodyLoc.image)}" alt="${escapeHtml(bodyLoc.name)}" onerror="this.style.display='none'" />
+              ` : ""}
+              <div class="scene-scrim"></div>
+
+              <div class="scene-hud">
+                <span class="hud-tag">● REC • PLAATS DELICT: ${escapeHtml(bodyLoc.name).toUpperCase()}</span>
+                <span class="hud-tag">RONDE ${state.roundIndex + 1}</span>
+              </div>
+
               <div class="scene-content">
-                <span class="badge">Ronde ${state.roundIndex + 1} van ${ROOMS.length} — ${room.name}</span>
-                <h2 style="margin-top:8px;">${room.task}</h2>
-                <p class="muted">${room.clue}</p>
+                <span class="badge">${isFinale ? "Zaak Afgerond" : `Ronde ${state.roundIndex + 1} — Lijk gespot in: ${escapeHtml(bodyLoc.name)}`}</span>
+                <h2 style="margin-top:8px;">Het lijk ligt nu in ${escapeHtml(bodyLoc.name)} — met het cadeau erbij!</h2>
+                <p class="muted">${escapeHtml(bodyLoc.clue)}</p>
+                <p class="muted" style="margin-top:6px; color:#ffd166;">Doodsoorzaak: ${escapeHtml(CONFIG.causeOfDeath)}</p>
               </div>
             </div>
 
-            <h3>Onderzoekskamers &amp; Bewijsstukken</h3>
-            <div class="board-grid">
-              ${ROOMS.map((r, idx) => {
-                const cls = idx === state.roundIndex ? "room-tile active" : idx < state.roundIndex ? "room-tile solved" : "room-tile";
+            ${isFinale && winner ? `
+              <div class="winner-banner">
+                <span class="badge badge-gold">🏆 Ontknoping &amp; Einduitslag</span>
+                <h2 style="margin-top:10px; font-size:1.55rem; color:#fff;">
+                  Winnaar van vanavond: ${escapeHtml(winner.name)} (${escapeHtml(winner.roleIcon || "")} ${escapeHtml(winner.roleTitle)}) — ${winner.score} pt!
+                </h2>
+                <p style="margin-top:6px;">${escapeHtml(CONFIG.finalTwistNote)}</p>
+                <div style="margin-top:14px; padding:14px; border-radius:12px; background:rgba(12,15,23,0.72); border:1px solid var(--accent-gold);">
+                  <div class="muted" style="text-transform:uppercase; letter-spacing:0.06em; font-size:0.78rem;">🎁 Cadeau ontgrendeld voor ${escapeHtml(winner.name)} — Verstopplek:</div>
+                  <div style="font-size:1.18rem; font-weight:800; color:var(--accent-gold); margin-top:4px;">
+                    ${escapeHtml(CONFIG.giftLocation)}
+                  </div>
+                </div>
+              </div>
+            ` : `
+              <div class="clue-banner">
+                <h3>Onderzoek Loopt — Actieve Aanwijzing</h3>
+                <p>Alle spelers onderzoeken de ruimtes en sturen hun verdenkingen in. Pas bij de <strong>Ontknoping</strong> aan het eind wordt duidelijk wie de zaak kraakt en het cadeau krijgt!</p>
+              </div>
+            `}
+
+            <h3 style="margin-top:18px;">Ruimtes in de Woning (${rooms.length})</h3>
+            <div class="locations-grid">
+              ${rooms.map((loc, idx) => {
+                const isBodyHere = idx === state.bodyLocationIndex;
+                const isVisited = visitedSet.has(idx);
+                const cls = isBodyHere ? "loc-tile active-body" : isVisited ? "loc-tile visited" : "loc-tile";
                 return `
                   <div class="${cls}">
-                    <strong>${idx + 1}. ${r.name}</strong>
-                    <p class="muted" style="margin-top:4px;">${idx <= state.roundIndex ? r.clue : "Nog vergrendeld..."}</p>
+                    <div class="loc-thumb">
+                      ${loc.image
+                        ? `<img src="${escapeHtml(loc.image)}" alt="${escapeHtml(loc.name)}" onerror="this.parentElement.innerHTML='<span class=\\'loc-thumb-placeholder\\'>Foto niet geladen</span>'" />`
+                        : `<span class="loc-thumb-placeholder">📷 Nog geen foto</span>`}
+                    </div>
+                    <div class="loc-body">
+                      <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
+                        <strong style="font-size:0.92rem;">${escapeHtml(loc.name)}</strong>
+                        ${isBodyHere
+                          ? `<span class="badge" style="font-size:0.64rem; padding:2px 7px;">Lijk hier</span>`
+                          : isVisited
+                            ? `<span class="badge badge-teal" style="font-size:0.64rem; padding:2px 7px;">Geweest</span>`
+                            : `<span class="muted" style="font-size:0.74rem;">Open</span>`}
+                      </div>
+                      <p class="muted" style="margin-top:4px; font-size:0.8rem;">${escapeHtml(loc.clue)}</p>
+                    </div>
                   </div>
                 `;
               }).join("")}
             </div>
-
-            ${state.revealedLocation ? `
-              <div class="clue-banner">
-                <h3>Ontknoping: Verstopplek Cadeau Ontgrendeld!</h3>
-                <p style="font-size:1.05rem; font-weight:700; margin-top:4px;">${CONFIG.giftLocation}</p>
-                <p class="muted" style="margin-top:6px;">Doodsoorzaak: ${CONFIG.causeOfDeath}</p>
-                ${winner ? `<p style="margin-top:8px; color:var(--accent-gold); font-weight:700;">Meesterdetective van de avond: ${winner.name}!</p>` : ""}
-              </div>
-            ` : `
-              <div class="clue-banner">
-                <h3>Actieve Forensische Aanwijzing</h3>
-                <p>${room.clue}</p>
-              </div>
-            `}
           </section>
 
           <aside style="display:flex; flex-direction:column; gap:16px;">
             <div class="card">
-              <h3>Rechercheurs (${state.players.length}/8)</h3>
-              <div class="players-list">
-                ${sortedPlayers.map((p, idx) => `
-                  <div class="player-pill ${idx === state.currentTurnIndex ? "turn" : ""}">
-                    <div>
-                      <strong>${p.name}</strong>
-                      ${p.hasLead ? `<div class="muted" style="color:var(--accent-teal);">Forensische tip</div>` : `<div class="muted">Rechercheur</div>`}
-                    </div>
-                    <strong>${p.score} pt</strong>
-                  </div>
-                `).join("")}
-              </div>
+              <h3>${isFinale ? "Eindstand &amp; Meesterdetectives" : `Spelers &amp; Rollen (${players.length})`}</h3>
+              ${players.length === 0 ? `<p class="muted">Nog niemand ingelogd. Scan de QR-code op de telefoons om mee te spelen!</p>` : `
+                <div class="players-list">
+                  ${players.map((p, idx) => {
+                    const isWinner = isFinale && winner && p.id === winner.id;
+                    return `
+                      <div class="player-pill ${isWinner ? "winner-pill" : ""}">
+                        <div>
+                          <strong>${isWinner ? "🏆 " : `${idx + 1}. `}${escapeHtml(p.name)}</strong>
+                          <div class="muted">Rol: <span style="color:var(--accent-gold); font-weight:600;">${escapeHtml(p.roleIcon || "")} ${escapeHtml(p.roleTitle)}</span></div>
+                          ${isFinale && p.finalBonus ? `<div class="muted" style="font-size:0.78rem; color:#6ee7d8;">+${p.finalBonus} pt forensische eindbonus</div>` : ""}
+                        </div>
+                        <strong>${p.score} pt</strong>
+                      </div>
+                    `;
+                  }).join("")}
+                </div>
+              `}
             </div>
 
             <div class="card">
               <h3>Laatste Verdenkingen</h3>
-              ${state.accusations.length === 0 ? `<p class="muted">Nog geen verdenkingen ingediend.</p>` : `
+              ${accusations.length === 0 ? `<p class="muted">Nog geen verdenkingen ingediend.</p>` : `
                 <ul style="list-style:none; display:flex; flex-direction:column; gap:8px;">
-                  ${state.accusations.map((a) => `
-                    <li class="player-pill">
-                      <span><strong>${a.playerName}</strong> verdenkt <em>${a.suspect}</em> met <em>${a.weapon}</em></span>
-                      <span class="muted">${a.time}</span>
+                  ${accusations.map((a) => `
+                    <li class="player-pill" style="align-items:flex-start;">
+                      <span style="font-size:0.86rem;">
+                        <strong>${escapeHtml(a.playerName)}</strong> (<em>${escapeHtml(a.roleTitle)}</em>) verdenkt
+                        <em>${escapeHtml(a.suspectedRoleTitle)}</em> in <em>${escapeHtml(a.suspectedLocationName)}</em>
+                        met <em>${escapeHtml(a.suspectedCauseName)}</em>
+                      </span>
+                      <span class="muted" style="flex-shrink:0;">R${(a.roundIndex ?? 0) + 1} • ${escapeHtml(a.time)}</span>
                     </li>
                   `).join("")}
                 </ul>
@@ -575,7 +1551,8 @@
               <div id="qrcode"></div>
               <div>
                 <h3>Doe mee op je telefoon</h3>
-                <p class="muted">Open deze pagina met <code>?mode=player</code> op je smartphone om je verdenking in te dienen en je Cluedo-lijst bij te houden.</p>
+                <p class="muted">Scan de QR-code of open deze pagina met <code>?mode=player</code> op je smartphone om mee te speuren.</p>
+                ${isFileProtocol ? `<p class="muted" style="margin-top:6px; color:#ffd166; font-size:0.78rem;">Let op: je opent dit bestand lokaal (<code>file://</code>). Zet het bestand online + vul Firebase in zodat andere telefoons kunnen verbinden.</p>` : ""}
               </div>
             </div>
           </aside>
@@ -584,57 +1561,103 @@
     }
 
     function renderPlayerView() {
-      const room = ROOMS[state.roundIndex] || ROOMS[0];
+      const rooms = state.rooms;
+      const bodyLoc = rooms[state.bodyLocationIndex] || rooms[0];
+      const mySavedName = getMyPlayerName();
+      const myPlayer = mySavedName ? state.playersMap[makePlayerId(mySavedName)] : null;
+      const isFinale = state.phase === "finale";
+      const players = getPlayersArray().sort((a, b) => (b.score || 0) - (a.score || 0));
+      const winner = players.find((p) => p.id === state.winnerId) || null;
+      const iAmWinner = Boolean(isFinale && winner && myPlayer && winner.id === myPlayer.id);
+      const checklist = loadChecklist();
 
       return `
-        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:18px;">
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap:18px;">
           <section class="card">
-            <span class="badge badge-gold">Actieve Ronde: ${room.name}</span>
-            <h2 style="margin-top:8px;">Dien je Verdenking In</h2>
-            <p class="muted" style="margin-bottom:12px;">${room.clue}</p>
+            <div class="player-room-preview">
+              ${bodyLoc.image ? `<img src="${escapeHtml(bodyLoc.image)}" alt="${escapeHtml(bodyLoc.name)}" onerror="this.style.display='none'" />` : ""}
+              <div class="player-room-caption">
+                <span class="badge badge-gold">Ronde ${state.roundIndex + 1} • Lijk nu in: ${escapeHtml(bodyLoc.name)}</span>
+                <p class="muted" style="margin-top:6px; color:#f1f5f9;">${escapeHtml(bodyLoc.clue)}</p>
+              </div>
+            </div>
+
+            ${isFinale && winner ? `
+              <div class="winner-banner" style="margin-top:0; margin-bottom:14px;">
+                ${iAmWinner ? `
+                  <span class="badge badge-gold">🎉 JIJ HEBT GEWONNEN!</span>
+                  <h2 style="margin-top:8px;">Gefeliciteerd ${escapeHtml(winner.name)}!</h2>
+                  <p>Jouw forensische analyse gaf de doorslag — het cadeau is voor jou!</p>
+                ` : `
+                  <span class="badge badge-gold">🏆 Ontknoping Bekend!</span>
+                  <h2 style="margin-top:8px;">${escapeHtml(winner.name)} wint het cadeau!</h2>
+                  <p>Met ${winner.score} punten pakt ${escapeHtml(winner.name)} (${escapeHtml(winner.roleTitle)}) de winst!</p>
+                `}
+                <div style="margin-top:10px; padding:12px; border-radius:10px; background:rgba(12,15,23,0.75); border:1px solid var(--accent-gold);">
+                  <div class="muted" style="font-size:0.78rem;">🎁 VERSTOPPLEK CADEAU:</div>
+                  <div style="font-weight:800; color:var(--accent-gold); margin-top:3px;">${escapeHtml(CONFIG.giftLocation)}</div>
+                </div>
+              </div>
+            ` : ""}
+
+            ${myPlayer ? `
+              <div class="role-card">
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+                  <span class="badge badge-teal">Jouw Random Rol</span>
+                  <button type="button" id="btn-switch-player-name" class="secondary small">Wissel naam</button>
+                </div>
+                <h3 style="margin-top:8px; font-size:1.12rem;">${escapeHtml(myPlayer.roleIcon || "")} ${escapeHtml(myPlayer.roleTitle)}</h3>
+                <p class="muted">${escapeHtml(myPlayer.roleTagline)} • Huidige score: <strong>${myPlayer.score} pt</strong></p>
+              </div>
+            ` : `
+              <h2>Doe Mee &amp; Dien je Verdenking In</h2>
+              <p class="muted" style="margin-bottom:12px;">Vul je naam in en verstuur om willekeurig jouw geheime familierol te ontvangen!</p>
+            `}
+
+            ${lastSubmitMessage ? `<div class="status-toast">${escapeHtml(lastSubmitMessage)}</div>` : ""}
 
             <form id="accusation-form">
               <label class="muted">Jouw naam</label>
-              <input type="text" id="player-name-input" placeholder="Bijv. Sanne" required />
+              <input type="text" id="player-name-input" value="${escapeHtml(mySavedName)}" placeholder="Vul je voornaam in" required />
 
-              <label class="muted">Wie heeft het gedaan?</label>
-              <select id="suspect-select">
-                ${SUSPECTS.map((s) => `<option value="${s.name}">${s.name}</option>`).join("")}
+              <label class="muted">Welke rol verdenk je?</label>
+              <select id="suspect-role-select">
+                ${FAMILY_ROLES.map((r) => `<option value="${escapeHtml(r.title)}">${escapeHtml(r.icon)} ${escapeHtml(r.title)}</option>`).join("")}
               </select>
 
-              <label class="muted">Waardoor is het slachtoffer gestikt?</label>
-              <select id="weapon-select">
-                ${WEAPONS.map((w) => `<option value="${w.name}">${w.name}</option>`).join("")}
+              <label class="muted">Waar in de woning sloeg de dader toe?</label>
+              <select id="location-select">
+                ${rooms.map((l) => `<option value="${escapeHtml(l.name)}">${escapeHtml(l.name)}</option>`).join("")}
               </select>
 
-              <button type="submit" style="width:100%;">Verstuur Verdenking</button>
+              <label class="muted">Waardoor is verstikking ontstaan?</label>
+              <select id="cause-select">
+                ${CHOKING_CAUSES.map((c) => `<option value="${escapeHtml(c.name)}">${escapeHtml(c.name)}</option>`).join("")}
+              </select>
+
+              <button type="submit" style="width:100%;" ${isFinale ? "disabled" : ""}>
+                ${isFinale ? "Zaak is gesloten" : `Verstuur Verdenking (Ronde ${state.roundIndex + 1})`}
+              </button>
             </form>
-
-            ${state.revealedLocation ? `
-              <div class="clue-banner">
-                <h3>De Verstopplek is Bekend!</h3>
-                <p style="font-weight:700; margin-top:4px;">${CONFIG.giftLocation}</p>
-              </div>
-            ` : ""}
           </section>
 
           <section class="card">
-            <h2>Digitaal Cluedo-Notitieblok</h2>
-            <p class="muted" style="margin-bottom:10px;">Streep af wat al is uitgesloten.</p>
+            <h2>Cluedo-Checklist (Rollen &amp; Ruimtes)</h2>
+            <p class="muted" style="margin-bottom:10px;">Streep af wat je op basis van aanwijzingen wilt uitsluiten (blijft bewaard op jouw telefoon).</p>
 
-            <h3>Verdachten</h3>
-            ${SUSPECTS.map((s) => `
+            <h3>Familierollen</h3>
+            ${FAMILY_ROLES.map((r) => `
               <label class="checklist-item">
-                <input type="checkbox" />
-                <span><strong>${s.name}</strong> — <span class="muted">${s.role}</span></span>
+                <input type="checkbox" class="cl-check" data-group="roles" data-key="${escapeHtml(r.id)}" ${checklist.roles?.[r.id] ? "checked" : ""} />
+                <span><strong>${escapeHtml(r.icon)} ${escapeHtml(r.title)}</strong> — <span class="muted">${escapeHtml(r.tagline)}</span></span>
               </label>
             `).join("")}
 
-            <h3 style="margin-top:12px;">Verstikkingsmiddelen</h3>
-            ${WEAPONS.map((w) => `
+            <h3 style="margin-top:12px;">Ruimtes in Huis</h3>
+            ${rooms.map((l) => `
               <label class="checklist-item">
-                <input type="checkbox" />
-                <span><strong>${w.name}</strong> — <span class="muted">${w.detail}</span></span>
+                <input type="checkbox" class="cl-check" data-group="rooms" data-key="${escapeHtml(l.id)}" ${checklist.rooms?.[l.id] ? "checked" : ""} />
+                <span><strong>${escapeHtml(l.name)}</strong></span>
               </label>
             `).join("")}
           </section>
@@ -656,36 +1679,92 @@
       }
     }
 
-    function bindPlayerEvents() {
-      const form = document.getElementById("accusation-form");
-      if (!form) return;
-      form.addEventListener("submit", (e) => {
-        e.preventDefault();
-        const name = document.getElementById("player-name-input").value;
-        const suspect = document.getElementById("suspect-select").value;
-        const weapon = document.getElementById("weapon-select").value;
-        joinGame(name, suspect, weapon);
-        document.getElementById("player-name-input").value = "";
+    function bindHostEvents() {
+      document.getElementById("host-btn-next")?.addEventListener("click", advanceRound);
+      document.getElementById("host-btn-finale")?.addEventListener("click", triggerFinale);
+      document.getElementById("host-btn-rooms")?.addEventListener("click", openRoomsModal);
+      document.getElementById("host-btn-reset")?.addEventListener("click", resetGame);
+
+      document.getElementById("btn-host-logout")?.addEventListener("click", () => {
+        setMyPlayerName("");
+        switchViewMode("player");
+      });
+
+      document.getElementById("btn-host-edit-target")?.addEventListener("click", () => {
+        const current = state.secretTargetOverride || CONFIG.targetPlayerNames.join(", ");
+        const input = prompt("Welke voornaam moet bij de Ontknoping winnen?", current);
+        if (input !== null) {
+          state.secretTargetOverride = input.trim();
+          syncChanges({ secretTargetOverride: state.secretTargetOverride });
+        }
       });
     }
 
-    document.getElementById("btn-switch-view").addEventListener("click", () => {
-      isPlayerView = !isPlayerView;
-      const url = new URL(window.location.href);
-      if (isPlayerView) {
-        url.searchParams.set("mode", "player");
-      } else {
-        url.searchParams.delete("mode");
+    function bindPlayerEvents() {
+      const form = document.getElementById("accusation-form");
+      if (form) {
+        form.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const name = document.getElementById("player-name-input").value;
+          const roleTitle = document.getElementById("suspect-role-select").value;
+          const locName = document.getElementById("location-select").value;
+          const causeName = document.getElementById("cause-select").value;
+          joinAndSubmitAccusation(name, roleTitle, locName, causeName);
+        });
       }
-      window.history.replaceState({}, "", url);
-      render();
+
+      document.getElementById("btn-switch-player-name")?.addEventListener("click", () => {
+        setMyPlayerName("");
+        lastSubmitMessage = "";
+        render();
+        document.getElementById("player-name-input")?.focus();
+      });
+
+      document.querySelectorAll(".cl-check").forEach((cb) => {
+        cb.addEventListener("change", () => {
+          const cl = loadChecklist();
+          const group = cb.dataset.group;
+          const key = cb.dataset.key;
+          if (!cl[group]) cl[group] = {};
+          cl[group][key] = cb.checked;
+          saveChecklist(cl);
+        });
+      });
+    }
+
+    function resetGame() {
+      if (!confirm("Spel resetten naar Ronde 1? (Jouw toegevoegde ruimtes & foto's blijven gewoon bewaard!)")) return;
+      const preservedRooms = deepClone(state.rooms);
+      lastSubmitMessage = "";
+      state = createInitialState(preservedRooms);
+      syncChanges(null, true);
+    }
+
+    // =========================================================================
+    // 6. ALGEMENE KNOPPEN
+    // =========================================================================
+    document.getElementById("btn-switch-view").addEventListener("click", () => {
+      switchViewMode(viewMode === "host" ? "tv" : "host");
     });
 
-    document.getElementById("btn-demo-step").addEventListener("click", advanceRound);
+    document.getElementById("btn-manage-rooms").addEventListener("click", openRoomsModal);
+    document.getElementById("btn-next-round").addEventListener("click", advanceRound);
+    document.getElementById("btn-finale").addEventListener("click", triggerFinale);
+    document.getElementById("btn-reset").addEventListener("click", resetGame);
 
-    document.getElementById("btn-reset").addEventListener("click", () => {
-      localStorage.removeItem("csi_pakjesavond_state_v1");
-      saveState(structuredClone(DEFAULT_STATE));
+    // Snelkoppeling vanaf TV-scherm naar Spelleidersscherm (voor voorbereiding op laptop)
+    document.getElementById("mode-indicator").addEventListener("click", () => {
+      if (viewMode === "tv") {
+        if (isHostName(getMyPlayerName())) {
+          switchViewMode("host");
+          return;
+        }
+        const entered = prompt("Spelleidersnaam invoeren om het Spelleidersscherm te openen:");
+        if (entered && isHostName(entered)) {
+          setMyPlayerName(entered.trim());
+          switchViewMode("host");
+        }
+      }
     });
 
     initDatabase();
