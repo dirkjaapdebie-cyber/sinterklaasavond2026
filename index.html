@@ -1,27 +1,3 @@
-Hier is de aangepaste code. De structuur van het spel en de code is vrijwel
-identiek gebleven, met één belangrijk verschil:
-
-  - Op de TV (index.html) staan géén spelleidersknoppen meer — alleen het schone
-    speelscherm, de kamerfoto's, standen, verdenkingen en de QR-code.
-  - Jouw scherm (dirkjaap) is nu het Spelleidersscherm met alle
-    bedieningsknoppen, het foto-beheer én een privé spiekbriefje voor jou als
-    spelleider.
-
-Hoe open je jouw Spelleidersscherm?
-
-Je hebt 2 makkelijke manieren:
-
-1.  Direct via de link: open index.html?mode=host op je telefoon of laptop.
-2.  Via de QR-code / spelersscherm: scan op je eigen telefoon gewoon de QR-code
-    (?mode=player), vul als naam dirkjaap in en verstuur. Jouw telefoon herkent
-    de naam uit CONFIG.hostName en schakelt meteen over naar het
-    Spelleidersscherm (zonder dat jij als speler in de puntenlijst komt). (Tip:
-    als je op een laptop vooraf de TV-pagina open hebt en even naar je
-    spelleidersscherm wilt, klik dan op de gele badge TV Hoofdscherm en typ
-    dirkjaap.)
-
-Aangepaste index.html
-
 <!DOCTYPE html>
 <html lang="nl">
 <head>
@@ -119,6 +95,12 @@ Aangepaste index.html
       border-radius: 16px;
       padding: 18px;
       box-shadow: 0 14px 34px rgba(0, 0, 0, 0.42);
+    }
+
+    .host-panel {
+      border-color: rgba(42, 157, 143, 0.55);
+      background: linear-gradient(180deg, rgba(42, 157, 143, 0.12) 0%, var(--bg-card) 100%);
+      margin-bottom: 18px;
     }
 
     .scene-box {
@@ -512,7 +494,7 @@ Aangepaste index.html
     // =========================================================================
     const CONFIG = {
       // Naam van de spelleider: als jij deze naam op je telefoon invult (of ?mode=host opent),
-      // krijg jij op jouw scherm alle spelleidersfuncties. Op de TV zijn deze verborgen!
+      // krijg jij op jouw scherm het spelleiderspaneel ÉN doe je zelf ook als speler mee!
       hostName: "dirkjaap",
 
       // Zet hier vooraf HAAR naam (en eventuele bijnamen) in kleine letters.
@@ -845,7 +827,7 @@ Aangepaste index.html
       // Zoek de dame in kwestie
       const target = allList.find((p) => isTargetPlayer(p.name));
 
-      // Geef overige spelers eerst een kleine realistische forensische eindbonus
+      // Geef overige spelers (inclusief dirkjaap) eerst een kleine realistische forensische eindbonus
       allList.forEach((p, idx) => {
         if (!target || p.id !== target.id) {
           const bonus = 4 + ((p.name.length + idx * 3) % 6); // +4 t/m +9
@@ -891,13 +873,6 @@ Aangepaste index.html
       const cleanName = playerName.trim();
       if (!cleanName) return;
 
-      // Als spelleider 'dirkjaap' inlogt op het spelersscherm, schakel direct naar zijn Spelleidersscherm!
-      if (isHostName(cleanName)) {
-        setMyPlayerName(cleanName);
-        switchViewMode("host");
-        return;
-      }
-
       if (state.phase === "finale") {
         lastSubmitMessage = "De zaak is al gesloten! Bekijk de ontknoping hieronder.";
         render();
@@ -905,6 +880,16 @@ Aangepaste index.html
       }
 
       setMyPlayerName(cleanName);
+
+      // Als spelleider 'dirkjaap' op het spelersscherm inlogt, krijgt hij ZOWEL
+      // zijn eigen speler/rol/punten ALS toegang tot het Spelleiderspaneel!
+      if (isHostName(cleanName) && viewMode !== "host") {
+        viewMode = "host";
+        const url = new URL(window.location.href);
+        url.searchParams.set("mode", "host");
+        window.history.replaceState({}, "", url);
+      }
+
       const playerId = makePlayerId(cleanName);
       const existingPlayers = getPlayersArray();
       let player = state.playersMap[playerId] ? deepClone(state.playersMap[playerId]) : null;
@@ -1227,7 +1212,7 @@ Aangepaste index.html
     }
 
     // =========================================================================
-    // 5. WEERGAVE (TV HOOFDSCHERM, SPELLEIDERSSCHERM DIRKJAAP & SPELERSSCHERM)
+    // 5. WEERGAVE (TV HOOFDSCHERM, SPELLEIDER + SPELER DIRKJAAP & SPELERS)
     // =========================================================================
     function switchViewMode(nextMode) {
       viewMode = nextMode;
@@ -1250,7 +1235,7 @@ Aangepaste index.html
       const btnReset = document.getElementById("btn-reset");
 
       if (viewMode === "host") {
-        modeBadge.textContent = `Spelleider: ${CONFIG.hostName}`;
+        modeBadge.textContent = `Spelleider & Speler: ${CONFIG.hostName}`;
         switchBtn.textContent = "Bekijk TV Scherm";
         switchBtn.classList.remove("hidden");
         btnRooms.classList.remove("hidden");
@@ -1278,7 +1263,7 @@ Aangepaste index.html
     }
 
     function capturePlayerFormDraft() {
-      if (viewMode !== "player") return null;
+      if (viewMode !== "player" && viewMode !== "host") return null;
       const nameEl = document.getElementById("player-name-input");
       if (!nameEl) return null;
       const activeEl = document.activeElement;
@@ -1294,7 +1279,7 @@ Aangepaste index.html
     }
 
     function restorePlayerFormDraft(draft) {
-      if (!draft || viewMode !== "player") return;
+      if (!draft || (viewMode !== "player" && viewMode !== "host")) return;
       const nameEl = document.getElementById("player-name-input");
       const roleEl = document.getElementById("suspect-role-select");
       const locEl = document.getElementById("location-select");
@@ -1330,6 +1315,8 @@ Aangepaste index.html
       } else if (viewMode === "host") {
         root.innerHTML = renderHostView();
         bindHostEvents();
+        bindPlayerEvents();
+        restorePlayerFormDraft(draft);
       } else {
         root.innerHTML = renderTvView();
         bindTvEvents();
@@ -1340,87 +1327,50 @@ Aangepaste index.html
       const rooms = state.rooms;
       const bodyLoc = rooms[state.bodyLocationIndex] || rooms[0];
       const players = getPlayersArray().sort((a, b) => (b.score || 0) - (a.score || 0));
-      const accusations = getAccusationsArray().slice(0, 12);
+      const accusations = getAccusationsArray();
+      const submittedThisRound = new Set(
+        accusations
+          .filter((a) => (a.roundIndex ?? 0) === state.roundIndex)
+          .map((a) => a.playerId)
+      ).size;
       const isFinale = state.phase === "finale";
       const winner = players.find((p) => p.id === state.winnerId) || null;
       const activeTargets = state.secretTargetOverride || CONFIG.targetPlayerNames.join(", ");
 
       return `
-        <div class="grid-tv">
-          <section class="card">
-            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
-              <div>
-                <span class="badge badge-teal">Spelleiderspaneel • ${escapeHtml(CONFIG.hostName)}</span>
-                <h2 style="margin-top:6px; margin-bottom:0;">Regie op jouw scherm (niet zichtbaar op TV)</h2>
-              </div>
-              <button type="button" id="btn-host-logout" class="secondary small">Naar Spelersscherm</button>
+        <section class="card host-panel">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+            <div>
+              <span class="badge badge-teal">Spelleidersregie • ${escapeHtml(CONFIG.hostName)}</span>
+              <span class="muted" style="margin-left:8px;">
+                Ronde ${state.roundIndex + 1} (${escapeHtml(bodyLoc.name)}) • <strong>${submittedThisRound} / ${players.length}</strong> spelers ingestuurd
+              </span>
             </div>
+            <button type="button" id="btn-host-logout" class="secondary small">Verlaat Spelleidersmodus</button>
+          </div>
 
-            <div class="player-room-preview" style="min-height:190px;">
-              ${bodyLoc.image ? `<img src="${escapeHtml(bodyLoc.image)}" alt="${escapeHtml(bodyLoc.name)}" onerror="this.style.display='none'" />` : ""}
-              <div class="player-room-caption">
-                <span class="badge">${isFinale ? "Ontknoping Actief" : `Ronde ${state.roundIndex + 1} • Lijk ligt in: ${escapeHtml(bodyLoc.name)}`}</span>
-                <p class="muted" style="margin-top:6px; color:#f1f5f9;">${escapeHtml(bodyLoc.clue)}</p>
-              </div>
-            </div>
+          <div class="controls">
+            <button type="button" id="host-btn-next" class="gold" ${isFinale ? "disabled" : ""}>Volgende Ronde / Verplaats Lijk</button>
+            <button type="button" id="host-btn-finale" class="primary" ${isFinale ? "disabled" : ""}>🏆 Ontknoping (Einde Spel)</button>
+            <button type="button" id="host-btn-rooms" class="teal">📷 Ruimtes &amp; Foto's</button>
+            <button type="button" id="host-btn-reset" class="secondary">Reset Spel</button>
+          </div>
 
-            <div class="controls">
-              <button type="button" id="host-btn-next" class="gold" ${isFinale ? "disabled" : ""}>Volgende Ronde / Verplaats Lijk</button>
-              <button type="button" id="host-btn-finale" class="primary" ${isFinale ? "disabled" : ""}>🏆 Ontknoping (Einde Spel)</button>
-              <button type="button" id="host-btn-rooms" class="teal">📷 Ruimtes &amp; Foto's</button>
-              <button type="button" id="host-btn-reset" class="secondary">Reset Spel</button>
+          <div class="clue-banner" style="margin-top:12px; padding:12px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
+              <strong style="color:var(--accent-gold);">Spiekbriefje Spelleider (niet zichtbaar op TV)</strong>
+              <button type="button" id="btn-host-edit-target" class="secondary small">Wijzig winnares-naam</button>
             </div>
+            <p class="muted" style="margin-top:4px; color:#f8f9fa;">
+              <strong>Wint bij Ontknoping:</strong> ${escapeHtml(activeTargets)} •
+              <strong>Cadeau ligt:</strong> ${escapeHtml(CONFIG.giftLocation)}
+              ${isFinale && winner ? ` • <strong style="color:var(--accent-gold);">Winnaar: ${escapeHtml(winner.name)}</strong>` : ""}
+            </p>
+          </div>
+        </section>
 
-            <div class="clue-banner" style="margin-top:16px;">
-              <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
-                <h3 style="margin-bottom:0;">Spiekbriefje Spelleider (Privé)</h3>
-                <button type="button" id="btn-host-edit-target" class="secondary small">Wijzig winnares-naam</button>
-              </div>
-              <p style="margin-top:8px; font-size:0.92rem;">
-                <strong>Doelspeler (wint bij Ontknoping):</strong> ${escapeHtml(activeTargets)}
-              </p>
-              <p style="margin-top:4px; font-size:0.92rem;">
-                <strong>Verstopplek cadeau:</strong> ${escapeHtml(CONFIG.giftLocation)}
-              </p>
-              ${isFinale && winner ? `<p style="margin-top:6px; color:var(--accent-gold); font-weight:800;">🏆 Uitgeroepen winnaar: ${escapeHtml(winner.name)} (${winner.score} pt)</p>` : ""}
-            </div>
-          </section>
-
-          <aside style="display:flex; flex-direction:column; gap:16px;">
-            <div class="card">
-              <h3>Live Spelers &amp; Scores (${players.length})</h3>
-              ${players.length === 0 ? `<p class="muted">Nog geen spelers ingelogd.</p>` : `
-                <div class="players-list">
-                  ${players.map((p, idx) => `
-                    <div class="player-pill ${isFinale && winner && p.id === winner.id ? "winner-pill" : ""}">
-                      <div>
-                        <strong>${idx + 1}. ${escapeHtml(p.name)}</strong>
-                        <div class="muted">${escapeHtml(p.roleIcon || "")} ${escapeHtml(p.roleTitle)}</div>
-                      </div>
-                      <strong>${p.score} pt</strong>
-                    </div>
-                  `).join("")}
-                </div>
-              `}
-            </div>
-
-            <div class="card">
-              <h3>Binnengekomen Verdenkingen</h3>
-              ${accusations.length === 0 ? `<p class="muted">Nog geen verdenkingen ingediend.</p>` : `
-                <ul style="list-style:none; display:flex; flex-direction:column; gap:8px;">
-                  ${accusations.map((a) => `
-                    <li class="player-pill" style="align-items:flex-start;">
-                      <span style="font-size:0.86rem;">
-                        <strong>${escapeHtml(a.playerName)}</strong> → <em>${escapeHtml(a.suspectedRoleTitle)}</em> in <em>${escapeHtml(a.suspectedLocationName)}</em> (${escapeHtml(a.suspectedCauseName)})
-                      </span>
-                      <span class="muted" style="flex-shrink:0;">R${(a.roundIndex ?? 0) + 1}</span>
-                    </li>
-                  `).join("")}
-                </ul>
-              `}
-            </div>
-          </aside>
-        </div>
+        <!-- Daaronder speel je zelf gewoon mee als deelnemer met jouw eigen toegewezen rol! -->
+        ${renderPlayerView()}
       `;
     }
 
@@ -1563,7 +1513,7 @@ Aangepaste index.html
     function renderPlayerView() {
       const rooms = state.rooms;
       const bodyLoc = rooms[state.bodyLocationIndex] || rooms[0];
-      const mySavedName = getMyPlayerName();
+      const mySavedName = getMyPlayerName() || (viewMode === "host" ? CONFIG.hostName : "");
       const myPlayer = mySavedName ? state.playersMap[makePlayerId(mySavedName)] : null;
       const isFinale = state.phase === "finale";
       const players = getPlayersArray().sort((a, b) => (b.score || 0) - (a.score || 0));
@@ -1604,7 +1554,7 @@ Aangepaste index.html
               <div class="role-card">
                 <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
                   <span class="badge badge-teal">Jouw Random Rol</span>
-                  <button type="button" id="btn-switch-player-name" class="secondary small">Wissel naam</button>
+                  ${viewMode === "player" ? `<button type="button" id="btn-switch-player-name" class="secondary small">Wissel naam</button>` : ""}
                 </div>
                 <h3 style="margin-top:8px; font-size:1.12rem;">${escapeHtml(myPlayer.roleIcon || "")} ${escapeHtml(myPlayer.roleTitle)}</h3>
                 <p class="muted">${escapeHtml(myPlayer.roleTagline)} • Huidige score: <strong>${myPlayer.score} pt</strong></p>
