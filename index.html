@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CSI: Pakjesavond – Sinterklaas Cluedo</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    :root {
+      --bg-dark: #0f1219;
+      --bg-card: #191f2c;
+      --bg-elevated: #232b3d;
+      --accent-red: #d62828;
+      --accent-gold: #f4a261;
+      --accent-teal: #2a9d8f;
+      --text-main: #f8f9fa;
+      --text-muted: #9aa5b8;
+      --border: rgba(255, 255, 255, 0.1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: radial-gradient(circle at top, #1b2336 0%, var(--bg-dark) 75%);
+      color: var(--text-main);
+      min-height: 100vh;
+      line-height: 1.45;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .badge {
+      background: var(--accent-red);
+      color: #fff;
+      font-weight: 800;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      padding: 4px 10px;
+      border-radius: 999px;
+      text-transform: uppercase;
+    }
+
+    .badge-gold {
+      background: rgba(244, 162, 97, 0.18);
+      color: var(--accent-gold);
+      border: 1px solid rgba(244, 162, 97, 0.4);
+    }
+
+    h1 { font-size: clamp(1.4rem, 2.6vw, 2.2rem); letter-spacing: -0.02em; }
+    h2 { font-size: 1.25rem; margin-bottom: 10px; }
+    h3 { font-size: 1rem; margin-bottom: 8px; color: var(--accent-gold); }
+
+    .grid-tv {
+      display: grid;
+      grid-template-columns: 1.45fr 0.85fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 960px) {
+      .grid-tv { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+    }
+
+    .scene-box {
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #101520;
+      border: 1px solid var(--border);
+      min-height: 240px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+
+    .scene-box img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.42;
+      z-index: 0;
+    }
+
+    .scene-content {
+      position: relative;
+      z-index: 1;
+      background: rgba(15, 18, 25, 0.78);
+      backdrop-filter: blur(6px);
+      padding: 14px;
+      border-radius: 10px;
+      border-left: 4px solid var(--accent-red);
+    }
+
+    .board-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    @media (max-width: 640px) {
+      .board-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .room-tile {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+
+    .room-tile.active {
+      border-color: var(--accent-gold);
+      box-shadow: 0 0 0 1px var(--accent-gold);
+      transform: translateY(-2px);
+    }
+
+    .room-tile.solved {
+      border-color: var(--accent-teal);
+      background: rgba(42, 157, 143, 0.12);
+    }
+
+    .players-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .player-pill {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.9rem;
+    }
+
+    .player-pill.turn {
+      border-color: var(--accent-gold);
+      background: rgba(244, 162, 97, 0.14);
+    }
+
+    button {
+      background: var(--accent-red);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: opacity 0.15s ease, transform 0.1s ease;
+    }
+
+    button:hover { opacity: 0.92; }
+    button:active { transform: scale(0.98); }
+
+    button.secondary {
+      background: var(--bg-elevated);
+      color: var(--text-main);
+      border: 1px solid var(--border);
+    }
+
+    button.gold {
+      background: var(--accent-gold);
+      color: #111;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+      color: var(--text-main);
+      font-size: 0.95rem;
+      margin-bottom: 10px;
+    }
+
+    .checklist-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 8px;
+      border-radius: 8px;
+      background: var(--bg-elevated);
+      margin-bottom: 6px;
+      font-size: 0.9rem;
+    }
+
+    .checklist-item input[type="checkbox"] {
+      width: auto;
+      margin: 0;
+    }
+
+    .clue-banner {
+      background: linear-gradient(135deg, rgba(244, 162, 97, 0.2), rgba(214, 40, 40, 0.2));
+      border: 1px solid var(--accent-gold);
+      border-radius: 14px;
+      padding: 16px;
+      margin-top: 14px;
+    }
+
+    .muted { color: var(--text-muted); font-size: 0.88rem; }
+    .controls { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    #qrcode { background: #fff; padding: 8px; border-radius: 10px; display: inline-block; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <span class="badge">CSI: Pakjesavond</span>
+        <h1>Het Lijk in de Hal</h1>
+      </div>
+      <div class="controls" style="margin-top:0;">
+        <span id="mode-indicator" class="badge badge-gold">TV Hoofdscherm</span>
+        <button id="btn-switch-view" class="secondary">Wissel naar Spelersscherm</button>
+        <button id="btn-demo-step" class="gold">Volgende Ronde (Demo)</button>
+        <button id="btn-reset" class="secondary">Reset Spel</button>
+      </div>
+    </header>
+
+    <main id="app-root"></main>
+  </div>
+
+  <!-- Optionele Firebase SDK (alleen actief als je hieronder een databaseURL invult) -->
+  <script type="module">
+    // =========================================================================
+    // 1. CONFIGURATIE (VUL HIER JOUW GEGEVENS IN)
+    // =========================================================================
+    const CONFIG = {
+      // Naam van de dame die de surprise krijgt (hoofdletterongevoelig gecontroleerd)
+      targetPlayerName: "Sanne",
+
+      // Waar ligt het echte cadeau verstopt?
+      giftLocation: "In de witte spoelbak onder de gootsteen in de keuken — verstopt achter de ontstopper!",
+
+      // Verstikkings-doodsoorzaak verhaal
+      causeOfDeath: "Acute verstikking door een overmaat aan kruidnoten gecombineerd met een verdacht strakke baard en tandheelkundige afdruk-pasta.",
+
+      // Vul hier je Firebase Realtime Database gegevens in om live met 8 telefoons te spelen.
+      // Laat databaseURL leeg ("") om direct lokaal/demo te spelen zonder database.
+      firebase: {
+        apiKey: "",
+        authDomain: "",
+        databaseURL: "",
+        projectId: "",
+        storageBucket: "",
+        messagingSenderId: "",
+        appId: ""
+      }
+    };
+
+    const SUSPECTS = [
+      { id: "ambulance", name: "De Overijverige Ambulancebroeder", role: "Zwoer dat 'ie als eerste beademde" },
+      { id: "tandarts", name: "De Verdachte Tandarts", role: "Had verdacht veel gips en watten bij zich" },
+      { id: "hoofdpiet", name: "De Gestreste Hoofdpiet", role: "Was de zak van Sinterklaas kwijt" },
+      { id: "sint", name: "Sinterklaas Zelf", role: "Had een slokje port te veel op" }
+    ];
+
+    const WEAPONS = [
+      { id: "kruidnoot", name: "Reuze Oud-Hollandse Kruidnoot", detail: "Klem in de luchtpijp" },
+      { id: "afdruk", name: "Tandheelkundige Afdrukpasta", detail: "Snel hardend cement" },
+      { id: "sjaal", name: "Te Strakke Sinterklaassjaal", detail: "Dubbele knoop in de nek" },
+      { id: "marsepein", name: "Verstikkende Marsepeinen Worst", detail: "Zoet maar dodelijk" }
+    ];
+
+    const ROOMS = [
+      {
+        id: "hal",
+        name: "De Hal (Plaats Delict)",
+        clue: "Clue 1: Het slachtoffer hield het cadeau nog vast en had sporen van een zoete kruimel op zijn jas.",
+        task: "Inspecteer de plek waar het lijk ligt: let op de luchtpijp en de zakken."
+      },
+      {
+        id: "ehbo",
+        name: "De EHBO-Koffer",
+        clue: "Clue 2: Een Heimlich-manoeuvre bleek kansloos — de blokkade zat muurvast.",
+        task: "Medische check: welke verstikkingsbron past bij een harde, zoete blokkade?"
+      },
+      {
+        id: "praktijk",
+        name: "De Tandartsstoel",
+        clue: "Clue 3: Op het slachtoffer zat een glimmend restje gips/afdruk-materiaal, maar het was niet de enige aanwijzing.",
+        task: "Forensisch gebitsonderzoek: wat is echt en wat is een dwaalspoor?"
+      },
+      {
+        id: "finale",
+        name: "Het Autopsie-Kluisje",
+        clue: "Finale: Alle sporen wijzen naar één meesterdetective en de geheime verstopplek!",
+        task: "Dien de definitieve verdenking in en open de kluis van het cadeau."
+      }
+    ];
+
+    const DEFAULT_STATE = {
+      roundIndex: 0,
+      currentTurnIndex: 0,
+      players: [
+        { id: "p1", name: "Sanne", score: 40, hasLead: true },
+        { id: "p2", name: "Ambulance-Jeroen", score: 25, hasLead: false },
+        { id: "p3", name: "Tandarts-Lotte", score: 25, hasLead: false },
+        { id: "p4", name: "Hoofdpiet", score: 20, hasLead: false }
+      ],
+      accusations: [],
+      winnerId: null,
+      revealedLocation: false
+    };
+
+    // =========================================================================
+    // 2. STATE & DATABASE KOPPELING
+    // =========================================================================
+    const urlParams = new URLSearchParams(window.location.search);
+    let isPlayerView = urlParams.get("mode") === "player";
+    let state = loadLocalState();
+    let dbRef = null;
+
+    function loadLocalState() {
+      try {
+        const saved = localStorage.getItem("csi_pakjesavond_state_v1");
+        return saved ? { ...DEFAULT_STATE, ...JSON.parse(saved) } : structuredClone(DEFAULT_STATE);
+      } catch {
+        return structuredClone(DEFAULT_STATE);
+      }
+    }
+
+    function saveState(nextState) {
+      state = nextState;
+      localStorage.setItem("csi_pakjesavond_state_v1", JSON.stringify(state));
+      if (dbRef) {
+        dbRef.set(state);
+      }
+      render();
+    }
+
+    async function initDatabase() {
+      if (!CONFIG.firebase.databaseURL) return;
+      try {
+        const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js");
+        const { getDatabase, ref, set, onValue } = await import("https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js");
+        const app = initializeApp(CONFIG.firebase);
+        const db = getDatabase(app);
+        const gameRef = ref(db, "csi_pakjesavond_game");
+
+        dbRef = {
+          set: (val) => set(gameRef, val)
+        };
+
+        onValue(gameRef, (snapshot) => {
+          const val = snapshot.val();
+          if (val) {
+            state = { ...DEFAULT_STATE, ...val };
+            render();
+          }
+        });
+      } catch (err) {
+        console.warn("Firebase kon niet worden gestart, valt terug op lokale modus:", err);
+      }
+    }
+
+    // =========================================================================
+    // 3. SUBTIELE WIN-LOGICA VOOR DE DOELSPELER
+    // =========================================================================
+    function isTargetPlayer(name) {
+      return (name || "").trim().toLowerCase() === CONFIG.targetPlayerName.trim().toLowerCase();
+    }
+
+    function ensureTargetAdvantage(players) {
+      return players.map((p) => {
+        if (isTargetPlayer(p.name)) {
+          return { ...p, hasLead: true, score: Math.max(p.score, 40) };
+        }
+        return p;
+      });
+    }
+
+    function advanceRound() {
+      const nextRound = Math.min(state.roundIndex + 1, ROOMS.length - 1);
+      const updatedPlayers = ensureTargetAdvantage(state.players).map((p, idx) => {
+        if (isTargetPlayer(p.name)) {
+          return { ...p, score: p.score + 20, hasLead: true };
+        }
+        // Kleine variatie voor andere spelers
+        return { ...p, score: p.score + (idx % 2 === 0 ? 5 : 10) };
+      });
+
+      const nextTurn = (state.currentTurnIndex + 1) % Math.max(updatedPlayers.length, 1);
+      const isFinal = nextRound === ROOMS.length - 1;
+      const target = updatedPlayers.find((p) => isTargetPlayer(p.name)) || updatedPlayers[0];
+
+      saveState({
+        ...state,
+        roundIndex: nextRound,
+        currentTurnIndex: nextTurn,
+        players: updatedPlayers,
+        winnerId: isFinal && target ? target.id : state.winnerId,
+        revealedLocation: isFinal ? true : state.revealedLocation
+      });
+    }
+
+    function joinGame(playerName, selectedSuspect, selectedWeapon) {
+      const cleanName = playerName.trim();
+      if (!cleanName) return;
+
+      const existing = state.players.find((p) => p.name.toLowerCase() === cleanName.toLowerCase());
+      let players = [...state.players];
+
+      if (existing) {
+        existing.score = isTargetPlayer(cleanName) ? Math.max(existing.score + 15, 50) : existing.score + 5;
+        existing.hasLead = existing.hasLead || isTargetPlayer(cleanName);
+      } else if (players.length < 8) {
+        players.push({
+          id: "p_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6),
+          name: cleanName,
+          score: isTargetPlayer(cleanName) ? 50 : 15,
+          hasLead: isTargetPlayer(cleanName)
+        });
+      }
+
+      players = ensureTargetAdvantage(players);
+
+      const newAccusation = {
+        playerName: cleanName,
+        suspect: selectedSuspect,
+        weapon: selectedWeapon,
+        time: new Date().toLocaleTimeString("nl-NL", { hour: "2-digit", minute: "2-digit" })
+      };
+
+      const targetPlayer = players.find((p) => isTargetPlayer(p.name));
+      const shouldCrownWinner = isTargetPlayer(cleanName) || state.roundIndex === ROOMS.length - 1;
+
+      saveState({
+        ...state,
+        players,
+        accusations: [newAccusation, ...state.accusations].slice(0, 10),
+        winnerId: shouldCrownWinner && targetPlayer ? targetPlayer.id : state.winnerId,
+        revealedLocation: shouldCrownWinner ? true : state.revealedLocation
+      });
+    }
+
+    // =========================================================================
+    // 4. WEERGAVE (TV HOOFDSCHERM & MOBIEL SPELERSSCHERM)
+    // =========================================================================
+    function render() {
+      const root = document.getElementById("app-root");
+      const modeBadge = document.getElementById("mode-indicator");
+      const switchBtn = document.getElementById("btn-switch-view");
+
+      if (isPlayerView) {
+        modeBadge.textContent = "Spelersscherm (Mobiel)";
+        switchBtn.textContent = "Wissel naar TV Scherm";
+        root.innerHTML = renderPlayerView();
+        bindPlayerEvents();
+      } else {
+        modeBadge.textContent = "TV Hoofdscherm";
+        switchBtn.textContent = "Wissel naar Spelersscherm";
+        root.innerHTML = renderTvView();
+        bindTvEvents();
+      }
+    }
+
+    function renderTvView() {
+      const room = ROOMS[state.roundIndex] || ROOMS[0];
+      const sortedPlayers = [...state.players].sort((a, b) => b.score - a.score);
+      const winner = state.players.find((p) => p.id === state.winnerId);
+
+      return `
+        <div class="grid-tv">
+          <section class="card">
+            <div class="scene-box">
+              <img src="scene_hal_lijk.png" alt="Plaats delict in de hal" onerror="this.style.display='none'" />
+              <div class="scene-content">
+                <span class="badge">Ronde ${state.roundIndex + 1} van ${ROOMS.length} — ${room.name}</span>
+                <h2 style="margin-top:8px;">${room.task}</h2>
+                <p class="muted">${room.clue}</p>
+              </div>
+            </div>
+
+            <h3>Onderzoekskamers &amp; Bewijsstukken</h3>
+            <div class="board-grid">
+              ${ROOMS.map((r, idx) => {
+                const cls = idx === state.roundIndex ? "room-tile active" : idx < state.roundIndex ? "room-tile solved" : "room-tile";
+                return `
+                  <div class="${cls}">
+                    <strong>${idx + 1}. ${r.name}</strong>
+                    <p class="muted" style="margin-top:4px;">${idx <= state.roundIndex ? r.clue : "Nog vergrendeld..."}</p>
+                  </div>
+                `;
+              }).join("")}
+            </div>
+
+            ${state.revealedLocation ? `
+              <div class="clue-banner">
+                <h3>Ontknoping: Verstopplek Cadeau Ontgrendeld!</h3>
+                <p style="font-size:1.05rem; font-weight:700; margin-top:4px;">${CONFIG.giftLocation}</p>
+                <p class="muted" style="margin-top:6px;">Doodsoorzaak: ${CONFIG.causeOfDeath}</p>
+                ${winner ? `<p style="margin-top:8px; color:var(--accent-gold); font-weight:700;">Meesterdetective van de avond: ${winner.name}!</p>` : ""}
+              </div>
+            ` : `
+              <div class="clue-banner">
+                <h3>Actieve Forensische Aanwijzing</h3>
+                <p>${room.clue}</p>
+              </div>
+            `}
+          </section>
+
+          <aside style="display:flex; flex-direction:column; gap:16px;">
+            <div class="card">
+              <h3>Rechercheurs (${state.players.length}/8)</h3>
+              <div class="players-list">
+                ${sortedPlayers.map((p, idx) => `
+                  <div class="player-pill ${idx === state.currentTurnIndex ? "turn" : ""}">
+                    <div>
+                      <strong>${p.name}</strong>
+                      ${p.hasLead ? `<div class="muted" style="color:var(--accent-teal);">Forensische tip</div>` : `<div class="muted">Rechercheur</div>`}
+                    </div>
+                    <strong>${p.score} pt</strong>
+                  </div>
+                `).join("")}
+              </div>
+            </div>
+
+            <div class="card">
+              <h3>Laatste Verdenkingen</h3>
+              ${state.accusations.length === 0 ? `<p class="muted">Nog geen verdenkingen ingediend.</p>` : `
+                <ul style="list-style:none; display:flex; flex-direction:column; gap:8px;">
+                  ${state.accusations.map((a) => `
+                    <li class="player-pill">
+                      <span><strong>${a.playerName}</strong> verdenkt <em>${a.suspect}</em> met <em>${a.weapon}</em></span>
+                      <span class="muted">${a.time}</span>
+                    </li>
+                  `).join("")}
+                </ul>
+              `}
+            </div>
+
+            <div class="card" style="display:flex; align-items:center; gap:14px;">
+              <div id="qrcode"></div>
+              <div>
+                <h3>Doe mee op je telefoon</h3>
+                <p class="muted">Open deze pagina met <code>?mode=player</code> op je smartphone om je verdenking in te dienen en je Cluedo-lijst bij te houden.</p>
+              </div>
+            </div>
+          </aside>
+        </div>
+      `;
+    }
+
+    function renderPlayerView() {
+      const room = ROOMS[state.roundIndex] || ROOMS[0];
+
+      return `
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:18px;">
+          <section class="card">
+            <span class="badge badge-gold">Actieve Ronde: ${room.name}</span>
+            <h2 style="margin-top:8px;">Dien je Verdenking In</h2>
+            <p class="muted" style="margin-bottom:12px;">${room.clue}</p>
+
+            <form id="accusation-form">
+              <label class="muted">Jouw naam</label>
+              <input type="text" id="player-name-input" placeholder="Bijv. Sanne" required />
+
+              <label class="muted">Wie heeft het gedaan?</label>
+              <select id="suspect-select">
+                ${SUSPECTS.map((s) => `<option value="${s.name}">${s.name}</option>`).join("")}
+              </select>
+
+              <label class="muted">Waardoor is het slachtoffer gestikt?</label>
+              <select id="weapon-select">
+                ${WEAPONS.map((w) => `<option value="${w.name}">${w.name}</option>`).join("")}
+              </select>
+
+              <button type="submit" style="width:100%;">Verstuur Verdenking</button>
+            </form>
+
+            ${state.revealedLocation ? `
+              <div class="clue-banner">
+                <h3>De Verstopplek is Bekend!</h3>
+                <p style="font-weight:700; margin-top:4px;">${CONFIG.giftLocation}</p>
+              </div>
+            ` : ""}
+          </section>
+
+          <section class="card">
+            <h2>Digitaal Cluedo-Notitieblok</h2>
+            <p class="muted" style="margin-bottom:10px;">Streep af wat al is uitgesloten.</p>
+
+            <h3>Verdachten</h3>
+            ${SUSPECTS.map((s) => `
+              <label class="checklist-item">
+                <input type="checkbox" />
+                <span><strong>${s.name}</strong> — <span class="muted">${s.role}</span></span>
+              </label>
+            `).join("")}
+
+            <h3 style="margin-top:12px;">Verstikkingsmiddelen</h3>
+            ${WEAPONS.map((w) => `
+              <label class="checklist-item">
+                <input type="checkbox" />
+                <span><strong>${w.name}</strong> — <span class="muted">${w.detail}</span></span>
+              </label>
+            `).join("")}
+          </section>
+        </div>
+      `;
+    }
+
+    function bindTvEvents() {
+      const qrEl = document.getElementById("qrcode");
+      if (qrEl && typeof QRCode !== "undefined") {
+        qrEl.innerHTML = "";
+        const playerUrl = new URL(window.location.href);
+        playerUrl.searchParams.set("mode", "player");
+        new QRCode(qrEl, {
+          text: playerUrl.toString(),
+          width: 96,
+          height: 96
+        });
+      }
+    }
+
+    function bindPlayerEvents() {
+      const form = document.getElementById("accusation-form");
+      if (!form) return;
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const name = document.getElementById("player-name-input").value;
+        const suspect = document.getElementById("suspect-select").value;
+        const weapon = document.getElementById("weapon-select").value;
+        joinGame(name, suspect, weapon);
+        document.getElementById("player-name-input").value = "";
+      });
+    }
+
+    document.getElementById("btn-switch-view").addEventListener("click", () => {
+      isPlayerView = !isPlayerView;
+      const url = new URL(window.location.href);
+      if (isPlayerView) {
+        url.searchParams.set("mode", "player");
+      } else {
+        url.searchParams.delete("mode");
+      }
+      window.history.replaceState({}, "", url);
+      render();
+    });
+
+    document.getElementById("btn-demo-step").addEventListener("click", advanceRound);
+
+    document.getElementById("btn-reset").addEventListener("click", () => {
+      localStorage.removeItem("csi_pakjesavond_state_v1");
+      saveState(structuredClone(DEFAULT_STATE));
+    });
+
+    initDatabase();
+    render();
+  </script>
+</body>
+</html>
