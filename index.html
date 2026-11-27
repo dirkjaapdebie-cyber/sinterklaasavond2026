@@ -618,7 +618,7 @@
 
   <div id="login-screen">
     <div class="hero-badge">🎁 Sinterklaas Surprise Editie — 7 Spelers</div>
-    <h1 style="margin: 6px 0; color: var(--gold-light);">🔍 Sinterklaas Cluedo</h1>
+    <h1 id="login-title" style="margin: 6px 0; color: var(--gold-light); user-select: none;">🔍 Sinterklaas Cluedo</h1>
     <p class="small-muted" style="font-size:0.95rem;">
       De Grote Zak met Cadeaus is verdwenen! Elk van de 7 gasten krijgt een eigen beroep, geheime kaarten en een digitaal detectiveblad.
     </p>
@@ -647,7 +647,7 @@
     </div>
 
     <div style="margin-top:18px; display:flex; justify-content:center; gap:10px; flex-wrap:wrap;">
-      <button id="btn-open-admin-login" class="btn-ghost">⚙️ Spelleider / Nieuw Spel</button>
+      <button id="btn-open-admin-login" class="btn-ghost hidden">⚙️ Spelleider / Nieuw Spel</button>
     </div>
     <div id="login-status" class="small-muted" style="margin-top:10px;"></div>
   </div>
@@ -655,11 +655,11 @@
   <div id="app-screen" class="hidden">
     <header class="topbar">
       <div class="topbar-left">
-        <strong style="color:var(--gold-light);">🔍 Sinterklaas Cluedo</strong>
+        <strong id="app-title" style="color:var(--gold-light); user-select: none;">🔍 Sinterklaas Cluedo</strong>
         <span id="header-identity" class="role-pill"></span>
       </div>
       <div style="display:flex; gap:8px; align-items:center;">
-        <button id="btn-open-admin" class="btn-ghost" title="Beheer">⚙️</button>
+        <button id="btn-open-admin" class="btn-ghost hidden" title="Beheer">⚙️</button>
         <button id="btn-logout" class="btn-ghost">Uitloggen</button>
       </div>
     </header>
@@ -842,7 +842,7 @@
     const gameRef = ref(db, "cluedoGame");
     const notesRef = ref(db, "cluedoNotes");
 
-    // 👑 OPTIONEEEL VOORAF INVULLEN (of tijdens de avond via ⚙️ -> 🔐 Sint-Geheim, code 0512):
+    // 👑 OPTIONEEEL VOORAF INVULLEN (of tijdens de avond via ?beheer=1 -> 🔐 Sint-Geheim, code 0512):
     const DEFAULT_VIP_NAME = "";
     const DEFAULT_FORCED_ROOM = "";    // bijv. "huiskamer", "schoorsteen", "pakjeskamer", etc.
     const DEFAULT_FORCED_SUSPECT = ""; // bijv. "tandarts", "agent", etc. (leeg = willekeurig)
@@ -985,9 +985,30 @@ Doe snel een beschuldiging en maak jezelf blij!`;
     let confettiActive = false;
     let shownWinModalGameId = null;
 
-    if (new URLSearchParams(window.location.search).get("mode") === "tv") {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get("mode") === "tv") {
       clientMode = "tv";
     }
+    const isAdminMode = urlParams.get("beheer") === "1" || urlParams.get("admin") === "1";
+    if (isAdminMode) {
+      document.getElementById("btn-open-admin").classList.remove("hidden");
+      document.getElementById("btn-open-admin-login").classList.remove("hidden");
+    }
+
+    // Geheime snelkoppeling voor spelleider: 5x snel klikken op de titel opent beheer
+    let secretTapCount = 0;
+    let secretTapTimer = null;
+    function handleSecretTitleTap() {
+      secretTapCount++;
+      clearTimeout(secretTapTimer);
+      secretTapTimer = setTimeout(() => { secretTapCount = 0; }, 1200);
+      if (secretTapCount >= 5) {
+        secretTapCount = 0;
+        document.getElementById("admin-modal").classList.remove("hidden");
+      }
+    }
+    document.getElementById("login-title").addEventListener("click", handleSecretTitleTap);
+    document.getElementById("app-title").addEventListener("click", handleSecretTitleTap);
 
     function esc(str) {
       return String(str || "").replace(/[&<>"']/g, s => ({
