@@ -952,8 +952,8 @@
     function cardImgHTML(card) {
       return `
         <div class="clue-card-art">
-          <img src="images/${card.id}.png" alt="${esc(card.name)}"
-               onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+          <img src="${card.id}.png" alt="${esc(card.name)}"
+               onerror="if(!this.dataset.j){this.dataset.j='1';this.src='${card.id}.jpg';}else{this.style.display='none';this.nextElementSibling.style.display='flex';}" />
           <div class="clue-card-emoji" style="display:none;">${card.emoji}</div>
         </div>
       `;
