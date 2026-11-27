@@ -2,1723 +2,2200 @@
 <html lang="nl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CSI: Pakjesavond – Het Lijk in Huis</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Sinterklaas Cluedo — Het Beroepen Mysterie</title>
   <style>
     :root {
-      --bg-dark: #0c0f17;
-      --bg-card: #161c29;
-      --bg-elevated: #1f2738;
-      --accent-red: #e63946;
-      --accent-gold: #f4a261;
-      --accent-teal: #2a9d8f;
-      --text-main: #f8f9fa;
-      --text-muted: #9aa5b8;
-      --border: rgba(255, 255, 255, 0.11);
+      --bg-dark: #1d080f;
+      --bg-card: #2d0d18;
+      --gold: #f59e0b;
+      --gold-light: #fde68a;
+      --cream: #fdf6e3;
+      --text-main: #fff7ed;
+      --text-muted: #e2b8c4;
+      --accent-green: #22c55e;
+      --border: rgba(245, 158, 11, 0.28);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
+    * { box-sizing: border-box; }
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: radial-gradient(circle at top, #1d263b 0%, var(--bg-dark) 78%);
+      margin: 0;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: radial-gradient(circle at top, #401020 0%, var(--bg-dark) 75%);
       color: var(--text-main);
       min-height: 100vh;
-      line-height: 1.45;
     }
 
-    .container {
-      max-width: 1360px;
+    button {
+      font-family: inherit;
+      cursor: pointer;
+      border: none;
+      border-radius: 10px;
+      font-weight: 700;
+      transition: transform 0.1s ease, filter 0.15s ease;
+    }
+    button:active { transform: scale(0.97); }
+    button:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    .btn-gold {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #1f0a00;
+      padding: 11px 16px;
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+    }
+    .btn-red {
+      background: linear-gradient(135deg, #ef4444, #b91c1c);
+      color: white;
+      padding: 11px 16px;
+    }
+    .btn-green {
+      background: linear-gradient(135deg, #22c55e, #15803d);
+      color: white;
+      padding: 11px 16px;
+    }
+    .btn-ghost {
+      background: rgba(255, 255, 255, 0.09);
+      color: var(--text-main);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      padding: 8px 12px;
+    }
+
+    #login-screen {
+      max-width: 520px;
       margin: 0 auto;
-      padding: 20px;
+      padding: 24px 16px 48px;
+      text-align: center;
     }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid var(--gold);
+      color: var(--gold-light);
+      padding: 5px 14px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      margin-bottom: 10px;
+    }
+    .login-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 22px;
+      margin-top: 16px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+      text-align: left;
+    }
+    .login-box input, .modal-input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 2px solid rgba(245, 158, 11, 0.35);
+      background: #16050b;
+      color: white;
+      font-size: 1.05rem;
+      margin: 8px 0 14px;
+    }
+    .login-box input:focus, .modal-input:focus { outline: none; border-color: var(--gold); }
 
-    header {
+    .topbar {
       display: flex;
-      flex-wrap: wrap;
+      align-items: center;
       justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      padding-bottom: 16px;
+      gap: 10px;
+      padding: 10px 14px;
+      background: rgba(20, 4, 10, 0.92);
       border-bottom: 1px solid var(--border);
-      margin-bottom: 20px;
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      backdrop-filter: blur(8px);
     }
-
-    .brand {
-      display: flex;
+    .topbar-left { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .role-pill {
+      display: inline-flex;
       align-items: center;
-      gap: 12px;
-    }
-
-    .badge {
-      background: var(--accent-red);
-      color: #fff;
-      font-weight: 800;
-      font-size: 0.76rem;
-      letter-spacing: 0.08em;
+      gap: 6px;
       padding: 4px 10px;
       border-radius: 999px;
-      text-transform: uppercase;
-      user-select: none;
+      font-size: 0.85rem;
+      font-weight: 700;
+      border: 1px solid rgba(255,255,255,0.25);
+      background: rgba(255,255,255,0.08);
     }
 
-    .badge-gold {
-      background: rgba(244, 162, 97, 0.18);
-      color: var(--accent-gold);
-      border: 1px solid rgba(244, 162, 97, 0.45);
-    }
-
-    .badge-teal {
-      background: rgba(42, 157, 143, 0.2);
-      color: #6ee7d8;
-      border: 1px solid rgba(42, 157, 143, 0.45);
-    }
-
-    h1 { font-size: clamp(1.4rem, 2.6vw, 2.2rem); letter-spacing: -0.02em; }
-    h2 { font-size: 1.25rem; margin-bottom: 10px; }
-    h3 { font-size: 1rem; margin-bottom: 8px; color: var(--accent-gold); }
-
-    .grid-tv {
+    .main-layout {
       display: grid;
-      grid-template-columns: 1.48fr 0.85fr;
-      gap: 20px;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      padding: 12px;
+      max-width: 1560px;
+      margin: 0 auto;
+    }
+    @media (min-width: 960px) {
+      .main-layout {
+        grid-template-columns: minmax(520px, 1.35fr) minmax(360px, 0.95fr);
+        align-items: start;
+      }
+      .tv-layout {
+        grid-template-columns: minmax(640px, 1.6fr) minmax(340px, 0.8fr);
+      }
     }
 
-    @media (max-width: 960px) {
-      .grid-tv { grid-template-columns: 1fr; }
-    }
-
-    .card {
+    .panel {
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: 16px;
-      padding: 18px;
-      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.42);
+      padding: 14px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
     }
 
-    .host-panel {
-      border-color: rgba(42, 157, 143, 0.55);
-      background: linear-gradient(180deg, rgba(42, 157, 143, 0.12) 0%, var(--bg-card) 100%);
-      margin-bottom: 18px;
-    }
-
-    .scene-box {
-      position: relative;
+    .turn-banner {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.18), rgba(185, 28, 28, 0.25));
+      border: 1px solid var(--gold);
       border-radius: 14px;
-      overflow: hidden;
-      background:
-        radial-gradient(circle at 20% 20%, rgba(230, 57, 70, 0.15), transparent 55%),
-        repeating-linear-gradient(0deg, rgba(255,255,255,0.03) 0 1px, transparent 1px 28px),
-        repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0 1px, transparent 1px 28px),
-        #0e131d;
-      border: 1px solid var(--border);
-      min-height: 360px;
+      padding: 12px 14px;
+      margin-bottom: 12px;
+    }
+    .turn-banner.my-turn {
+      background: linear-gradient(135deg, rgba(34, 197, 94, 0.24), rgba(245, 158, 11, 0.24));
+      border-color: var(--accent-green);
+      box-shadow: 0 0 18px rgba(34, 197, 94, 0.2);
+    }
+
+    .vip-hint-box {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.22), rgba(124, 45, 18, 0.45));
+      border: 1.5px solid #fbbf24;
+      border-radius: 12px;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      font-size: 0.9rem;
+      box-shadow: 0 4px 14px rgba(245, 158, 11, 0.2);
+    }
+
+    .board-wrapper {
+      width: 100%;
+      background: #14050a;
+      border: 2px solid var(--gold);
+      border-radius: 14px;
+      padding: 6px;
+      position: relative;
+    }
+    .board-grid {
+      display: grid;
+      grid-template-columns: repeat(15, 1fr);
+      width: 100%;
+      aspect-ratio: 15 / 13;
+      position: relative;
+      user-select: none;
+    }
+    .cell {
+      position: relative;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(9px, 1.3vw, 15px);
+    }
+    .cell.hallway { background: #331822; }
+    .cell.hallway:nth-child(odd) { background: #3a1c27; }
+    .cell.start-spot::after {
+      content: '';
+      position: absolute;
+      inset: 22%;
+      border-radius: 50%;
+      border: 1.5px dashed rgba(255,255,255,0.35);
+      pointer-events: none;
+    }
+    .cell.room {
+      background: #4e2230;
+      border-color: transparent;
+    }
+    .cell.room.alt-tint { background: #471d2b; }
+    .cell.reachable-hall {
+      background: rgba(34, 197, 94, 0.45) !important;
+      box-shadow: inset 0 0 0 2px #4ade80;
+      cursor: pointer;
+      animation: pulseCell 1.2s infinite;
+    }
+    .cell.reachable-room {
+      background: rgba(245, 158, 11, 0.35) !important;
+      cursor: pointer;
+      animation: pulseRoom 1.2s infinite;
+    }
+    @keyframes pulseCell {
+      0%, 100% { filter: brightness(1); }
+      50% { filter: brightness(1.3); }
+    }
+    @keyframes pulseRoom {
+      0%, 100% { background: rgba(245, 158, 11, 0.25); }
+      50% { background: rgba(245, 158, 11, 0.45); }
+    }
+
+    .wall-t { border-top: 2.5px solid #f59e0b !important; }
+    .wall-b { border-bottom: 2.5px solid #f59e0b !important; }
+    .wall-l { border-left: 2.5px solid #f59e0b !important; }
+    .wall-r { border-right: 2.5px solid #f59e0b !important; }
+    .door-t { border-top: 2.5px dashed #86efac !important; }
+    .door-b { border-bottom: 2.5px dashed #86efac !important; }
+    .door-l { border-left: 2.5px dashed #86efac !important; }
+    .door-r { border-right: 2.5px dashed #86efac !important; }
+
+    .room-overlay {
+      position: absolute;
+      pointer-events: none;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      padding: 16px;
-      margin-bottom: 16px;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2px;
+      z-index: 4;
+    }
+    .room-title-badge {
+      background: rgba(20, 5, 10, 0.78);
+      border: 1px solid rgba(245, 158, 11, 0.45);
+      color: var(--gold-light);
+      font-weight: 700;
+      font-size: clamp(7px, 1.05vw, 12px);
+      padding: 1px 5px;
+      border-radius: 6px;
+      line-height: 1.15;
+      max-width: 95%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .room-passage-badge {
+      font-size: clamp(6px, 0.85vw, 10px);
+      color: #93c5fd;
+      background: rgba(15, 23, 42, 0.8);
+      padding: 0 4px;
+      border-radius: 4px;
+      margin-top: 1px;
+    }
+    .room-attr-strip {
+      display: flex;
+      gap: 2px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 2px;
+    }
+    .attr-mini {
+      background: rgba(255, 255, 255, 0.9);
+      color: #111;
+      border-radius: 999px;
+      font-size: clamp(8px, 1vw, 12px);
+      padding: 0 3px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.6);
     }
 
-    .scene-box img.scene-photo {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0.92;
-      z-index: 0;
+    .pawn {
+      width: 82%;
+      height: 82%;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(9px, 1.35vw, 16px);
+      border: 2px solid #ffffff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.8);
+      z-index: 10;
+      position: relative;
+      transition: transform 0.15s ease;
     }
-
-    .scene-scrim {
+    .pawn.active-pawn {
+      box-shadow: 0 0 0 3px #22c55e, 0 0 12px #22c55e;
+      transform: scale(1.16);
+      z-index: 15;
+    }
+    .pawn.eliminated-pawn {
+      opacity: 0.45;
+      filter: grayscale(0.8);
+    }
+    .pawn-name-tag {
       position: absolute;
-      inset: 0;
-      background: linear-gradient(
-        to top,
-        rgba(10, 13, 20, 0.94) 0%,
-        rgba(10, 13, 20, 0.55) 48%,
-        rgba(10, 13, 20, 0.25) 100%
-      );
-      z-index: 1;
+      bottom: -11px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.85);
+      color: white;
+      font-size: clamp(6px, 0.75vw, 9px);
+      padding: 0 3px;
+      border-radius: 3px;
+      white-space: nowrap;
       pointer-events: none;
     }
 
-    .scene-hud {
-      position: relative;
-      z-index: 2;
+    .tabs {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
+      gap: 6px;
+      margin-bottom: 12px;
       flex-wrap: wrap;
     }
-
-    .hud-tag {
-      background: rgba(12, 15, 23, 0.78);
-      backdrop-filter: blur(6px);
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      padding: 4px 10px;
-      border-radius: 8px;
-      font-size: 0.78rem;
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      color: #ffd166;
+    .tab-btn {
+      flex: 1;
+      min-width: 90px;
+      padding: 9px 10px;
+      background: rgba(255,255,255,0.06);
+      color: var(--text-muted);
+      border: 1px solid rgba(255,255,255,0.1);
+      font-size: 0.9rem;
+    }
+    .tab-btn.active {
+      background: rgba(245, 158, 11, 0.22);
+      color: var(--gold-light);
+      border-color: var(--gold);
     }
 
-    .scene-content {
-      position: relative;
-      z-index: 2;
-      background: rgba(12, 15, 23, 0.82);
-      backdrop-filter: blur(8px);
-      padding: 16px;
-      border-radius: 12px;
-      border-left: 4px solid var(--accent-red);
-      margin-top: auto;
-    }
-
-    .player-room-preview {
-      position: relative;
-      border-radius: 12px;
-      overflow: hidden;
-      min-height: 165px;
-      margin-bottom: 14px;
-      border: 1px solid var(--border);
-      background: #0e131d;
-      display: flex;
-      align-items: flex-end;
-    }
-
-    .player-room-preview img {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .player-room-caption {
-      position: relative;
-      z-index: 1;
-      width: 100%;
-      padding: 10px 12px;
-      background: linear-gradient(to top, rgba(12, 15, 23, 0.92), rgba(12, 15, 23, 0.2));
-    }
-
-    .locations-grid {
+    .cards-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin-top: 12px;
+      gap: 10px;
     }
-
-    @media (max-width: 720px) {
-      .locations-grid { grid-template-columns: repeat(2, 1fr); }
-    }
-
-    .loc-tile {
-      background: var(--bg-elevated);
-      border: 1px solid var(--border);
+    .clue-card {
+      background: var(--cream);
+      color: #2b0912;
       border-radius: 12px;
+      border: 2px solid #b45309;
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      transition: transform 0.15s ease, border-color 0.15s ease;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
     }
-
-    .loc-tile.active-body {
-      border-color: var(--accent-red);
-      box-shadow: 0 0 0 2px rgba(230, 57, 70, 0.5);
-      background: rgba(230, 57, 70, 0.12);
+    .clue-card-type {
+      background: #7c2d12;
+      color: #fde68a;
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 3px;
+      letter-spacing: 0.5px;
     }
-
-    .loc-tile.visited {
-      border-color: var(--accent-teal);
-    }
-
-    .loc-thumb {
-      width: 100%;
-      height: 102px;
-      background: #0d121c;
+    .clue-card-art {
+      aspect-ratio: 1 / 1;
+      background: #fef3c7;
       display: flex;
       align-items: center;
       justify-content: center;
       position: relative;
       overflow: hidden;
-      border-bottom: 1px solid var(--border);
     }
-
-    .loc-thumb img {
+    .clue-card-art img {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
-
-    .loc-thumb-placeholder {
-      font-size: 0.78rem;
-      color: var(--text-muted);
-      text-align: center;
-      padding: 8px;
-    }
-
-    .loc-body {
-      padding: 10px 12px;
-    }
-
-    .players-list {
-      display: grid;
-      grid-template-columns: repeat(1, 1fr);
-      gap: 10px;
-      margin-top: 10px;
-    }
-
-    .player-pill {
-      background: var(--bg-elevated);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 10px 12px;
+    .clue-card-emoji {
+      font-size: 2.3rem;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      gap: 10px;
-      font-size: 0.92rem;
-    }
-
-    .player-pill.winner-pill {
-      border-color: var(--accent-gold);
-      background: linear-gradient(135deg, rgba(244, 162, 97, 0.24), rgba(230, 57, 70, 0.14));
-      box-shadow: 0 0 18px rgba(244, 162, 97, 0.25);
-    }
-
-    button {
-      background: var(--accent-red);
-      color: #fff;
-      border: none;
-      border-radius: 10px;
-      padding: 10px 16px;
-      font-weight: 700;
-      font-size: 0.92rem;
-      cursor: pointer;
-      transition: opacity 0.15s ease, transform 0.1s ease;
-    }
-
-    button:hover { opacity: 0.92; }
-    button:active { transform: scale(0.98); }
-    button:disabled { opacity: 0.45; cursor: not-allowed; }
-
-    button.secondary {
-      background: var(--bg-elevated);
-      color: var(--text-main);
-      border: 1px solid var(--border);
-    }
-
-    button.gold {
-      background: var(--accent-gold);
-      color: #111;
-    }
-
-    button.teal {
-      background: var(--accent-teal);
-      color: #fff;
-    }
-
-    button.small {
-      padding: 6px 10px;
-      font-size: 0.82rem;
-      border-radius: 8px;
-    }
-
-    input, select, textarea {
+      justify-content: center;
       width: 100%;
-      padding: 10px 12px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: var(--bg-elevated);
-      color: var(--text-main);
-      font-size: 0.95rem;
-      margin-bottom: 10px;
-      font-family: inherit;
+      height: 100%;
+    }
+    .clue-card-title {
+      padding: 6px 4px;
+      font-weight: 800;
+      font-size: 0.78rem;
+      line-height: 1.15;
     }
 
-    .checklist-item {
+    .sheet-section { margin-bottom: 12px; }
+    .sheet-section h4 {
+      margin: 0 0 6px;
+      color: var(--gold-light);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 3px;
+    }
+    .sheet-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 8px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.04);
+      margin-bottom: 4px;
+      font-size: 0.88rem;
+      cursor: pointer;
+    }
+    .sheet-row:hover { background: rgba(255,255,255,0.09); }
+    .sheet-row.own-card {
+      background: rgba(34, 197, 94, 0.16);
+      border: 1px solid rgba(34, 197, 94, 0.4);
+    }
+    .mark-badge {
+      min-width: 78px;
+      text-align: center;
+      padding: 2px 7px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      background: rgba(0,0,0,0.35);
+    }
+    .mark-no { background: rgba(239, 68, 68, 0.25); color: #fca5a5; }
+    .mark-maybe { background: rgba(245, 158, 11, 0.28); color: #fde68a; }
+    .mark-yes { background: rgba(34, 197, 94, 0.35); color: #86efac; }
+
+    .log-list {
+      max-height: 300px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .log-item {
+      padding: 7px 10px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.05);
+      font-size: 0.86rem;
+      border-left: 3px solid var(--gold);
+    }
+    .log-item.win { border-left-color: #22c55e; background: rgba(34, 197, 94, 0.16); }
+    .log-item.fail { border-left-color: #ef4444; background: rgba(239, 68, 68, 0.15); }
+    .log-item.suggest { border-left-color: #60a5fa; }
+
+    .roster-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 8px;
+    }
+    .roster-card {
       display: flex;
       align-items: center;
       gap: 8px;
       padding: 7px 9px;
-      border-radius: 8px;
-      background: var(--bg-elevated);
-      margin-bottom: 6px;
-      font-size: 0.9rem;
-      cursor: pointer;
-    }
-
-    .checklist-item input[type="checkbox"] {
-      width: auto;
-      margin: 0;
-    }
-
-    .clue-banner {
-      background: linear-gradient(135deg, rgba(244, 162, 97, 0.22), rgba(230, 57, 70, 0.22));
-      border: 1px solid var(--accent-gold);
-      border-radius: 14px;
-      padding: 16px;
-      margin-top: 14px;
-    }
-
-    .winner-banner {
-      background: linear-gradient(135deg, rgba(244, 162, 97, 0.3), rgba(230, 57, 70, 0.28));
-      border: 2px solid var(--accent-gold);
-      border-radius: 16px;
-      padding: 20px;
-      margin-top: 16px;
-      box-shadow: 0 0 32px rgba(244, 162, 97, 0.22);
-      animation: popIn 0.45s ease-out;
-    }
-
-    @keyframes popIn {
-      from { opacity: 0; transform: translateY(10px) scale(0.98); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
-    .role-card {
-      background: rgba(244, 162, 97, 0.12);
-      border: 1px solid rgba(244, 162, 97, 0.45);
-      border-radius: 12px;
-      padding: 12px;
-      margin-bottom: 14px;
-    }
-
-    .status-toast {
-      background: rgba(42, 157, 143, 0.22);
-      border: 1px solid var(--accent-teal);
-      color: #a7f3d0;
-      padding: 10px 12px;
       border-radius: 10px;
-      font-size: 0.9rem;
-      margin-bottom: 12px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      font-size: 0.84rem;
+    }
+    .roster-card.current {
+      border-color: var(--accent-green);
+      background: rgba(34, 197, 94, 0.14);
+    }
+    .roster-dot {
+      width: 24px; height: 24px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      border: 1.5px solid white;
+      flex-shrink: 0;
     }
 
-    /* Modal voor Ruimtes & Foto's beheren */
+    .action-box { display: flex; flex-direction: column; gap: 10px; }
+    .dice-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .die {
+      width: 40px; height: 40px;
+      background: white; color: #111;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; font-weight: 900;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.4);
+    }
+    select.game-select {
+      width: 100%;
+      padding: 9px 10px;
+      border-radius: 8px;
+      background: #16050b;
+      color: white;
+      border: 1px solid var(--gold);
+      font-size: 0.95rem;
+    }
+    .form-grid {
+      display: grid;
+      gap: 8px;
+      background: rgba(0,0,0,0.22);
+      padding: 10px;
+      border-radius: 10px;
+    }
+
     .modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(5, 8, 14, 0.82);
-      backdrop-filter: blur(6px);
-      z-index: 1000;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      padding: 24px 16px;
-      overflow-y: auto;
-    }
-
-    .modal-panel {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      max-width: 920px;
-      width: 100%;
-      padding: 22px;
-      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65);
-    }
-
-    .room-editor-row {
-      display: grid;
-      grid-template-columns: 160px 1fr;
-      gap: 14px;
-      background: var(--bg-elevated);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 12px;
-      margin-bottom: 12px;
-      align-items: start;
-    }
-
-    @media (max-width: 640px) {
-      .room-editor-row { grid-template-columns: 1fr; }
-    }
-
-    .room-editor-preview {
-      width: 100%;
-      height: 112px;
-      border-radius: 10px;
-      background: #0d121c;
-      border: 1px dashed rgba(255, 255, 255, 0.2);
+      background: rgba(0,0,0,0.75);
       display: flex;
       align-items: center;
       justify-content: center;
-      overflow: hidden;
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      text-align: center;
-      padding: 6px;
+      padding: 16px;
+      z-index: 100;
     }
-
-    .room-editor-preview img {
+    .modal-card {
+      background: var(--bg-card);
+      border: 2px solid var(--gold);
+      border-radius: 18px;
+      padding: 20px;
+      max-width: 460px;
       width: 100%;
-      height: 100%;
-      object-fit: cover;
+      max-height: 90vh;
+      overflow-y: auto;
     }
-
-    .muted { color: var(--text-muted); font-size: 0.88rem; }
-    .controls { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; align-items: center; }
-    #qrcode { background: #fff; padding: 8px; border-radius: 10px; display: inline-block; flex-shrink: 0; }
     .hidden { display: none !important; }
+    .small-muted { font-size: 0.8rem; color: var(--text-muted); }
+
+    #confetti-canvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 200;
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <div class="brand">
-        <span class="badge" id="brand-badge">CSI: Pakjesavond</span>
-        <h1>Het Lijk in Huis</h1>
+  <canvas id="confetti-canvas" class="hidden"></canvas>
+
+  <div id="login-screen">
+    <div class="hero-badge">🎁 Sinterklaas Surprise Editie — 7 Spelers</div>
+    <h1 style="margin: 6px 0; color: var(--gold-light);">🔍 Sinterklaas Cluedo</h1>
+    <p class="small-muted" style="font-size:0.95rem;">
+      De Grote Zak met Cadeaus is verdwenen! Elk van de 7 gasten krijgt een eigen beroep, geheime kaarten en een digitaal detectiveblad.
+    </p>
+
+    <div class="login-box">
+      <label for="player-name-input" style="font-weight:700;">Wat is jouw voornaam?</label>
+      <input id="player-name-input" type="text" placeholder="Bijv. Lisa, Bram, Sophie..." maxlength="18" />
+      <button id="btn-join-player" class="btn-gold" style="width:100%; font-size:1.05rem;">
+        📱 Meedoen als Speler
+      </button>
+      <p class="small-muted" style="margin:8px 0 0;">
+        Ververs je scherm? Vul precies dezelfde naam in om direct weer bij je eigen rol &amp; kaarten te komen.
+      </p>
+    </div>
+
+    <div class="login-box" style="margin-top:14px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+        <div>
+          <strong style="color:var(--gold-light);">📺 8e Groot Scherm (TV / Laptop)</strong>
+          <div class="small-muted">Toont het hele huis, live bewegingen &amp; spelverloop zonder geheime kaarten te verklappen.</div>
+        </div>
+        <button id="btn-join-tv" class="btn-ghost" style="border-color:var(--gold); color:var(--gold-light);">
+          Open Groot Scherm
+        </button>
       </div>
-      <div class="controls" style="margin-top:0;">
-        <span id="mode-indicator" class="badge badge-gold" style="cursor:pointer;">TV Hoofdscherm</span>
-        <button id="btn-switch-view" class="secondary hidden">Bekijk TV Scherm</button>
-        <button id="btn-manage-rooms" class="teal hidden">📷 Ruimtes &amp; Foto's</button>
-        <button id="btn-next-round" class="gold hidden">Volgende Ronde / Verplaats Lijk</button>
-        <button id="btn-finale" class="primary hidden">🏆 Ontknoping (Einde Spel)</button>
-        <button id="btn-reset" class="secondary hidden">Reset Spel</button>
+    </div>
+
+    <div style="margin-top:18px; display:flex; justify-content:center; gap:10px; flex-wrap:wrap;">
+      <button id="btn-open-admin-login" class="btn-ghost">⚙️ Spelleider / Nieuw Spel</button>
+    </div>
+    <div id="login-status" class="small-muted" style="margin-top:10px;"></div>
+  </div>
+
+  <div id="app-screen" class="hidden">
+    <header class="topbar">
+      <div class="topbar-left">
+        <strong style="color:var(--gold-light);">🔍 Sinterklaas Cluedo</strong>
+        <span id="header-identity" class="role-pill"></span>
+      </div>
+      <div style="display:flex; gap:8px; align-items:center;">
+        <button id="btn-open-admin" class="btn-ghost" title="Beheer">⚙️</button>
+        <button id="btn-logout" class="btn-ghost">Uitloggen</button>
       </div>
     </header>
 
-    <main id="app-root"></main>
+    <div id="main-layout" class="main-layout">
+      <div class="panel">
+        <div id="turn-banner" class="turn-banner"></div>
+        <div id="vip-hint-box" class="vip-hint-box hidden"></div>
+        <div id="player-action-box" class="action-box hidden" style="margin-bottom:12px;"></div>
+
+        <div class="board-wrapper">
+          <div id="board-grid" class="board-grid"></div>
+        </div>
+        <div class="small-muted" style="margin-top:6px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:6px;">
+          <span>🟩 Groene streepjes = Deur | 🕳️ Geheime gangen verbinden de hoeken diagonaal</span>
+          <span id="board-legend-hint"></span>
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:12px;">
+        <div id="status-side-panel" class="panel hidden"></div>
+
+        <div id="player-side-panel" class="panel hidden">
+          <div class="tabs">
+            <button class="tab-btn active" data-tab="cards">🃏 Mijn 3 Kaarten</button>
+            <button class="tab-btn" data-tab="notes">📝 Detectiveblad</button>
+            <button class="tab-btn" data-tab="logs">📜 Spelverloop</button>
+          </div>
+          <div id="tab-cards"></div>
+          <div id="tab-notes" class="hidden"></div>
+          <div id="tab-logs" class="hidden"></div>
+        </div>
+
+        <div class="panel">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <strong style="color:var(--gold-light);">🎭 De 7 Spelers</strong>
+            <span id="joined-count" class="small-muted"></span>
+          </div>
+          <div id="roster-grid" class="roster-grid"></div>
+        </div>
+
+        <div id="tv-log-panel" class="panel hidden">
+          <strong style="color:var(--gold-light); display:block; margin-bottom:8px;">📜 Live Spelverloop</strong>
+          <div id="tv-log-list" class="log-list"></div>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <!-- Modal wordt buiten #app-root gerenderd zodat live updates hem niet sluiten -->
-  <div id="rooms-modal-root"></div>
+  <!-- ADMIN MODAL -->
+  <div id="admin-modal" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <h3 style="margin:0; color:var(--gold-light);">⚙️ Spelleider Beheer</h3>
+        <button id="btn-close-admin" class="btn-ghost">Sluiten</button>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <button id="btn-admin-start" class="btn-green">▶️ Spel Starten (ook met minder dan 7)</button>
+        <button id="btn-admin-newgame" class="btn-red">🔄 Nieuw Spel Genereren (Schud alles opnieuw)</button>
+
+        <div style="border-top:1px solid var(--border); padding-top:10px;">
+          <strong class="small-muted">Spelers loskoppelen (bij typfout naam):</strong>
+          <div id="admin-seats-list" style="margin-top:8px; display:flex; flex-direction:column; gap:6px;"></div>
+        </div>
+
+        <div style="border-top:1px solid var(--border); padding-top:10px;">
+          <button id="btn-unlock-sint" class="btn-ghost" style="width:100%; border-color:var(--gold); color:var(--gold-light);">
+            🔐 Sint-Geheim (Alleen voor de Spelleider)
+          </button>
+          <div id="sint-secret-panel" class="hidden" style="margin-top:10px; background:rgba(245,158,11,0.1); padding:10px; border-radius:10px; border:1px solid var(--gold);">
+            <label class="small-muted" style="color:var(--gold-light); font-weight:700;">👑 Voornaam van het Lootje (zij wint altijd):</label>
+            <input id="admin-vip-input" class="modal-input" type="text" placeholder="Bijv. Sophie" style="margin-bottom:8px;" />
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <button id="btn-save-vip" class="btn-gold" style="flex:1;">💾 VIP Opslaan</button>
+              <button id="btn-boost-vip" class="btn-green" style="flex:1;">🚀 Geef nu alle 3 hints</button>
+            </div>
+            <div id="admin-vip-status" class="small-muted" style="margin-top:6px;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACCUSATION MODAL -->
+  <div id="accuse-modal" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <h3 style="margin:0 0 6px; color:var(--gold-light);">⚖️ Officiële Beschuldiging</h3>
+      <p id="accuse-modal-desc" class="small-muted" style="margin:0 0 12px;">
+        Weet je 100% zeker wat er in de Sinterklaas-envelop zit? Let op: als je fout zit, lig je uit het spel (je blijft wel kaarten laten zien)!
+      </p>
+      <div class="form-grid">
+        <div>
+          <label class="small-muted">Wie is de dader?</label>
+          <select id="accuse-suspect" class="game-select"></select>
+        </div>
+        <div>
+          <label class="small-muted">Met welk attribuut?</label>
+          <select id="accuse-attribute" class="game-select"></select>
+        </div>
+        <div>
+          <label class="small-muted">In welke kamer?</label>
+          <select id="accuse-room" class="game-select"></select>
+        </div>
+        <div style="display:flex; gap:8px; margin-top:6px;">
+          <button id="btn-confirm-accuse" class="btn-red" style="flex:1;">Open Envelop!</button>
+          <button id="btn-cancel-accuse" class="btn-ghost">Annuleren</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRIVATE REVEAL / MESSAGE MODAL -->
+  <div id="private-modal" class="modal-backdrop hidden">
+    <div class="modal-card" style="text-align:center;">
+      <h3 id="private-modal-title" style="margin:0 0 10px; color:var(--gold-light);"></h3>
+      <div id="private-modal-body"></div>
+      <button id="btn-close-private" class="btn-gold" style="margin-top:14px; width:100%;">Begrepen!</button>
+    </div>
+  </div>
 
   <script type="module">
-    // =========================================================================
-    // 1. CONFIGURATIE — VUL HIER VOORAF JOUW GEGEVENS IN
-    // =========================================================================
-    const CONFIG = {
-      // Naam van de spelleider: als jij deze naam op je telefoon invult (of ?mode=host opent),
-      // krijg jij op jouw scherm het spelleiderspaneel ÉN doe je zelf ook als speler mee!
-      hostName: "dirkjaap",
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js";
+    import { getDatabase, ref, set, update, onValue, runTransaction } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-database.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-analytics.js";
 
-      // Zet hier vooraf HAAR naam (en eventuele bijnamen) in kleine letters.
-      // Tijdens het hele spel blijft het spannend en voor niemand merkbaar.
-      // Pas bij de Ontknoping aan het eind wint zij gegarandeerd en krijgt zij het cadeau!
-      targetPlayerNames: ["sanne", "san", "sannetje"],
-
-      // Waar ligt het echte cadeau verstopt in huis?
-      giftLocation: "In de witte spoelbak onder de gootsteen in de keuken — verstopt achter de ontstopper!",
-
-      // Doodsoorzaak: verstikking, met het cadeau bij het lijk
-      causeOfDeath: "Acute verstikking — het slachtoffer hield het cadeau nog vast toen de adem stokte.",
-
-      // Spoedmelding bij de ontknoping:
-      finalTwistNote: "FORENSISCHE DOORBRAAK: De beslissende DNA- en vingerafdrukmatch brengt één speurder naar de absolute top!",
-
-      // Vul hier je Firebase Realtime Database gegevens in voor live 8-speler modus op telefoons.
-      // Laat databaseURL leeg ("") om lokaal / op één laptop te draaien.
-      firebase: {
-        apiKey: "",
-        authDomain: "",
-        databaseURL: "",
-        projectId: "",
-        storageBucket: "",
-        messagingSenderId: "",
-        appId: ""
-      }
+    const firebaseConfig = {
+      apiKey: "AIzaSyAHpzoRnkh6OPysUptwoxBDziwqgRUzzOk",
+      authDomain: "sinterklaasavond.firebaseapp.com",
+      databaseURL: "https://sinterklaasavond-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "sinterklaasavond",
+      storageBucket: "sinterklaasavond.firebasestorage.app",
+      messagingSenderId: "154605798802",
+      appId: "1:154605798802:web:a319ebd7e2f70e9587ed4b",
+      measurementId: "G-57K33ZLJB8"
     };
 
-    // Familierollen (willekeurig verdeeld bij inloggen)
-    const FAMILY_ROLES = [
-      { id: "politie", icon: "👮", title: "Politiefunctionaris", tagline: "Ziet overal sporen, verdachten en alibi's" },
-      { id: "ambulance", icon: "🚑", title: "Ambulancebroeder", tagline: "Eerste bij de luchtwegen en reanimatie" },
-      { id: "tandarts", icon: "🦷", title: "Tandarts", tagline: "Expert in gebitsafdrukken en wat er in de mond belandt" },
-      { id: "actrice", icon: "🎭", title: "Actrice", tagline: "Meester in drama, tranen en overtuigende verhalen" },
-      { id: "kleuterjuf", icon: "🎨", title: "Kleuterjuf", tagline: "Weet precies wie er stiekem snoept en liegen wil" },
-      { id: "docent", icon: "📚", title: "Docent", tagline: "Leest tussen de regels door en betrapt elke fout" },
-      { id: "pedagoog", icon: "🧠", title: "Pedagoog", tagline: "Doorziet elk motief en gedragspatroon feilloos" },
-      { id: "hoofdpiet", icon: "🎁", title: "Hoofdpiet", tagline: "Had de pakjeslijst en zak als laatste in handen" }
+    const app = initializeApp(firebaseConfig);
+    try { getAnalytics(app); } catch (e) {}
+    const db = getDatabase(app);
+    const gameRef = ref(db, "cluedoGame");
+    const notesRef = ref(db, "cluedoNotes");
+
+    // 👑 HIER EVENTUEEL ALVAST HAAR VOORNAAM INVULLEN (of tijdens de avond via ⚙️ -> 🔐 Sint-Geheim, code 0512):
+    const DEFAULT_VIP_NAME = "";
+    const SINT_SECRET_PIN = "0512";
+
+    const ROLES = [
+      { id: "actrice", name: "De Actrice", color: "#ef4444", textColor: "#fff", emoji: "🎭", start: { x: 0, y: 9 }, attrId: "theatermasker" },
+      { id: "tandarts", name: "De Tandarts", color: "#e2e8f0", textColor: "#111", emoji: "🦷", start: { x: 0, y: 3 }, attrId: "tandartsboor" },
+      { id: "pedagoog", name: "De Pedagoog", color: "#22c55e", textColor: "#fff", emoji: "📚", start: { x: 4, y: 0 }, attrId: "opvoedboek" },
+      { id: "kleuterjuf", name: "De Kleuterjuf", color: "#eab308", textColor: "#111", emoji: "🖍️", start: { x: 10, y: 0 }, attrId: "knutselschaartje" },
+      { id: "ambulancebroeder", name: "De Ambulancebroeder", color: "#f97316", textColor: "#fff", emoji: "🚑", start: { x: 14, y: 3 }, attrId: "stethoscoop" },
+      { id: "docent", name: "De Docent", color: "#a855f7", textColor: "#fff", emoji: "🎓", start: { x: 4, y: 12 }, attrId: "rode_pen" },
+      { id: "agent", name: "De Agent", color: "#3b82f6", textColor: "#fff", emoji: "👮", start: { x: 10, y: 12 }, attrId: "handboeien" }
     ];
 
-    // Standaard ruimtes in de woning.
-    // TIP: Je kunt foto's heel makkelijk toevoegen via de knop "📷 Ruimtes & Foto's" op het spelleidersscherm,
-    // OF hieronder een URL / bestandsnaam invullen (bijv. image: "fotos/hal.jpg").
-    const DEFAULT_HOUSE_LOCATIONS = [
-      { id: "hal", name: "De Hal", clue: "In de hal bij de kapstok ligt het lijk met het ingepakte cadeau nog half onder de arm.", image: "" },
-      { id: "keuken", name: "De Keuken", clue: "In de keuken bij het aanrecht en de gootsteen — sporen van zoetigheid en een blokkade in de keel.", image: "" },
-      { id: "woonkamer", name: "De Woonkamer", clue: "Tussen de bank en de salontafel in de woonkamer, vlak bij rondslingerend pakpapier.", image: "" },
-      { id: "gang", name: "De Gang / Trapopgang", clue: "Onderaan de trap in de gang, alsof iemand plotseling naar adem hapte.", image: "" },
-      { id: "eethoek", name: "De Eethoek", clue: "Aan de eettafel tussen de kruidnoten en glazen — abrupt gestikt tijdens een hap.", image: "" },
-      { id: "bijkeuken", name: "De Bijkeuken", clue: "In de bijkeuken bij de voorraadplanken en schoonmaakspullen, met het cadeau dichtbij.", image: "" }
+    const ATTRIBUTES = [
+      { id: "tandartsboor", name: "De Tandartsboor", emoji: "⚙️", roleId: "tandarts" },
+      { id: "opvoedboek", name: "Het Opvoedboek", emoji: "📖", roleId: "pedagoog" },
+      { id: "knutselschaartje", name: "Het Knutselschaartje", emoji: "✂️", roleId: "kleuterjuf" },
+      { id: "theatermasker", name: "Het Theatermasker", emoji: "🎭", roleId: "actrice" },
+      { id: "stethoscoop", name: "De Stethoscoop", emoji: "🩺", roleId: "ambulancebroeder" },
+      { id: "rode_pen", name: "De Rode Nakijkpen", emoji: "🖋️", roleId: "docent" },
+      { id: "handboeien", name: "De Handboeien", emoji: "⛓️", roleId: "agent" }
     ];
 
-    // Verstikkingsmiddelen / aanleidingen voor verstikking
-    const CHOKING_CAUSES = [
-      { id: "kruidnoot", name: "Reuze Oud-Hollandse Kruidnoot", detail: "Klemgeschoten in de luchtpijp" },
-      { id: "afdruk", name: "Tandheelkundige Afdrukpasta", detail: "Snel hardend en adembenemend" },
-      { id: "sjaal", name: "Te Strakke Sinterklaassjaal", detail: "Beklemmend gedraaid om de nek" },
-      { id: "marsepein", name: "Dikke Marsepeinen Rol", detail: "Zwaar en onverteerbaar in één hap" }
+    const GRID_COLS = 15;
+    const GRID_ROWS = 13;
+
+    const ROOMS = [
+      {
+        id: "tandartspraktijk", name: "Tandartspraktijk", emoji: "🦷",
+        x1: 0, y1: 0, x2: 3, y2: 2, passageTo: "bureau",
+        doors: [{ hx: 2, hy: 3, rx: 2, ry: 2, side: "b" }, { hx: 4, hy: 1, rx: 3, ry: 1, side: "r" }]
+      },
+      {
+        id: "pakjeskamer", name: "Pakjeskamer", emoji: "🎁",
+        x1: 5, y1: 0, x2: 9, y2: 2, passageTo: null,
+        doors: [{ hx: 4, hy: 2, rx: 5, ry: 2, side: "l" }, { hx: 7, hy: 3, rx: 7, ry: 2, side: "b" }, { hx: 10, hy: 2, rx: 9, ry: 2, side: "r" }]
+      },
+      {
+        id: "klaslokaal", name: "Klaslokaal", emoji: "🏫",
+        x1: 11, y1: 0, x2: 14, y2: 2, passageTo: "theater",
+        doors: [{ hx: 10, hy: 1, rx: 11, ry: 1, side: "l" }, { hx: 12, hy: 3, rx: 12, ry: 2, side: "b" }]
+      },
+      {
+        id: "speelhoek", name: "Kleuterhoek", emoji: "🧸",
+        x1: 0, y1: 4, x2: 3, y2: 5, passageTo: null,
+        doors: [{ hx: 4, hy: 4, rx: 3, ry: 4, side: "r" }, { hx: 2, hy: 6, rx: 2, ry: 5, side: "b" }]
+      },
+      {
+        id: "ehbo", name: "EHBO-post", emoji: "🏥",
+        x1: 0, y1: 7, x2: 3, y2: 8, passageTo: null,
+        doors: [{ hx: 1, hy: 6, rx: 1, ry: 7, side: "t" }, { hx: 4, hy: 7, rx: 3, ry: 7, side: "r" }]
+      },
+      {
+        id: "hal", name: "De Grote Hal", emoji: "🏛️",
+        x1: 6, y1: 5, x2: 8, y2: 7, passageTo: null,
+        doors: [
+          { hx: 7, hy: 4, rx: 7, ry: 5, side: "t" },
+          { hx: 7, hy: 8, rx: 7, ry: 7, side: "b" },
+          { hx: 5, hy: 6, rx: 6, ry: 6, side: "l" },
+          { hx: 9, hy: 6, rx: 8, ry: 6, side: "r" }
+        ]
+      },
+      {
+        id: "huiskamer", name: "De Huiskamer", emoji: "🔥",
+        x1: 11, y1: 4, x2: 14, y2: 8, passageTo: null,
+        doors: [
+          { hx: 13, hy: 3, rx: 13, ry: 4, side: "t" },
+          { hx: 10, hy: 5, rx: 11, ry: 5, side: "l" },
+          { hx: 10, hy: 7, rx: 11, ry: 7, side: "l" },
+          { hx: 13, hy: 9, rx: 13, ry: 8, side: "b" }
+        ]
+      },
+      {
+        id: "theater", name: "Het Theater", emoji: "🎬",
+        x1: 0, y1: 10, x2: 3, y2: 12, passageTo: "klaslokaal",
+        doors: [{ hx: 2, hy: 9, rx: 2, ry: 10, side: "t" }, { hx: 4, hy: 11, rx: 3, ry: 11, side: "r" }]
+      },
+      {
+        id: "schoorsteen", name: "Schoorsteenkamer", emoji: "🧱",
+        x1: 5, y1: 10, x2: 9, y2: 12, passageTo: null,
+        doors: [{ hx: 4, hy: 10, rx: 5, ry: 10, side: "l" }, { hx: 7, hy: 9, rx: 7, ry: 10, side: "t" }, { hx: 10, hy: 10, rx: 9, ry: 10, side: "r" }]
+      },
+      {
+        id: "bureau", name: "Politiebureau", emoji: "🚓",
+        x1: 11, y1: 10, x2: 14, y2: 12, passageTo: "tandartspraktijk",
+        doors: [{ hx: 12, hy: 9, rx: 12, ry: 10, side: "t" }, { hx: 10, hy: 11, rx: 11, ry: 11, side: "l" }]
+      }
     ];
 
-    const STORAGE_KEY_STATE = "csi_pakjesavond_huis_v2";
-    const STORAGE_KEY_MY_NAME = "csi_pakjesavond_my_name_v2";
-    const STORAGE_KEY_CHECKLIST = "csi_pakjesavond_checklist_v2";
+    const ALL_CARDS = [
+      ...ROLES.map(r => ({ id: r.id, name: r.name, emoji: r.emoji, type: "Verdachte" })),
+      ...ATTRIBUTES.map(a => ({ id: a.id, name: a.name, emoji: a.emoji, type: "Attribuut" })),
+      ...ROOMS.map(rm => ({ id: rm.id, name: rm.name, emoji: rm.emoji, type: "Kamer" }))
+    ];
+    const CARD_MAP = Object.fromEntries(ALL_CARDS.map(c => [c.id, c]));
+    const ROLE_MAP = Object.fromEntries(ROLES.map(r => [r.id, r]));
+    const ROOM_MAP = Object.fromEntries(ROOMS.map(r => [r.id, r]));
 
-    function deepClone(obj) {
-      return JSON.parse(JSON.stringify(obj));
-    }
-
-    function escapeHtml(str) {
-      return String(str ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#39;");
-    }
-
-    function createInitialState(preserveRooms = null) {
-      return {
-        roundIndex: 0,
-        bodyLocationIndex: 0,
-        visitedRoomIndices: [0],
-        phase: "investigating", // "investigating" | "finale"
-        playersMap: {},
-        accusationsMap: {},
-        winnerId: null,
-        revealedLocation: false,
-        secretTargetOverride: "",
-        rooms: preserveRooms && preserveRooms.length > 0 ? preserveRooms : deepClone(DEFAULT_HOUSE_LOCATIONS)
-      };
-    }
-
-    // =========================================================================
-    // 2. STATE, LOKALE OPSLAG & FIREBASE KOPPELING
-    // =========================================================================
-    const urlParams = new URLSearchParams(window.location.search);
-    const initialModeParam = urlParams.get("mode");
-    let viewMode = initialModeParam === "host" ? "host" : initialModeParam === "player" ? "player" : "tv";
-    if (viewMode === "player" && isHostName(getMyPlayerName())) {
-      viewMode = "host";
-    }
-
-    let state = loadLocalState();
-    let dbApi = null;
-    let isRoomsModalOpen = false;
-    let lastSubmitMessage = "";
-
-    function isHostName(name) {
-      return (name || "").trim().toLowerCase() === CONFIG.hostName.trim().toLowerCase();
-    }
-
-    function normalizeState(raw) {
-      const base = createInitialState();
-      if (!raw || typeof raw !== "object") return base;
-      const rooms = Array.isArray(raw.rooms)
-        ? raw.rooms
-        : raw.rooms && typeof raw.rooms === "object"
-          ? Object.values(raw.rooms)
-          : base.rooms;
-      const safeRooms = rooms.length > 0 ? rooms : base.rooms;
-      const visited = Array.isArray(raw.visitedRoomIndices)
-        ? raw.visitedRoomIndices
-        : raw.visitedRoomIndices && typeof raw.visitedRoomIndices === "object"
-          ? Object.values(raw.visitedRoomIndices)
-          : [0];
-      return {
-        ...base,
-        ...raw,
-        rooms: safeRooms,
-        visitedRoomIndices: visited,
-        bodyLocationIndex: Math.min(Number(raw.bodyLocationIndex || 0), safeRooms.length - 1),
-        playersMap: raw.playersMap && typeof raw.playersMap === "object" ? raw.playersMap : {},
-        accusationsMap: raw.accusationsMap && typeof raw.accusationsMap === "object" ? raw.accusationsMap : {}
-      };
-    }
-
-    function loadLocalState() {
-      try {
-        const saved = localStorage.getItem(STORAGE_KEY_STATE);
-        return saved ? normalizeState(JSON.parse(saved)) : createInitialState();
-      } catch {
-        return createInitialState();
-      }
-    }
-
-    function persistLocalState() {
-      try {
-        localStorage.setItem(STORAGE_KEY_STATE, JSON.stringify(state));
-      } catch (err) {
-        alert("Opslagruimte in de browser is bijna vol. Verwijder eventueel een grote foto of gebruik een URL.");
-        console.warn(err);
-      }
-    }
-
-    function getPlayersArray() {
-      return Object.values(state.playersMap || {});
-    }
-
-    function getAccusationsArray() {
-      return Object.values(state.accusationsMap || {}).sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-    }
-
-    function getMyPlayerName() {
-      try {
-        return localStorage.getItem(STORAGE_KEY_MY_NAME) || "";
-      } catch {
-        return "";
-      }
-    }
-
-    function setMyPlayerName(name) {
-      try {
-        if (name) {
-          localStorage.setItem(STORAGE_KEY_MY_NAME, name);
-        } else {
-          localStorage.removeItem(STORAGE_KEY_MY_NAME);
-        }
-      } catch {}
-    }
-
-    function loadChecklist() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY_CHECKLIST);
-        return raw ? JSON.parse(raw) : { roles: {}, rooms: {} };
-      } catch {
-        return { roles: {}, rooms: {} };
-      }
-    }
-
-    function saveChecklist(cl) {
-      try {
-        localStorage.setItem(STORAGE_KEY_CHECKLIST, JSON.stringify(cl));
-      } catch {}
-    }
-
-    async function syncChanges(partialPatch, fullReplace = false) {
-      persistLocalState();
-      if (dbApi) {
-        try {
-          if (fullReplace) {
-            await dbApi.setAll(state);
-          } else {
-            await dbApi.patch(partialPatch);
-          }
-        } catch (err) {
-          console.warn("Firebase synchronisatie mislukt:", err);
+    ROOMS.forEach(rm => {
+      rm.cells = [];
+      for (let y = rm.y1; y <= rm.y2; y++) {
+        for (let x = rm.x1; x <= rm.x2; x++) {
+          rm.cells.push({ x, y });
         }
       }
-      render();
-    }
-
-    async function initDatabase() {
-      // Houd meerdere tabbladen op dezelfde computer synchroon tijdens testen
-      window.addEventListener("storage", (e) => {
-        if (e.key === STORAGE_KEY_STATE && e.newValue) {
-          try {
-            state = normalizeState(JSON.parse(e.newValue));
-            render();
-            if (isRoomsModalOpen) renderRoomsModal();
-          } catch {}
-        }
-      });
-
-      if (!CONFIG.firebase.databaseURL) return;
-      try {
-        const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js");
-        const { getDatabase, ref, set, update, onValue } = await import("https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js");
-        const app = initializeApp(CONFIG.firebase);
-        const db = getDatabase(app);
-        const gameRef = ref(db, "csi_pakjesavond_huis_v2");
-
-        dbApi = {
-          setAll: (val) => set(gameRef, val),
-          patch: (patchObj) => update(gameRef, patchObj)
-        };
-
-        onValue(gameRef, (snapshot) => {
-          const val = snapshot.val();
-          if (val) {
-            state = normalizeState(val);
-            persistLocalState();
-            render();
-            if (isRoomsModalOpen) renderRoomsModal();
-          } else {
-            // Initialiseer database met huidige lokale kamers (indien nog leeg)
-            dbApi.setAll(state);
-          }
-        });
-      } catch (err) {
-        console.warn("Firebase kon niet worden gestart, valt terug op lokale modus:", err);
-      }
-    }
-
-    // =========================================================================
-    // 3. SPELREGELS, RANDOM ROLLEN & MANIPULATIE BIJ DE ONTKNOPING
-    // =========================================================================
-    function makePlayerId(name) {
-      const clean = (name || "").trim().toLowerCase();
-      const hex = Array.from(clean)
-        .map((ch) => ch.charCodeAt(0).toString(16))
-        .join("")
-        .slice(0, 36);
-      return "p_" + (hex || "anon");
-    }
-
-    function isTargetPlayer(name) {
-      const clean = (name || "").trim().toLowerCase();
-      if (!clean) return false;
-      const words = clean.split(/\s+/);
-      const targets = [
-        ...CONFIG.targetPlayerNames.map((n) => n.trim().toLowerCase()),
-        ...(state.secretTargetOverride ? [state.secretTargetOverride.trim().toLowerCase()] : [])
-      ].filter(Boolean);
-      return targets.some((t) => clean === t || words.includes(t));
-    }
-
-    function assignRandomRole(existingPlayers) {
-      const usedRoleIds = new Set(existingPlayers.map((p) => p.roleId));
-      const available = FAMILY_ROLES.filter((r) => !usedRoleIds.has(r.id));
-      const pool = available.length > 0 ? available : FAMILY_ROLES;
-      return pool[Math.floor(Math.random() * pool.length)];
-    }
-
-    // Tijdens de rondes krijgt iedereen geloofwaardige, dicht bij elkaar liggende punten
-    // zodat niemand merkt dat het einde vaststaat.
-    function computeOrganicRoundPoints(name, roundIndex, choiceStr) {
-      const seed = `${name.toLowerCase()}|${roundIndex}|${choiceStr}`;
-      let hash = 0;
-      for (let i = 0; i < seed.length; i++) {
-        hash = (hash * 31 + seed.charCodeAt(i)) % 997;
-      }
-      return 11 + (hash % 7); // 11 t/m 17 punten per ronde
-    }
-
-    function advanceRound() {
-      if (state.phase === "finale") return;
-      const rooms = state.rooms;
-      const nextRound = state.roundIndex + 1;
-      const nextBodyLocation = (state.bodyLocationIndex + 1) % rooms.length;
-      const visitedSet = new Set(state.visitedRoomIndices || [0]);
-      visitedSet.add(nextBodyLocation);
-      const nextVisited = Array.from(visitedSet);
-
-      state = {
-        ...state,
-        roundIndex: nextRound,
-        bodyLocationIndex: nextBodyLocation,
-        visitedRoomIndices: nextVisited
-      };
-
-      syncChanges({
-        roundIndex: nextRound,
-        bodyLocationIndex: nextBodyLocation,
-        visitedRoomIndices: nextVisited
-      });
-    }
-
-    // HIER GEBEURT DE MANIPULATIE PAS AAN HET EINDE:
-    function triggerFinale() {
-      const players = getPlayersArray();
-      if (players.length === 0) {
-        alert("Er hebben nog geen spelers meegedaan! Laat eerst de spelers op hun telefoon inloggen en een verdenking insturen.");
-        return;
-      }
-
-      const updatedPlayersMap = deepClone(state.playersMap);
-      const allList = Object.values(updatedPlayersMap);
-
-      // Zoek de dame in kwestie
-      const target = allList.find((p) => isTargetPlayer(p.name));
-
-      // Geef overige spelers (inclusief dirkjaap) eerst een kleine realistische forensische eindbonus
-      allList.forEach((p, idx) => {
-        if (!target || p.id !== target.id) {
-          const bonus = 4 + ((p.name.length + idx * 3) % 6); // +4 t/m +9
-          p.finalBonus = bonus;
-          p.score = (p.score || 0) + bonus;
-        }
-      });
-
-      const nonTargets = target ? allList.filter((p) => p.id !== target.id) : allList;
-      const maxOtherScore = nonTargets.length > 0
-        ? Math.max(...nonTargets.map((p) => p.score || 0))
-        : 0;
-
-      let winner = null;
-      if (target) {
-        // Zij wint ALTIJD met een overtuigende voorsprong op de hoogste andere score
-        const targetFinalScore = Math.max((target.score || 0) + 18, maxOtherScore + 25);
-        target.finalBonus = targetFinalScore - (target.score || 0);
-        target.score = targetFinalScore;
-        winner = target;
-      } else {
-        // Fallback alleen als haar naam niet voorkomt in targetPlayerNames
-        winner = [...allList].sort((a, b) => (b.score || 0) - (a.score || 0))[0];
-      }
-
-      state = {
-        ...state,
-        playersMap: updatedPlayersMap,
-        winnerId: winner ? winner.id : null,
-        revealedLocation: true,
-        phase: "finale"
-      };
-
-      syncChanges({
-        playersMap: updatedPlayersMap,
-        winnerId: state.winnerId,
-        revealedLocation: true,
-        phase: "finale"
-      });
-    }
-
-    function joinAndSubmitAccusation(playerName, suspectedRoleTitle, suspectedLocationName, suspectedCauseName) {
-      const cleanName = playerName.trim();
-      if (!cleanName) return;
-
-      if (state.phase === "finale") {
-        lastSubmitMessage = "De zaak is al gesloten! Bekijk de ontknoping hieronder.";
-        render();
-        return;
-      }
-
-      setMyPlayerName(cleanName);
-
-      // Als spelleider 'dirkjaap' op het spelersscherm inlogt, krijgt hij ZOWEL
-      // zijn eigen speler/rol/punten ALS toegang tot het Spelleiderspaneel!
-      if (isHostName(cleanName) && viewMode !== "host") {
-        viewMode = "host";
-        const url = new URL(window.location.href);
-        url.searchParams.set("mode", "host");
-        window.history.replaceState({}, "", url);
-      }
-
-      const playerId = makePlayerId(cleanName);
-      const existingPlayers = getPlayersArray();
-      let player = state.playersMap[playerId] ? deepClone(state.playersMap[playerId]) : null;
-
-      if (!player) {
-        const assignedRole = assignRandomRole(existingPlayers);
-        player = {
-          id: playerId,
-          name: cleanName,
-          roleId: assignedRole.id,
-          roleIcon: assignedRole.icon,
-          roleTitle: assignedRole.title,
-          roleTagline: assignedRole.tagline,
-          score: 15,
-          lastScoredRound: -1,
-          finalBonus: 0
-        };
-      } else {
-        player.name = cleanName;
-      }
-
-      // Max 1 keer punten per speler per ronde (bij herindienen in dezelfde ronde blijft score eerlijk)
-      if ((player.lastScoredRound ?? -1) < state.roundIndex) {
-        const pts = computeOrganicRoundPoints(
-          cleanName,
-          state.roundIndex,
-          `${suspectedRoleTitle}|${suspectedLocationName}|${suspectedCauseName}`
-        );
-        player.score = (player.score || 0) + pts;
-        player.lastScoredRound = state.roundIndex;
-      }
-
-      const accId = `r${state.roundIndex}_${playerId}`;
-      const newAccusation = {
-        id: accId,
-        roundIndex: state.roundIndex,
-        playerId,
-        playerName: cleanName,
-        roleTitle: player.roleTitle,
-        suspectedRoleTitle,
-        suspectedLocationName,
-        suspectedCauseName,
-        timestamp: Date.now(),
-        time: new Date().toLocaleTimeString("nl-NL", { hour: "2-digit", minute: "2-digit" })
-      };
-
-      state = {
-        ...state,
-        playersMap: { ...state.playersMap, [playerId]: player },
-        accusationsMap: { ...state.accusationsMap, [accId]: newAccusation }
-      };
-
-      lastSubmitMessage = `Verdenking voor Ronde ${state.roundIndex + 1} opgeslagen!`;
-
-      syncChanges({
-        [`playersMap/${playerId}`]: player,
-        [`accusationsMap/${accId}`]: newAccusation
-      });
-    }
-
-    // =========================================================================
-    // 4. FOTO'S VERKLEINEN & RUIMTES BEHEREN
-    // =========================================================================
-    function resizeImageFile(file, maxDim = 860, quality = 0.72) {
-      return new Promise((resolve, reject) => {
-        const objectUrl = URL.createObjectURL(file);
-        const img = new Image();
-        img.onload = () => {
-          URL.revokeObjectURL(objectUrl);
-          let { width, height } = img;
-          if (width > maxDim || height > maxDim) {
-            if (width > height) {
-              height = Math.round((height * maxDim) / width);
-              width = maxDim;
-            } else {
-              width = Math.round((width * maxDim) / height);
-              height = maxDim;
-            }
-          }
-          const canvas = document.createElement("canvas");
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext("2d");
-          ctx.fillStyle = "#0e131d";
-          ctx.fillRect(0, 0, width, height);
-          ctx.drawImage(img, 0, 0, width, height);
-          resolve(canvas.toDataURL("image/jpeg", quality));
-        };
-        img.onerror = () => {
-          URL.revokeObjectURL(objectUrl);
-          reject(new Error("Afbeelding kon niet worden verwerkt. Gebruik een JPG of PNG foto."));
-        };
-        img.src = objectUrl;
-      });
-    }
-
-    function updateRooms(nextRooms) {
-      const safeIndex = Math.min(state.bodyLocationIndex, Math.max(0, nextRooms.length - 1));
-      state = {
-        ...state,
-        rooms: nextRooms,
-        bodyLocationIndex: safeIndex
-      };
-      syncChanges({
-        rooms: nextRooms,
-        bodyLocationIndex: safeIndex
-      });
-      if (isRoomsModalOpen) renderRoomsModal();
-    }
-
-    function openRoomsModal() {
-      isRoomsModalOpen = true;
-      renderRoomsModal();
-    }
-
-    function closeRoomsModal() {
-      isRoomsModalOpen = false;
-      document.getElementById("rooms-modal-root").innerHTML = "";
-    }
-
-    function renderRoomsModal() {
-      const modalRoot = document.getElementById("rooms-modal-root");
-      if (!isRoomsModalOpen) {
-        modalRoot.innerHTML = "";
-        return;
-      }
-
-      modalRoot.innerHTML = `
-        <div class="modal-backdrop" id="rooms-modal-backdrop">
-          <div class="modal-panel" role="dialog" aria-modal="true" aria-label="Ruimtes en Foto's Beheren">
-            <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:12px;">
-              <div>
-                <span class="badge badge-teal">Woning Inrichten</span>
-                <h2 style="margin-top:6px; margin-bottom:2px;">Ruimtes &amp; Foto's van de Woning</h2>
-                <p class="muted">Upload foto's vanaf je apparaat (ze worden automatisch verkleind en opgeslagen) of vul een URL/bestandsnaam in.</p>
-              </div>
-              <button type="button" id="btn-close-rooms-top" class="secondary">Sluiten ✕</button>
-            </div>
-
-            <div id="rooms-editor-list">
-              ${state.rooms.map((room, idx) => `
-                <div class="room-editor-row" data-room-idx="${idx}">
-                  <div>
-                    <div class="room-editor-preview">
-                      ${room.image
-                        ? `<img src="${escapeHtml(room.image)}" alt="${escapeHtml(room.name)}" onerror="this.parentElement.innerHTML='Foto niet gevonden'" />`
-                        : `<span>Geen foto<br/>ingesteld</span>`}
-                    </div>
-                    <div style="display:flex; flex-direction:column; gap:6px; margin-top:8px;">
-                      <label class="small" style="display:block; text-align:center; background:var(--accent-teal); color:#fff; padding:7px 10px; border-radius:8px; font-weight:700; cursor:pointer; font-size:0.82rem;">
-                        📷 Upload Foto
-                        <input type="file" accept="image/*" class="room-file-input" data-idx="${idx}" style="display:none;" />
-                      </label>
-                      ${room.image ? `<button type="button" class="secondary small btn-clear-photo" data-idx="${idx}">Wis foto</button>` : ""}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label class="muted">Naam van de ruimte</label>
-                    <input type="text" class="room-name-input" data-idx="${idx}" value="${escapeHtml(room.name)}" placeholder="Bijv. De Woonkamer" />
-
-                    <label class="muted">Forensische aanwijzing / tekst</label>
-                    <input type="text" class="room-clue-input" data-idx="${idx}" value="${escapeHtml(room.clue)}" placeholder="Beschrijving van de ruimte..." />
-
-                    <label class="muted">Of plak bestandsnaam / afbeelding-URL</label>
-                    <div style="display:flex; gap:8px; align-items:center;">
-                      <input type="text" class="room-url-input" data-idx="${idx}" value="${room.image && room.image.startsWith("data:") ? "" : escapeHtml(room.image || "")}" placeholder="${room.image && room.image.startsWith("data:") ? "(Geüploade foto actief)" : "Bijv. fotos/keuken.jpg"}" style="margin-bottom:0;" />
-                      ${state.rooms.length > 2 ? `<button type="button" class="secondary small btn-delete-room" data-idx="${idx}" title="Verwijder ruimte">🗑️</button>` : ""}
-                    </div>
-                  </div>
-                </div>
-              `).join("")}
-            </div>
-
-            <div class="card" style="margin-top:16px; background:var(--bg-elevated);">
-              <h3>+ Extra Ruimte Toevoegen</h3>
-              <form id="add-room-form">
-                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap:10px;">
-                  <div>
-                    <label class="muted">Naam ruimte *</label>
-                    <input type="text" id="new-room-name" placeholder="Bijv. De Zolder / De Badkamer" required />
-                  </div>
-                  <div>
-                    <label class="muted">Foto kiezen (optioneel)</label>
-                    <input type="file" id="new-room-file" accept="image/*" style="padding:7px;" />
-                  </div>
-                </div>
-                <label class="muted">Aanwijzing (optioneel)</label>
-                <input type="text" id="new-room-clue" placeholder="Bijv. Op de zolder bij de oude kerstspullen..." />
-                <button type="submit" class="gold">Ruimte Toevoegen</button>
-              </form>
-            </div>
-
-            <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-top:16px; padding-top:14px; border-top:1px solid var(--border);">
-              <button type="button" id="btn-restore-default-rooms" class="secondary small">Herstel standaardruimtes</button>
-              <button type="button" id="btn-close-rooms-bottom" class="teal">Klaar &amp; Opslaan</button>
-            </div>
-          </div>
-        </div>
-      `;
-
-      bindRoomsModalEvents();
-    }
-
-    function bindRoomsModalEvents() {
-      document.getElementById("btn-close-rooms-top")?.addEventListener("click", closeRoomsModal);
-      document.getElementById("btn-close-rooms-bottom")?.addEventListener("click", closeRoomsModal);
-      document.getElementById("rooms-modal-backdrop")?.addEventListener("click", (e) => {
-        if (e.target.id === "rooms-modal-backdrop") closeRoomsModal();
-      });
-
-      document.querySelectorAll(".room-file-input").forEach((input) => {
-        input.addEventListener("change", async (e) => {
-          const idx = Number(input.dataset.idx);
-          const file = e.target.files?.[0];
-          if (!file) return;
-          try {
-            const dataUrl = await resizeImageFile(file);
-            const nextRooms = deepClone(state.rooms);
-            if (nextRooms[idx]) {
-              nextRooms[idx].image = dataUrl;
-              updateRooms(nextRooms);
-            }
-          } catch (err) {
-            alert(err.message || "Kon foto niet laden.");
-          }
-        });
-      });
-
-      document.querySelectorAll(".btn-clear-photo").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          const idx = Number(btn.dataset.idx);
-          const nextRooms = deepClone(state.rooms);
-          if (nextRooms[idx]) {
-            nextRooms[idx].image = "";
-            updateRooms(nextRooms);
-          }
-        });
-      });
-
-      document.querySelectorAll(".btn-delete-room").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          const idx = Number(btn.dataset.idx);
-          if (state.rooms.length <= 2) return;
-          const nextRooms = deepClone(state.rooms);
-          nextRooms.splice(idx, 1);
-          updateRooms(nextRooms);
-        });
-      });
-
-      document.querySelectorAll(".room-name-input").forEach((inp) => {
-        inp.addEventListener("change", () => {
-          const idx = Number(inp.dataset.idx);
-          const val = inp.value.trim();
-          if (!val) return;
-          const nextRooms = deepClone(state.rooms);
-          if (nextRooms[idx]) {
-            nextRooms[idx].name = val;
-            updateRooms(nextRooms);
-          }
-        });
-      });
-
-      document.querySelectorAll(".room-clue-input").forEach((inp) => {
-        inp.addEventListener("change", () => {
-          const idx = Number(inp.dataset.idx);
-          const nextRooms = deepClone(state.rooms);
-          if (nextRooms[idx]) {
-            nextRooms[idx].clue = inp.value.trim();
-            updateRooms(nextRooms);
-          }
-        });
-      });
-
-      document.querySelectorAll(".room-url-input").forEach((inp) => {
-        inp.addEventListener("change", () => {
-          const idx = Number(inp.dataset.idx);
-          const val = inp.value.trim();
-          const nextRooms = deepClone(state.rooms);
-          if (nextRooms[idx] && val) {
-            nextRooms[idx].image = val;
-            updateRooms(nextRooms);
-          }
-        });
-      });
-
-      document.getElementById("add-room-form")?.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const name = document.getElementById("new-room-name").value.trim();
-        if (!name) return;
-        const clueInput = document.getElementById("new-room-clue").value.trim();
-        const fileInput = document.getElementById("new-room-file");
-        const file = fileInput.files?.[0];
-
-        let image = "";
-        if (file) {
-          try {
-            image = await resizeImageFile(file);
-          } catch (err) {
-            alert(err.message || "Foto kon niet worden verwerkt.");
-            return;
-          }
-        }
-
-        const nextRooms = deepClone(state.rooms);
-        nextRooms.push({
-          id: "room_" + Date.now(),
-          name,
-          clue: clueInput || `In ${name} werden sporen aangetroffen vlak bij het ingepakte cadeau.`,
-          image
-        });
-        updateRooms(nextRooms);
-      });
-
-      document.getElementById("btn-restore-default-rooms")?.addEventListener("click", () => {
-        if (confirm("Weet je zeker dat je de standaardruimtes wilt herstellen? Je geüploade foto's verdwijnen dan.")) {
-          updateRooms(deepClone(DEFAULT_HOUSE_LOCATIONS));
-        }
-      });
-    }
-
-    // =========================================================================
-    // 5. WEERGAVE (TV HOOFDSCHERM, SPELLEIDER + SPELER DIRKJAAP & SPELERS)
-    // =========================================================================
-    function switchViewMode(nextMode) {
-      viewMode = nextMode;
-      const url = new URL(window.location.href);
-      if (nextMode === "tv") {
-        url.searchParams.delete("mode");
-      } else {
-        url.searchParams.set("mode", nextMode);
-      }
-      window.history.replaceState({}, "", url);
-      render();
-    }
-
-    function updateHeaderButtons() {
-      const modeBadge = document.getElementById("mode-indicator");
-      const switchBtn = document.getElementById("btn-switch-view");
-      const btnRooms = document.getElementById("btn-manage-rooms");
-      const btnNext = document.getElementById("btn-next-round");
-      const btnFinale = document.getElementById("btn-finale");
-      const btnReset = document.getElementById("btn-reset");
-
-      if (viewMode === "host") {
-        modeBadge.textContent = `Spelleider & Speler: ${CONFIG.hostName}`;
-        switchBtn.textContent = "Bekijk TV Scherm";
-        switchBtn.classList.remove("hidden");
-        btnRooms.classList.remove("hidden");
-        btnNext.classList.remove("hidden");
-        btnFinale.classList.remove("hidden");
-        btnReset.classList.remove("hidden");
-        btnNext.disabled = state.phase === "finale";
-        btnFinale.disabled = state.phase === "finale";
-      } else if (viewMode === "player") {
-        modeBadge.textContent = "Spelersscherm (Mobiel)";
-        switchBtn.classList.add("hidden");
-        btnRooms.classList.add("hidden");
-        btnNext.classList.add("hidden");
-        btnFinale.classList.add("hidden");
-        btnReset.classList.add("hidden");
-      } else {
-        // TV Hoofdscherm: volledig schoon, géén spelleidersknoppen zichtbaar!
-        modeBadge.textContent = state.phase === "finale" ? "TV Hoofdscherm • Ontknoping" : "TV Hoofdscherm";
-        switchBtn.classList.add("hidden");
-        btnRooms.classList.add("hidden");
-        btnNext.classList.add("hidden");
-        btnFinale.classList.add("hidden");
-        btnReset.classList.add("hidden");
-      }
-    }
-
-    function capturePlayerFormDraft() {
-      if (viewMode !== "player" && viewMode !== "host") return null;
-      const nameEl = document.getElementById("player-name-input");
-      if (!nameEl) return null;
-      const activeEl = document.activeElement;
-      return {
-        name: nameEl.value,
-        suspectRole: document.getElementById("suspect-role-select")?.value,
-        location: document.getElementById("location-select")?.value,
-        cause: document.getElementById("cause-select")?.value,
-        activeId: activeEl?.id || null,
-        selStart: activeEl && typeof activeEl.selectionStart === "number" ? activeEl.selectionStart : null,
-        selEnd: activeEl && typeof activeEl.selectionEnd === "number" ? activeEl.selectionEnd : null
-      };
-    }
-
-    function restorePlayerFormDraft(draft) {
-      if (!draft || (viewMode !== "player" && viewMode !== "host")) return;
-      const nameEl = document.getElementById("player-name-input");
-      const roleEl = document.getElementById("suspect-role-select");
-      const locEl = document.getElementById("location-select");
-      const causeEl = document.getElementById("cause-select");
-
-      if (nameEl && draft.name !== undefined) nameEl.value = draft.name;
-      if (roleEl && draft.suspectRole) roleEl.value = draft.suspectRole;
-      if (locEl && draft.location) locEl.value = draft.location;
-      if (causeEl && draft.cause) causeEl.value = draft.cause;
-
-      if (draft.activeId) {
-        const target = document.getElementById(draft.activeId);
-        if (target) {
-          target.focus();
-          if (draft.selStart !== null && typeof target.setSelectionRange === "function") {
-            try {
-              target.setSelectionRange(draft.selStart, draft.selEnd ?? draft.selStart);
-            } catch {}
-          }
-        }
-      }
-    }
-
-    function render() {
-      const root = document.getElementById("app-root");
-      const draft = capturePlayerFormDraft();
-      updateHeaderButtons();
-
-      if (viewMode === "player") {
-        root.innerHTML = renderPlayerView();
-        bindPlayerEvents();
-        restorePlayerFormDraft(draft);
-      } else if (viewMode === "host") {
-        root.innerHTML = renderHostView();
-        bindHostEvents();
-        bindPlayerEvents();
-        restorePlayerFormDraft(draft);
-      } else {
-        root.innerHTML = renderTvView();
-        bindTvEvents();
-      }
-    }
-
-    function renderHostView() {
-      const rooms = state.rooms;
-      const bodyLoc = rooms[state.bodyLocationIndex] || rooms[0];
-      const players = getPlayersArray().sort((a, b) => (b.score || 0) - (a.score || 0));
-      const accusations = getAccusationsArray();
-      const submittedThisRound = new Set(
-        accusations
-          .filter((a) => (a.roundIndex ?? 0) === state.roundIndex)
-          .map((a) => a.playerId)
-      ).size;
-      const isFinale = state.phase === "finale";
-      const winner = players.find((p) => p.id === state.winnerId) || null;
-      const activeTargets = state.secretTargetOverride || CONFIG.targetPlayerNames.join(", ");
-
-      return `
-        <section class="card host-panel">
-          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-            <div>
-              <span class="badge badge-teal">Spelleidersregie • ${escapeHtml(CONFIG.hostName)}</span>
-              <span class="muted" style="margin-left:8px;">
-                Ronde ${state.roundIndex + 1} (${escapeHtml(bodyLoc.name)}) • <strong>${submittedThisRound} / ${players.length}</strong> spelers ingestuurd
-              </span>
-            </div>
-            <button type="button" id="btn-host-logout" class="secondary small">Verlaat Spelleidersmodus</button>
-          </div>
-
-          <div class="controls">
-            <button type="button" id="host-btn-next" class="gold" ${isFinale ? "disabled" : ""}>Volgende Ronde / Verplaats Lijk</button>
-            <button type="button" id="host-btn-finale" class="primary" ${isFinale ? "disabled" : ""}>🏆 Ontknoping (Einde Spel)</button>
-            <button type="button" id="host-btn-rooms" class="teal">📷 Ruimtes &amp; Foto's</button>
-            <button type="button" id="host-btn-reset" class="secondary">Reset Spel</button>
-          </div>
-
-          <div class="clue-banner" style="margin-top:12px; padding:12px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
-              <strong style="color:var(--accent-gold);">Spiekbriefje Spelleider (niet zichtbaar op TV)</strong>
-              <button type="button" id="btn-host-edit-target" class="secondary small">Wijzig winnares-naam</button>
-            </div>
-            <p class="muted" style="margin-top:4px; color:#f8f9fa;">
-              <strong>Wint bij Ontknoping:</strong> ${escapeHtml(activeTargets)} •
-              <strong>Cadeau ligt:</strong> ${escapeHtml(CONFIG.giftLocation)}
-              ${isFinale && winner ? ` • <strong style="color:var(--accent-gold);">Winnaar: ${escapeHtml(winner.name)}</strong>` : ""}
-            </p>
-          </div>
-        </section>
-
-        <!-- Daaronder speel je zelf gewoon mee als deelnemer met jouw eigen toegewezen rol! -->
-        ${renderPlayerView()}
-      `;
-    }
-
-    function renderTvView() {
-      const rooms = state.rooms;
-      const bodyLoc = rooms[state.bodyLocationIndex] || rooms[0];
-      const players = getPlayersArray().sort((a, b) => (b.score || 0) - (a.score || 0));
-      const accusations = getAccusationsArray().slice(0, 10);
-      const visitedSet = new Set(state.visitedRoomIndices || [0]);
-      const isFinale = state.phase === "finale";
-      const winner = players.find((p) => p.id === state.winnerId) || null;
-      const isFileProtocol = window.location.protocol === "file:";
-
-      return `
-        <div class="grid-tv">
-          <section class="card">
-            <div class="scene-box">
-              ${bodyLoc.image ? `
-                <img class="scene-photo" src="${escapeHtml(bodyLoc.image)}" alt="${escapeHtml(bodyLoc.name)}" onerror="this.style.display='none'" />
-              ` : ""}
-              <div class="scene-scrim"></div>
-
-              <div class="scene-hud">
-                <span class="hud-tag">● REC • PLAATS DELICT: ${escapeHtml(bodyLoc.name).toUpperCase()}</span>
-                <span class="hud-tag">RONDE ${state.roundIndex + 1}</span>
-              </div>
-
-              <div class="scene-content">
-                <span class="badge">${isFinale ? "Zaak Afgerond" : `Ronde ${state.roundIndex + 1} — Lijk gespot in: ${escapeHtml(bodyLoc.name)}`}</span>
-                <h2 style="margin-top:8px;">Het lijk ligt nu in ${escapeHtml(bodyLoc.name)} — met het cadeau erbij!</h2>
-                <p class="muted">${escapeHtml(bodyLoc.clue)}</p>
-                <p class="muted" style="margin-top:6px; color:#ffd166;">Doodsoorzaak: ${escapeHtml(CONFIG.causeOfDeath)}</p>
-              </div>
-            </div>
-
-            ${isFinale && winner ? `
-              <div class="winner-banner">
-                <span class="badge badge-gold">🏆 Ontknoping &amp; Einduitslag</span>
-                <h2 style="margin-top:10px; font-size:1.55rem; color:#fff;">
-                  Winnaar van vanavond: ${escapeHtml(winner.name)} (${escapeHtml(winner.roleIcon || "")} ${escapeHtml(winner.roleTitle)}) — ${winner.score} pt!
-                </h2>
-                <p style="margin-top:6px;">${escapeHtml(CONFIG.finalTwistNote)}</p>
-                <div style="margin-top:14px; padding:14px; border-radius:12px; background:rgba(12,15,23,0.72); border:1px solid var(--accent-gold);">
-                  <div class="muted" style="text-transform:uppercase; letter-spacing:0.06em; font-size:0.78rem;">🎁 Cadeau ontgrendeld voor ${escapeHtml(winner.name)} — Verstopplek:</div>
-                  <div style="font-size:1.18rem; font-weight:800; color:var(--accent-gold); margin-top:4px;">
-                    ${escapeHtml(CONFIG.giftLocation)}
-                  </div>
-                </div>
-              </div>
-            ` : `
-              <div class="clue-banner">
-                <h3>Onderzoek Loopt — Actieve Aanwijzing</h3>
-                <p>Alle spelers onderzoeken de ruimtes en sturen hun verdenkingen in. Pas bij de <strong>Ontknoping</strong> aan het eind wordt duidelijk wie de zaak kraakt en het cadeau krijgt!</p>
-              </div>
-            `}
-
-            <h3 style="margin-top:18px;">Ruimtes in de Woning (${rooms.length})</h3>
-            <div class="locations-grid">
-              ${rooms.map((loc, idx) => {
-                const isBodyHere = idx === state.bodyLocationIndex;
-                const isVisited = visitedSet.has(idx);
-                const cls = isBodyHere ? "loc-tile active-body" : isVisited ? "loc-tile visited" : "loc-tile";
-                return `
-                  <div class="${cls}">
-                    <div class="loc-thumb">
-                      ${loc.image
-                        ? `<img src="${escapeHtml(loc.image)}" alt="${escapeHtml(loc.name)}" onerror="this.parentElement.innerHTML='<span class=\\'loc-thumb-placeholder\\'>Foto niet geladen</span>'" />`
-                        : `<span class="loc-thumb-placeholder">📷 Nog geen foto</span>`}
-                    </div>
-                    <div class="loc-body">
-                      <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
-                        <strong style="font-size:0.92rem;">${escapeHtml(loc.name)}</strong>
-                        ${isBodyHere
-                          ? `<span class="badge" style="font-size:0.64rem; padding:2px 7px;">Lijk hier</span>`
-                          : isVisited
-                            ? `<span class="badge badge-teal" style="font-size:0.64rem; padding:2px 7px;">Geweest</span>`
-                            : `<span class="muted" style="font-size:0.74rem;">Open</span>`}
-                      </div>
-                      <p class="muted" style="margin-top:4px; font-size:0.8rem;">${escapeHtml(loc.clue)}</p>
-                    </div>
-                  </div>
-                `;
-              }).join("")}
-            </div>
-          </section>
-
-          <aside style="display:flex; flex-direction:column; gap:16px;">
-            <div class="card">
-              <h3>${isFinale ? "Eindstand &amp; Meesterdetectives" : `Spelers &amp; Rollen (${players.length})`}</h3>
-              ${players.length === 0 ? `<p class="muted">Nog niemand ingelogd. Scan de QR-code op de telefoons om mee te spelen!</p>` : `
-                <div class="players-list">
-                  ${players.map((p, idx) => {
-                    const isWinner = isFinale && winner && p.id === winner.id;
-                    return `
-                      <div class="player-pill ${isWinner ? "winner-pill" : ""}">
-                        <div>
-                          <strong>${isWinner ? "🏆 " : `${idx + 1}. `}${escapeHtml(p.name)}</strong>
-                          <div class="muted">Rol: <span style="color:var(--accent-gold); font-weight:600;">${escapeHtml(p.roleIcon || "")} ${escapeHtml(p.roleTitle)}</span></div>
-                          ${isFinale && p.finalBonus ? `<div class="muted" style="font-size:0.78rem; color:#6ee7d8;">+${p.finalBonus} pt forensische eindbonus</div>` : ""}
-                        </div>
-                        <strong>${p.score} pt</strong>
-                      </div>
-                    `;
-                  }).join("")}
-                </div>
-              `}
-            </div>
-
-            <div class="card">
-              <h3>Laatste Verdenkingen</h3>
-              ${accusations.length === 0 ? `<p class="muted">Nog geen verdenkingen ingediend.</p>` : `
-                <ul style="list-style:none; display:flex; flex-direction:column; gap:8px;">
-                  ${accusations.map((a) => `
-                    <li class="player-pill" style="align-items:flex-start;">
-                      <span style="font-size:0.86rem;">
-                        <strong>${escapeHtml(a.playerName)}</strong> (<em>${escapeHtml(a.roleTitle)}</em>) verdenkt
-                        <em>${escapeHtml(a.suspectedRoleTitle)}</em> in <em>${escapeHtml(a.suspectedLocationName)}</em>
-                        met <em>${escapeHtml(a.suspectedCauseName)}</em>
-                      </span>
-                      <span class="muted" style="flex-shrink:0;">R${(a.roundIndex ?? 0) + 1} • ${escapeHtml(a.time)}</span>
-                    </li>
-                  `).join("")}
-                </ul>
-              `}
-            </div>
-
-            <div class="card" style="display:flex; align-items:center; gap:14px;">
-              <div id="qrcode"></div>
-              <div>
-                <h3>Doe mee op je telefoon</h3>
-                <p class="muted">Scan de QR-code of open deze pagina met <code>?mode=player</code> op je smartphone om mee te speuren.</p>
-                ${isFileProtocol ? `<p class="muted" style="margin-top:6px; color:#ffd166; font-size:0.78rem;">Let op: je opent dit bestand lokaal (<code>file://</code>). Zet het bestand online + vul Firebase in zodat andere telefoons kunnen verbinden.</p>` : ""}
-              </div>
-            </div>
-          </aside>
-        </div>
-      `;
-    }
-
-    function renderPlayerView() {
-      const rooms = state.rooms;
-      const bodyLoc = rooms[state.bodyLocationIndex] || rooms[0];
-      const mySavedName = getMyPlayerName() || (viewMode === "host" ? CONFIG.hostName : "");
-      const myPlayer = mySavedName ? state.playersMap[makePlayerId(mySavedName)] : null;
-      const isFinale = state.phase === "finale";
-      const players = getPlayersArray().sort((a, b) => (b.score || 0) - (a.score || 0));
-      const winner = players.find((p) => p.id === state.winnerId) || null;
-      const iAmWinner = Boolean(isFinale && winner && myPlayer && winner.id === myPlayer.id);
-      const checklist = loadChecklist();
-
-      return `
-        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap:18px;">
-          <section class="card">
-            <div class="player-room-preview">
-              ${bodyLoc.image ? `<img src="${escapeHtml(bodyLoc.image)}" alt="${escapeHtml(bodyLoc.name)}" onerror="this.style.display='none'" />` : ""}
-              <div class="player-room-caption">
-                <span class="badge badge-gold">Ronde ${state.roundIndex + 1} • Lijk nu in: ${escapeHtml(bodyLoc.name)}</span>
-                <p class="muted" style="margin-top:6px; color:#f1f5f9;">${escapeHtml(bodyLoc.clue)}</p>
-              </div>
-            </div>
-
-            ${isFinale && winner ? `
-              <div class="winner-banner" style="margin-top:0; margin-bottom:14px;">
-                ${iAmWinner ? `
-                  <span class="badge badge-gold">🎉 JIJ HEBT GEWONNEN!</span>
-                  <h2 style="margin-top:8px;">Gefeliciteerd ${escapeHtml(winner.name)}!</h2>
-                  <p>Jouw forensische analyse gaf de doorslag — het cadeau is voor jou!</p>
-                ` : `
-                  <span class="badge badge-gold">🏆 Ontknoping Bekend!</span>
-                  <h2 style="margin-top:8px;">${escapeHtml(winner.name)} wint het cadeau!</h2>
-                  <p>Met ${winner.score} punten pakt ${escapeHtml(winner.name)} (${escapeHtml(winner.roleTitle)}) de winst!</p>
-                `}
-                <div style="margin-top:10px; padding:12px; border-radius:10px; background:rgba(12,15,23,0.75); border:1px solid var(--accent-gold);">
-                  <div class="muted" style="font-size:0.78rem;">🎁 VERSTOPPLEK CADEAU:</div>
-                  <div style="font-weight:800; color:var(--accent-gold); margin-top:3px;">${escapeHtml(CONFIG.giftLocation)}</div>
-                </div>
-              </div>
-            ` : ""}
-
-            ${myPlayer ? `
-              <div class="role-card">
-                <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
-                  <span class="badge badge-teal">Jouw Random Rol</span>
-                  ${viewMode === "player" ? `<button type="button" id="btn-switch-player-name" class="secondary small">Wissel naam</button>` : ""}
-                </div>
-                <h3 style="margin-top:8px; font-size:1.12rem;">${escapeHtml(myPlayer.roleIcon || "")} ${escapeHtml(myPlayer.roleTitle)}</h3>
-                <p class="muted">${escapeHtml(myPlayer.roleTagline)} • Huidige score: <strong>${myPlayer.score} pt</strong></p>
-              </div>
-            ` : `
-              <h2>Doe Mee &amp; Dien je Verdenking In</h2>
-              <p class="muted" style="margin-bottom:12px;">Vul je naam in en verstuur om willekeurig jouw geheime familierol te ontvangen!</p>
-            `}
-
-            ${lastSubmitMessage ? `<div class="status-toast">${escapeHtml(lastSubmitMessage)}</div>` : ""}
-
-            <form id="accusation-form">
-              <label class="muted">Jouw naam</label>
-              <input type="text" id="player-name-input" value="${escapeHtml(mySavedName)}" placeholder="Vul je voornaam in" required />
-
-              <label class="muted">Welke rol verdenk je?</label>
-              <select id="suspect-role-select">
-                ${FAMILY_ROLES.map((r) => `<option value="${escapeHtml(r.title)}">${escapeHtml(r.icon)} ${escapeHtml(r.title)}</option>`).join("")}
-              </select>
-
-              <label class="muted">Waar in de woning sloeg de dader toe?</label>
-              <select id="location-select">
-                ${rooms.map((l) => `<option value="${escapeHtml(l.name)}">${escapeHtml(l.name)}</option>`).join("")}
-              </select>
-
-              <label class="muted">Waardoor is verstikking ontstaan?</label>
-              <select id="cause-select">
-                ${CHOKING_CAUSES.map((c) => `<option value="${escapeHtml(c.name)}">${escapeHtml(c.name)}</option>`).join("")}
-              </select>
-
-              <button type="submit" style="width:100%;" ${isFinale ? "disabled" : ""}>
-                ${isFinale ? "Zaak is gesloten" : `Verstuur Verdenking (Ronde ${state.roundIndex + 1})`}
-              </button>
-            </form>
-          </section>
-
-          <section class="card">
-            <h2>Cluedo-Checklist (Rollen &amp; Ruimtes)</h2>
-            <p class="muted" style="margin-bottom:10px;">Streep af wat je op basis van aanwijzingen wilt uitsluiten (blijft bewaard op jouw telefoon).</p>
-
-            <h3>Familierollen</h3>
-            ${FAMILY_ROLES.map((r) => `
-              <label class="checklist-item">
-                <input type="checkbox" class="cl-check" data-group="roles" data-key="${escapeHtml(r.id)}" ${checklist.roles?.[r.id] ? "checked" : ""} />
-                <span><strong>${escapeHtml(r.icon)} ${escapeHtml(r.title)}</strong> — <span class="muted">${escapeHtml(r.tagline)}</span></span>
-              </label>
-            `).join("")}
-
-            <h3 style="margin-top:12px;">Ruimtes in Huis</h3>
-            ${rooms.map((l) => `
-              <label class="checklist-item">
-                <input type="checkbox" class="cl-check" data-group="rooms" data-key="${escapeHtml(l.id)}" ${checklist.rooms?.[l.id] ? "checked" : ""} />
-                <span><strong>${escapeHtml(l.name)}</strong></span>
-              </label>
-            `).join("")}
-          </section>
-        </div>
-      `;
-    }
-
-    function bindTvEvents() {
-      const qrEl = document.getElementById("qrcode");
-      if (qrEl && typeof QRCode !== "undefined") {
-        qrEl.innerHTML = "";
-        const playerUrl = new URL(window.location.href);
-        playerUrl.searchParams.set("mode", "player");
-        new QRCode(qrEl, {
-          text: playerUrl.toString(),
-          width: 96,
-          height: 96
-        });
-      }
-    }
-
-    function bindHostEvents() {
-      document.getElementById("host-btn-next")?.addEventListener("click", advanceRound);
-      document.getElementById("host-btn-finale")?.addEventListener("click", triggerFinale);
-      document.getElementById("host-btn-rooms")?.addEventListener("click", openRoomsModal);
-      document.getElementById("host-btn-reset")?.addEventListener("click", resetGame);
-
-      document.getElementById("btn-host-logout")?.addEventListener("click", () => {
-        setMyPlayerName("");
-        switchViewMode("player");
-      });
-
-      document.getElementById("btn-host-edit-target")?.addEventListener("click", () => {
-        const current = state.secretTargetOverride || CONFIG.targetPlayerNames.join(", ");
-        const input = prompt("Welke voornaam moet bij de Ontknoping winnen?", current);
-        if (input !== null) {
-          state.secretTargetOverride = input.trim();
-          syncChanges({ secretTargetOverride: state.secretTargetOverride });
-        }
-      });
-    }
-
-    function bindPlayerEvents() {
-      const form = document.getElementById("accusation-form");
-      if (form) {
-        form.addEventListener("submit", (e) => {
-          e.preventDefault();
-          const name = document.getElementById("player-name-input").value;
-          const roleTitle = document.getElementById("suspect-role-select").value;
-          const locName = document.getElementById("location-select").value;
-          const causeName = document.getElementById("cause-select").value;
-          joinAndSubmitAccusation(name, roleTitle, locName, causeName);
-        });
-      }
-
-      document.getElementById("btn-switch-player-name")?.addEventListener("click", () => {
-        setMyPlayerName("");
-        lastSubmitMessage = "";
-        render();
-        document.getElementById("player-name-input")?.focus();
-      });
-
-      document.querySelectorAll(".cl-check").forEach((cb) => {
-        cb.addEventListener("change", () => {
-          const cl = loadChecklist();
-          const group = cb.dataset.group;
-          const key = cb.dataset.key;
-          if (!cl[group]) cl[group] = {};
-          cl[group][key] = cb.checked;
-          saveChecklist(cl);
-        });
-      });
-    }
-
-    function resetGame() {
-      if (!confirm("Spel resetten naar Ronde 1? (Jouw toegevoegde ruimtes & foto's blijven gewoon bewaard!)")) return;
-      const preservedRooms = deepClone(state.rooms);
-      lastSubmitMessage = "";
-      state = createInitialState(preservedRooms);
-      syncChanges(null, true);
-    }
-
-    // =========================================================================
-    // 6. ALGEMENE KNOPPEN
-    // =========================================================================
-    document.getElementById("btn-switch-view").addEventListener("click", () => {
-      switchViewMode(viewMode === "host" ? "tv" : "host");
     });
 
-    document.getElementById("btn-manage-rooms").addEventListener("click", openRoomsModal);
-    document.getElementById("btn-next-round").addEventListener("click", advanceRound);
-    document.getElementById("btn-finale").addEventListener("click", triggerFinale);
-    document.getElementById("btn-reset").addEventListener("click", resetGame);
+    function getRoomAt(x, y) {
+      return ROOMS.find(r => x >= r.x1 && x <= r.x2 && y >= r.y1 && y <= r.y2) || null;
+    }
 
-    // Snelkoppeling vanaf TV-scherm naar Spelleidersscherm (voor voorbereiding op laptop)
-    document.getElementById("mode-indicator").addEventListener("click", () => {
-      if (viewMode === "tv") {
-        if (isHostName(getMyPlayerName())) {
-          switchViewMode("host");
+    let gameState = null;
+    let allNotes = {};
+    let clientMode = localStorage.getItem("cluedo_mode") || null;
+    let myPlayerName = localStorage.getItem("cluedo_name") || "";
+    let mySeatIndex = null;
+    let activeTab = "cards";
+    let lastAnimatedMoveId = null;
+    let animOverrides = {};
+    let animTimer = null;
+    let lastShownRevealKey = null;
+    let lastActionBoxKey = "";
+    let confettiActive = false;
+
+    if (new URLSearchParams(window.location.search).get("mode") === "tv") {
+      clientMode = "tv";
+    }
+
+    function esc(str) {
+      return String(str || "").replace(/[&<>"']/g, s => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+      }[s]));
+    }
+
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function isVipSeat(seat, data) {
+      if (!seat || !seat.playerName || !data?.vipName) return false;
+      return seat.playerName.trim().toLowerCase() === data.vipName.trim().toLowerCase();
+    }
+
+    function createFreshGameObject(keepVipName = DEFAULT_VIP_NAME) {
+      const suspectPool = shuffle(ROLES.map(r => r.id));
+      const attrPool = shuffle(ATTRIBUTES.map(a => a.id));
+      const roomPool = shuffle(ROOMS.map(r => r.id));
+
+      const secretEnvelope = {
+        suspect: suspectPool.pop(),
+        attribute: attrPool.pop(),
+        room: roomPool.pop()
+      };
+
+      const deck = shuffle([...suspectPool, ...attrPool, ...roomPool]);
+      const seats = ROLES.map((role, idx) => ({
+        index: idx,
+        roleId: role.id,
+        playerName: "",
+        cards: deck.slice(idx * 3, idx * 3 + 3),
+        x: role.start.x,
+        y: role.start.y,
+        roomId: null,
+        wasPulledToRoom: false,
+        eliminated: false
+      }));
+
+      const shuffledRooms = shuffle(ROOMS.map(r => r.id));
+      const attributeLocations = {};
+      ATTRIBUTES.forEach((attr, idx) => {
+        attributeLocations[attr.id] = shuffledRooms[idx];
+      });
+
+      return {
+        gameId: "game_" + Date.now(),
+        status: "LOBBY",
+        vipName: keepVipName || "",
+        vipHintsUnlocked: 0,
+        secretEnvelope,
+        turnIndex: 0,
+        phase: "ROLL_OR_PASSAGE",
+        dice: null,
+        stepsLeft: 0,
+        lastMoveId: 0,
+        lastPath: [],
+        lastMoveSeat: null,
+        seats,
+        attributeLocations,
+        suggestion: null,
+        winner: null,
+        logs: [{
+          id: 1,
+          type: "info",
+          text: "Nieuw Sinterklaas Cluedo-spel aangemaakt! Alle 7 spelers kunnen nu inloggen met hun naam."
+        }]
+      };
+    }
+
+    function addLog(data, text, type = "info") {
+      const logs = Array.isArray(data.logs) ? [...data.logs] : [];
+      logs.unshift({ id: Date.now() + Math.random(), text, type });
+      data.logs = logs.slice(0, 40);
+    }
+
+    function getNextActiveSeat(seats, fromIdx) {
+      for (let i = 1; i <= 7; i++) {
+        const idx = (fromIdx + i) % 7;
+        if (!seats[idx].eliminated) return idx;
+      }
+      return -1;
+    }
+
+    function cardImgHTML(card) {
+      return `
+        <div class="clue-card-art">
+          <img src="images/${card.id}.png" alt="${esc(card.name)}"
+               onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+          <div class="clue-card-emoji" style="display:none;">${card.emoji}</div>
+        </div>
+      `;
+    }
+
+    function computeReachable(seat, stepsLeft, allSeats) {
+      const occupied = new Set();
+      allSeats.forEach(s => {
+        if (s.index !== seat.index && !s.roomId) occupied.add(`${s.x},${s.y}`);
+      });
+
+      const reachableRooms = {};
+      const reachableHallExact = {};
+      const reachableHallFallback = {};
+
+      function findShortestRoomPaths(startNodes, startDist, forbiddenRoomId) {
+        const visited = new Set();
+        const queue = [];
+        startNodes.forEach(sn => {
+          visited.add(`${sn.x},${sn.y}`);
+          queue.push({ x: sn.x, y: sn.y, dist: startDist, path: sn.path });
+          if (startDist <= stepsLeft) reachableHallFallback[`${sn.x},${sn.y}`] = sn.path;
+        });
+
+        while (queue.length > 0) {
+          const cur = queue.shift();
+          if (cur.dist + 1 <= stepsLeft) {
+            ROOMS.forEach(rm => {
+              if (rm.id === forbiddenRoomId) return;
+              const hitsDoor = rm.doors.some(d => d.hx === cur.x && d.hy === cur.y);
+              if (hitsDoor && !reachableRooms[rm.id]) {
+                const centerCell = rm.cells[Math.floor(rm.cells.length / 2)];
+                reachableRooms[rm.id] = [...cur.path, { x: centerCell.x, y: centerCell.y, roomId: rm.id }];
+              }
+            });
+          }
+          if (cur.dist >= stepsLeft) continue;
+
+          for (const [dx, dy] of [[1,0],[-1,0],[0,1],[0,-1]]) {
+            const nx = cur.x + dx, ny = cur.y + dy;
+            if (nx < 0 || nx >= GRID_COLS || ny < 0 || ny >= GRID_ROWS) continue;
+            if (getRoomAt(nx, ny)) continue;
+            const key = `${nx},${ny}`;
+            if (occupied.has(key) || visited.has(key)) continue;
+            visited.add(key);
+            const np = [...cur.path, { x: nx, y: ny }];
+            if (cur.dist + 1 <= stepsLeft) reachableHallFallback[key] = np;
+            queue.push({ x: nx, y: ny, dist: cur.dist + 1, path: np });
+          }
+        }
+      }
+
+      let dfsOps = 0;
+      function findExactHallPaths(x, y, dist, visitedSet, path) {
+        if (dfsOps > 4000) return;
+        dfsOps++;
+        if (dist === stepsLeft) {
+          const key = `${x},${y}`;
+          if (!reachableHallExact[key]) reachableHallExact[key] = [...path];
           return;
         }
-        const entered = prompt("Spelleidersnaam invoeren om het Spelleidersscherm te openen:");
-        if (entered && isHostName(entered)) {
-          setMyPlayerName(entered.trim());
-          switchViewMode("host");
+        for (const [dx, dy] of [[1,0],[-1,0],[0,1],[0,-1]]) {
+          const nx = x + dx, ny = y + dy;
+          if (nx < 0 || nx >= GRID_COLS || ny < 0 || ny >= GRID_ROWS) continue;
+          if (getRoomAt(nx, ny)) continue;
+          const key = `${nx},${ny}`;
+          if (occupied.has(key) || visitedSet.has(key)) continue;
+          visitedSet.add(key);
+          path.push({ x: nx, y: ny });
+          findExactHallPaths(nx, ny, dist + 1, visitedSet, path);
+          path.pop();
+          visitedSet.delete(key);
         }
+      }
+
+      if (seat.roomId) {
+        const curRoom = ROOM_MAP[seat.roomId];
+        const startNodes = [];
+        curRoom.doors.forEach(d => {
+          if (!occupied.has(`${d.hx},${d.hy}`)) {
+            startNodes.push({ x: d.hx, y: d.hy, path: [{ x: seat.x, y: seat.y }, { x: d.hx, y: d.hy }] });
+          }
+        });
+        if (startNodes.length > 0) {
+          findShortestRoomPaths(startNodes, 1, seat.roomId);
+          startNodes.forEach(sn => {
+            findExactHallPaths(sn.x, sn.y, 1, new Set([`${sn.x},${sn.y}`]), [...sn.path]);
+          });
+        }
+      } else {
+        findShortestRoomPaths([{ x: seat.x, y: seat.y, path: [{ x: seat.x, y: seat.y }] }], 0, null);
+        findExactHallPaths(seat.x, seat.y, 0, new Set([`${seat.x},${seat.y}`]), [{ x: seat.x, y: seat.y }]);
+      }
+
+      return {
+        reachableRooms,
+        reachableHalls: Object.keys(reachableHallExact).length > 0 ? reachableHallExact : reachableHallFallback
+      };
+    }
+
+    // Subtiele gunstige dobbelsteenworp voor de VIP zodat zij moeiteloos kamers bereikt
+    function rollDiceSmart(seat, seats, isVip) {
+      if (!isVip) {
+        return [1 + Math.floor(Math.random() * 6), 1 + Math.floor(Math.random() * 6)];
+      }
+      const goodSums = [];
+      for (let sum = 5; sum <= 11; sum++) {
+        const reach = computeReachable(seat, sum, seats);
+        if (Object.keys(reach.reachableRooms).length > 0) goodSums.push(sum);
+      }
+      if (goodSums.length === 0) {
+        return [1 + Math.floor(Math.random() * 6), 1 + Math.floor(Math.random() * 6)];
+      }
+      const targetSum = goodSums[Math.floor(Math.random() * goodSums.length)];
+      const pairs = [];
+      for (let d1 = 1; d1 <= 6; d1++) {
+        const d2 = targetSum - d1;
+        if (d2 >= 1 && d2 <= 6) pairs.push([d1, d2]);
+      }
+      return pairs[Math.floor(Math.random() * pairs.length)];
+    }
+
+    function renderBoard() {
+      const gridEl = document.getElementById("board-grid");
+      if (!gameState) return;
+
+      const activeSeat = gameState.seats[gameState.turnIndex];
+      const isMyMove = (
+        clientMode === "player" &&
+        gameState.status === "PLAYING" &&
+        gameState.phase === "MOVE" &&
+        mySeatIndex === gameState.turnIndex
+      );
+
+      let reach = { reachableRooms: {}, reachableHalls: {} };
+      if (isMyMove && activeSeat) {
+        reach = computeReachable(activeSeat, gameState.stepsLeft, gameState.seats);
+      }
+
+      const roomOccupants = {};
+      ROOMS.forEach(r => roomOccupants[r.id] = []);
+
+      const displaySeats = gameState.seats.map(s => {
+        const ov = animOverrides[s.index];
+        return ov ? { ...s, x: ov.x, y: ov.y, roomId: ov.roomId } : s;
+      });
+
+      displaySeats.forEach(s => {
+        if (s.roomId && roomOccupants[s.roomId]) roomOccupants[s.roomId].push(s);
+      });
+
+      const pawnAtCell = {};
+      displaySeats.forEach(s => {
+        if (s.roomId) {
+          const rm = ROOM_MAP[s.roomId];
+          const idxInRoom = roomOccupants[s.roomId].findIndex(p => p.index === s.index);
+          const cell = rm.cells[idxInRoom] || rm.cells[0];
+          pawnAtCell[`${cell.x},${cell.y}`] = s;
+        } else {
+          pawnAtCell[`${s.x},${s.y}`] = s;
+        }
+      });
+
+      const doorWalls = {};
+      ROOMS.forEach(rm => rm.doors.forEach(d => { doorWalls[`${d.rx},${d.ry}:${d.side}`] = true; }));
+
+      let html = "";
+      for (let y = 0; y < GRID_ROWS; y++) {
+        for (let x = 0; x < GRID_COLS; x++) {
+          const rm = getRoomAt(x, y);
+          const key = `${x},${y}`;
+          const classes = ["cell"];
+          let attrs = "";
+
+          if (rm) {
+            classes.push("room");
+            if ((ROOMS.indexOf(rm) % 2) === 1) classes.push("alt-tint");
+            if (y === rm.y1) classes.push(doorWalls[`${x},${y}:t`] ? "door-t" : "wall-t");
+            if (y === rm.y2) classes.push(doorWalls[`${x},${y}:b`] ? "door-b" : "wall-b");
+            if (x === rm.x1) classes.push(doorWalls[`${x},${y}:l`] ? "door-l" : "wall-l");
+            if (x === rm.x2) classes.push(doorWalls[`${x},${y}:r`] ? "door-r" : "wall-r");
+
+            if (isMyMove && reach.reachableRooms[rm.id]) {
+              classes.push("reachable-room");
+              attrs = `data-action="move-room" data-room="${rm.id}"`;
+            }
+          } else {
+            classes.push("hallway");
+            if (ROLES.some(r => r.start.x === x && r.start.y === y)) classes.push("start-spot");
+            if (isMyMove && reach.reachableHalls[key]) {
+              classes.push("reachable-hall");
+              attrs = `data-action="move-hall" data-x="${x}" data-y="${y}"`;
+            }
+          }
+
+          let inner = "";
+          const pawnSeat = pawnAtCell[key];
+          if (pawnSeat) {
+            const role = ROLE_MAP[pawnSeat.roleId];
+            const isTurn = (gameState.status === "PLAYING" && gameState.turnIndex === pawnSeat.index);
+            inner = `
+              <div class="pawn ${isTurn ? "active-pawn" : ""} ${pawnSeat.eliminated ? "eliminated-pawn" : ""}"
+                   style="background:${role.color}; color:${role.textColor};"
+                   title="${esc(role.name)} (${esc(pawnSeat.playerName || 'Vrij')})">
+                ${role.emoji}
+                ${pawnSeat.playerName ? `<span class="pawn-name-tag">${esc(pawnSeat.playerName)}</span>` : ""}
+              </div>
+            `;
+          }
+
+          html += `<div class="${classes.join(" ")}" ${attrs}>${inner}</div>`;
+        }
+      }
+
+      ROOMS.forEach(rm => {
+        const leftPct = (rm.x1 / GRID_COLS) * 100;
+        const topPct = (rm.y1 / GRID_ROWS) * 100;
+        const wPct = ((rm.x2 - rm.x1 + 1) / GRID_COLS) * 100;
+        const hPct = ((rm.y2 - rm.y1 + 1) / GRID_ROWS) * 100;
+
+        const attrsHere = ATTRIBUTES.filter(a => gameState.attributeLocations?.[a.id] === rm.id);
+        const attrBadges = attrsHere.map(a => `<span class="attr-mini" title="${esc(a.name)}">${a.emoji}</span>`).join("");
+
+        html += `
+          <div class="room-overlay" style="left:${leftPct}%; top:${topPct}%; width:${wPct}%; height:${hPct}%;">
+            <div class="room-title-badge">${rm.emoji} ${rm.name}</div>
+            ${rm.passageTo ? `<div class="room-passage-badge">🕳️ naar ${ROOM_MAP[rm.passageTo].name}</div>` : ""}
+            ${attrBadges ? `<div class="room-attr-strip">${attrBadges}</div>` : ""}
+          </div>
+        `;
+      });
+
+      gridEl.innerHTML = html;
+
+      const hintEl = document.getElementById("board-legend-hint");
+      if (isMyMove) {
+        const roomNames = Object.keys(reach.reachableRooms).map(id => ROOM_MAP[id].name);
+        hintEl.innerHTML = roomNames.length
+          ? `<strong style="color:#86efac;">Tik op een oplichtende kamer of groen vakje!</strong>`
+          : `<strong style="color:#fde68a;">Tik op een groen gangvakje om te lopen.</strong>`;
+      } else {
+        hintEl.textContent = "Attributen liggen in de kamers als icoontjes";
+      }
+    }
+
+    function renderVipSecretHint() {
+      const box = document.getElementById("vip-hint-box");
+      if (clientMode !== "player" || mySeatIndex === null || !gameState || gameState.status !== "PLAYING") {
+        box.classList.add("hidden");
+        return;
+      }
+      const mySeat = gameState.seats[mySeatIndex];
+      const level = gameState.vipHintsUnlocked || 0;
+      if (!isVipSeat(mySeat, gameState) || level <= 0) {
+        box.classList.add("hidden");
+        return;
+      }
+
+      const env = gameState.secretEnvelope;
+      const roomC = CARD_MAP[env.room];
+      const attrC = CARD_MAP[env.attribute];
+      const suspC = CARD_MAP[env.suspect];
+
+      const lines = [];
+      if (level >= 1) lines.push(`📍 <strong>Kamer:</strong> ${roomC.emoji} ${esc(roomC.name)}`);
+      if (level >= 2) lines.push(`🛠️ <strong>Attribuut:</strong> ${attrC.emoji} ${esc(attrC.name)}`);
+      if (level >= 3) lines.push(`🕵️ <strong>Verdachte:</strong> ${suspC.emoji} ${esc(suspC.name)}`);
+
+      box.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+          <strong style="color:#fde68a;">🎅 Geheime Sint-Tip (alleen voor jou!)</strong>
+          <span class="small-muted" style="color:#fde68a;">${level}/3</span>
+        </div>
+        <div style="margin-top:5px; line-height:1.45;">
+          ${lines.join("<br>")}
+          ${level >= 3 ? `<div style="margin-top:6px; color:#86efac; font-weight:700;">✨ Je hebt nu alle 3 de antwoorden! Klik in je beurt op "⚖️ Beschuldigen" om het spel te winnen!</div>` : ""}
+        </div>
+      `;
+      box.classList.remove("hidden");
+    }
+
+    function renderTurnAndActions() {
+      const bannerEl = document.getElementById("turn-banner");
+      const actionBox = document.getElementById("player-action-box");
+      const statusSide = document.getElementById("status-side-panel");
+      if (!gameState) return;
+
+      renderVipSecretHint();
+
+      if (gameState.status === "LOBBY") {
+        const joinedCount = gameState.seats.filter(s => s.playerName).length;
+        bannerEl.className = "turn-banner";
+        bannerEl.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+            <div>
+              <strong style="color:var(--gold-light); font-size:1.05rem;">⏳ Wachten in de Lobby (${joinedCount}/7 spelers binnen)</strong>
+              <div class="small-muted">Je kunt alvast je 3 geheime kaarten bekijken en afstrepen op je detectiveblad!</div>
+            </div>
+            <button class="btn-green" data-action="start-game">▶️ Spel Starten!</button>
+          </div>
+        `;
+        actionBox.classList.add("hidden");
+        statusSide.classList.add("hidden");
+        lastActionBoxKey = "LOBBY";
+        return;
+      }
+
+      if (gameState.status === "WON" || gameState.status === "LOST") {
+        const env = gameState.secretEnvelope;
+        const winSeat = gameState.winner !== null ? gameState.seats[gameState.winner] : null;
+        const winRole = winSeat ? ROLE_MAP[winSeat.roleId] : null;
+        bannerEl.className = "turn-banner my-turn";
+        bannerEl.innerHTML = gameState.status === "WON"
+          ? `<strong style="font-size:1.15rem; color:#86efac;">🎉 ${esc(winSeat.playerName)} (${winRole.name}) HEEFT HET MYSTERIE OPGELOST! 🎁</strong>`
+          : `<strong style="font-size:1.15rem; color:#fca5a5;">😱 Alle spelers liggen uit het spel!</strong>`;
+
+        if (gameState.status === "WON" && !confettiActive) {
+          confettiActive = true;
+          startConfetti();
+        }
+
+        actionBox.classList.add("hidden");
+        lastActionBoxKey = gameState.status;
+        statusSide.classList.remove("hidden");
+        statusSide.innerHTML = `
+          <h3 style="margin:0 0 10px; color:var(--gold-light); text-align:center;">✉️ De Geheime Sinterklaas-Envelop</h3>
+          <div class="cards-grid">
+            ${[CARD_MAP[env.suspect], CARD_MAP[env.attribute], CARD_MAP[env.room]].map(c => `
+              <div class="clue-card">
+                <div class="clue-card-type">${c.type}</div>
+                ${cardImgHTML(c)}
+                <div class="clue-card-title">${esc(c.name)}</div>
+              </div>
+            `).join("")}
+          </div>
+          <button class="btn-gold" style="width:100%; margin-top:12px;" data-action="new-game">🔄 Nieuw Spel Starten</button>
+        `;
+        return;
+      }
+
+      confettiActive = false;
+      statusSide.classList.add("hidden");
+
+      const activeSeat = gameState.seats[gameState.turnIndex];
+      const activeRole = ROLE_MAP[activeSeat.roleId];
+      const isMyTurn = (clientMode === "player" && mySeatIndex === gameState.turnIndex);
+
+      let statusLine = "";
+      if (gameState.phase === "ROLL_OR_PASSAGE") {
+        statusLine = "Moet dobbelen (of geheime gang gebruiken).";
+      } else if (gameState.phase === "MOVE") {
+        statusLine = `Gooide ${gameState.dice[0]} + ${gameState.dice[1]} = <strong>${gameState.stepsLeft} stappen</strong>. Kiest een route...`;
+      } else if (gameState.phase === "SUGGEST_OR_END") {
+        statusLine = `Staat in <strong>${ROOM_MAP[activeSeat.roomId].name}</strong> en kan een vermoeden uitspreken.`;
+      } else if (gameState.phase === "REFUTING") {
+        const sug = gameState.suggestion;
+        const checker = gameState.seats[sug.checkingSeatIndex];
+        const checkerRole = ROLE_MAP[checker.roleId];
+        statusLine = `Vermoeden: <strong>${ROLE_MAP[sug.suspectId].name}</strong> in <strong>${ROOM_MAP[sug.roomId].name}</strong> met <strong>${CARD_MAP[sug.attributeId].name}</strong>.<br>⏳ Wachten op weerlegging door <strong>${esc(checker.playerName || checkerRole.name)}</strong> (${checkerRole.name})...`;
+      } else if (gameState.phase === "END_OR_ACCUSE") {
+        statusLine = "Beurt bijna klaar (mag nog een beschuldiging doen of beurt doorgeven).";
+      }
+
+      bannerEl.className = `turn-banner ${isMyTurn ? "my-turn" : ""}`;
+      bannerEl.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
+          <div>
+            <div style="font-size:0.82rem; color:var(--gold-light); text-transform:uppercase; font-weight:700;">
+              ${isMyTurn ? "🟢 JIJ BENT AAN DE BEURT!" : "Beurt van:"}
+            </div>
+            <div style="font-size:1.08rem; font-weight:800;">
+              ${activeRole.emoji} ${esc(activeSeat.playerName || activeRole.name)} <span class="small-muted">(${activeRole.name})</span>
+            </div>
+            <div class="small-muted" style="margin-top:3px; color:#fff;">${statusLine}</div>
+          </div>
+          ${gameState.dice ? `
+            <div class="dice-row">
+              <div class="die">${gameState.dice[0]}</div>
+              <div class="die">${gameState.dice[1]}</div>
+            </div>
+          ` : ""}
+        </div>
+      `;
+
+      if (clientMode !== "player" || mySeatIndex === null) {
+        actionBox.classList.add("hidden");
+        lastActionBoxKey = "NO_PLAYER";
+        return;
+      }
+
+      const newKey = `${gameState.gameId}|${gameState.status}|${gameState.turnIndex}|${gameState.phase}|${gameState.stepsLeft}|${gameState.suggestion?.checkingSeatIndex}|${gameState.suggestion?.revealedCard}|${mySeatIndex}|${gameState.vipHintsUnlocked}`;
+      if (newKey === lastActionBoxKey) return;
+      lastActionBoxKey = newKey;
+
+      const mySeat = gameState.seats[mySeatIndex];
+      let actionHTML = "";
+
+      if (gameState.phase === "REFUTING" && gameState.suggestion?.checkingSeatIndex === mySeatIndex) {
+        const sug = gameState.suggestion;
+        const suggester = gameState.seats[sug.bySeatIndex];
+        const matchingIds = [sug.suspectId, sug.attributeId, sug.roomId].filter(id => mySeat.cards.includes(id));
+
+        actionHTML = `
+          <div style="background:rgba(59,130,246,0.22); border:2px solid #60a5fa; border-radius:12px; padding:12px;">
+            <strong style="color:#bfdbfe; font-size:1rem;">🕵️ Jouw reactie gevraagd!</strong>
+            <p style="margin:6px 0 10px; font-size:0.9rem;">
+              <strong>${esc(suggester.playerName || ROLE_MAP[suggester.roleId].name)}</strong> vermoedt:<br>
+              <em>${ROLE_MAP[sug.suspectId].name} + ${CARD_MAP[sug.attributeId].name} + ${ROOM_MAP[sug.roomId].name}</em>
+            </p>
+            ${matchingIds.length > 0 ? `
+              <div class="small-muted" style="margin-bottom:8px; color:#fde68a;">Kies 1 kaart om <strong>stiekem</strong> te laten zien:</div>
+              <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                ${matchingIds.map(cid => `
+                  <button class="btn-gold" data-action="reveal-card" data-card="${cid}">
+                    👁️ Toon ${CARD_MAP[cid].emoji} ${esc(CARD_MAP[cid].name)}
+                  </button>
+                `).join("")}
+              </div>
+            ` : `
+              <div class="small-muted" style="margin-bottom:8px;">Je hebt geen van deze drie kaarten in je hand.</div>
+              <button class="btn-ghost" style="width:100%; border-color:#60a5fa;" data-action="pass-refute">
+                ❌ Ik heb niets (Doorgeven)
+              </button>
+            `}
+          </div>
+        `;
+      } else if (isMyTurn) {
+        if (gameState.phase === "ROLL_OR_PASSAGE") {
+          const curRoom = mySeat.roomId ? ROOM_MAP[mySeat.roomId] : null;
+          actionHTML = `
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <button class="btn-gold" style="flex:1; min-width:150px;" data-action="roll-dice">🎲 Dobbelen (2 dobbelstenen)</button>
+              ${curRoom && curRoom.passageTo ? `
+                <button class="btn-ghost" style="border-color:#93c5fd; color:#bfdbfe;" data-action="use-passage">
+                  🕳️ Geheime gang naar ${ROOM_MAP[curRoom.passageTo].name}
+                </button>
+              ` : ""}
+              ${mySeat.wasPulledToRoom && curRoom ? `
+                <button class="btn-green" data-action="stay-suggest">
+                  💬 Blijf in ${curRoom.name} &amp; Spreek Vermoeden uit
+                </button>
+              ` : ""}
+              <button class="btn-red" data-action="open-accuse">⚖️ Beschuldigen</button>
+            </div>
+          `;
+        } else if (gameState.phase === "MOVE") {
+          const reach = computeReachable(mySeat, gameState.stepsLeft, gameState.seats);
+          const roomBtns = Object.keys(reach.reachableRooms).map(rid => `
+            <button class="btn-gold" data-action="move-room" data-room="${rid}">
+              🚪 Ga naar ${ROOM_MAP[rid].emoji} ${ROOM_MAP[rid].name}
+            </button>
+          `).join("");
+          const stuck = Object.keys(reach.reachableRooms).length === 0 && Object.keys(reach.reachableHalls).length === 0;
+          actionHTML = `
+            <div style="background:rgba(34,197,94,0.12); border:1px solid #4ade80; border-radius:12px; padding:10px;">
+              <div style="font-weight:700; margin-bottom:6px;">Je mag ${gameState.stepsLeft} vakjes lopen!</div>
+              <div class="small-muted" style="margin-bottom:8px;">Tik op een oplichtende kamer of groen vakje op het bord hieronder${roomBtns ? ", of kies direct een bereikbare kamer:" : ":"}</div>
+              <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                ${roomBtns}
+                ${stuck ? `<button class="btn-ghost" data-action="end-turn">Vastgelopen — Beurt doorgeven</button>` : ""}
+              </div>
+            </div>
+          `;
+        } else if (gameState.phase === "SUGGEST_OR_END") {
+          const curRoom = ROOM_MAP[mySeat.roomId];
+          actionHTML = `
+            <div class="form-grid" style="border:1px solid var(--gold);">
+              <strong style="color:var(--gold-light);">🔎 Vermoeden uitspreken in ${curRoom.emoji} ${curRoom.name}</strong>
+              <div>
+                <label class="small-muted">Verdachte:</label>
+                <select id="suggest-suspect" class="game-select">
+                  ${ROLES.map(r => `<option value="${r.id}">${r.emoji} ${r.name}</option>`).join("")}
+                </select>
+              </div>
+              <div>
+                <label class="small-muted">Attribuut:</label>
+                <select id="suggest-attribute" class="game-select">
+                  ${ATTRIBUTES.map(a => `<option value="${a.id}">${a.emoji} ${a.name}</option>`).join("")}
+                </select>
+              </div>
+              <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                <button class="btn-gold" style="flex:1;" data-action="submit-suggestion">🗣️ Spreek Vermoeden uit</button>
+                <button class="btn-red" data-action="open-accuse">⚖️ Beschuldigen</button>
+                <button class="btn-ghost" data-action="end-turn">Beurt overslaan</button>
+              </div>
+            </div>
+          `;
+        } else if (gameState.phase === "END_OR_ACCUSE") {
+          const sug = gameState.suggestion;
+          let revealBanner = "";
+          if (sug && sug.bySeatIndex === mySeatIndex) {
+            if (sug.revealedCard) {
+              const revSeat = gameState.seats[sug.revealedBySeatIndex];
+              const card = CARD_MAP[sug.revealedCard];
+              revealBanner = `
+                <div style="background:rgba(245,158,11,0.22); border:1px solid var(--gold); border-radius:10px; padding:10px; margin-bottom:8px;">
+                  🤫 <strong>${esc(revSeat.playerName || ROLE_MAP[revSeat.roleId].name)}</strong> liet jou stiekem zien:
+                  <strong style="color:var(--gold-light);">${card.emoji} ${esc(card.name)}</strong>
+                </div>
+              `;
+            } else {
+              revealBanner = `
+                <div style="background:rgba(239,68,68,0.18); border:1px solid #f87171; border-radius:10px; padding:10px; margin-bottom:8px;">
+                  😲 <strong>Niemand</strong> kon jouw vermoeden weerleggen!
+                </div>
+              `;
+            }
+          }
+          actionHTML = `
+            ${revealBanner}
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <button class="btn-green" style="flex:1;" data-action="end-turn">✅ Beurt Afronden</button>
+              <button class="btn-red" data-action="open-accuse">⚖️ Officiële Beschuldiging doen</button>
+            </div>
+          `;
+        }
+      }
+
+      if (actionHTML) {
+        actionBox.innerHTML = actionHTML;
+        actionBox.classList.remove("hidden");
+      } else {
+        actionBox.classList.add("hidden");
+      }
+    }
+
+    function renderNotesOnly() {
+      if (clientMode !== "player" || mySeatIndex === null || !gameState) return;
+      const mySeat = gameState.seats[mySeatIndex];
+      const myNotes = (allNotes?.[gameState.gameId]?.[mySeatIndex]) || {};
+
+      const renderGroup = (title, items) => `
+        <div class="sheet-section">
+          <h4>${title}</h4>
+          ${items.map(item => {
+            const isOwn = mySeat.cards.includes(item.id);
+            const state = isOwn ? "own" : (myNotes[item.id] || "");
+            let badgeText = "⬜ Open";
+            let badgeCls = "";
+            if (isOwn) { badgeText = "✅ Mijn kaart"; badgeCls = "mark-yes"; }
+            else if (state === "no") { badgeText = "❌ Gezien"; badgeCls = "mark-no"; }
+            else if (state === "maybe") { badgeText = "❓ Verdacht"; badgeCls = "mark-maybe"; }
+            else if (state === "yes") { badgeText = "⭐ Dader!"; badgeCls = "mark-yes"; }
+
+            return `
+              <div class="sheet-row ${isOwn ? "own-card" : ""}" ${isOwn ? "" : `data-action="toggle-note" data-card="${item.id}"`}>
+                <span>${item.emoji} ${esc(item.name)}</span>
+                <span class="mark-badge ${badgeCls}">${badgeText}</span>
+              </div>
+            `;
+          }).join("")}
+        </div>
+      `;
+
+      document.getElementById("tab-notes").innerHTML = `
+        <p class="small-muted" style="margin:0 0 10px;">
+          Tik op een regel om te wisselen tussen: ⬜ Open → ❌ Gezien → ❓ Verdacht → ⭐ Dader!
+        </p>
+        ${renderGroup("Verdachten (7)", ROLES)}
+        ${renderGroup("Attributen (7)", ATTRIBUTES)}
+        ${renderGroup("Kamers (10)", ROOMS)}
+      `;
+    }
+
+    function renderPlayerSide() {
+      const playerSide = document.getElementById("player-side-panel");
+      const tvLogPanel = document.getElementById("tv-log-panel");
+
+      if (clientMode === "tv") {
+        playerSide.classList.add("hidden");
+        tvLogPanel.classList.remove("hidden");
+        document.getElementById("tv-log-list").innerHTML = renderLogsHTML();
+        return;
+      }
+
+      tvLogPanel.classList.add("hidden");
+      if (mySeatIndex === null || !gameState) {
+        playerSide.classList.add("hidden");
+        return;
+      }
+      playerSide.classList.remove("hidden");
+
+      const mySeat = gameState.seats[mySeatIndex];
+      document.getElementById("tab-cards").innerHTML = `
+        <p class="small-muted" style="margin:0 0 10px;">
+          Dit zijn jouw <strong>3 geheime kaarten</strong>. Deze zitten zeker NIET in de envelop!
+        </p>
+        <div class="cards-grid">
+          ${mySeat.cards.map(cid => {
+            const c = CARD_MAP[cid];
+            return `
+              <div class="clue-card">
+                <div class="clue-card-type">${c.type}</div>
+                ${cardImgHTML(c)}
+                <div class="clue-card-title">${esc(c.name)}</div>
+              </div>
+            `;
+          }).join("")}
+        </div>
+      `;
+
+      renderNotesOnly();
+      document.getElementById("tab-logs").innerHTML = `<div class="log-list">${renderLogsHTML()}</div>`;
+    }
+
+    function renderLogsHTML() {
+      const logs = gameState?.logs || [];
+      return logs.map(l => `<div class="log-item ${l.type || ""}">${esc(l.text)}</div>`).join("");
+    }
+
+    function renderRoster() {
+      if (!gameState) return;
+      const joined = gameState.seats.filter(s => s.playerName).length;
+      document.getElementById("joined-count").textContent = `${joined} / 7 ingelogd`;
+
+      document.getElementById("roster-grid").innerHTML = gameState.seats.map(s => {
+        const r = ROLE_MAP[s.roleId];
+        const isCur = gameState.status === "PLAYING" && gameState.turnIndex === s.index;
+        return `
+          <div class="roster-card ${isCur ? "current" : ""}">
+            <div class="roster-dot" style="background:${r.color}; color:${r.textColor};">${r.emoji}</div>
+            <div style="overflow:hidden;">
+              <div style="font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                ${s.playerName ? esc(s.playerName) : `<span style="opacity:0.5;">Nog vrij</span>`}
+              </div>
+              <div class="small-muted" style="font-size:0.74rem;">
+                ${r.name} ${s.eliminated ? "💀" : ""}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderAdminModalList() {
+      if (!gameState) return;
+      document.getElementById("admin-seats-list").innerHTML = gameState.seats.map(s => {
+        const r = ROLE_MAP[s.roleId];
+        return `
+          <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.05); padding:6px 10px; border-radius:8px;">
+            <span>${r.emoji} <strong>${r.name}</strong>: ${s.playerName ? esc(s.playerName) : "<em>vrij</em>"}</span>
+            ${s.playerName ? `<button class="btn-ghost" style="padding:4px 8px; font-size:0.78rem;" data-action="kick-seat" data-seat="${s.index}">Vrijgeven</button>` : ""}
+          </div>
+        `;
+      }).join("");
+
+      const vipInput = document.getElementById("admin-vip-input");
+      if (vipInput && document.activeElement !== vipInput) {
+        vipInput.value = gameState.vipName || "";
+      }
+      const vipStatus = document.getElementById("admin-vip-status");
+      if (vipStatus) {
+        vipStatus.textContent = gameState.vipName
+          ? `Actief voor: "${gameState.vipName}" (Hints vrijgespeeld: ${gameState.vipHintsUnlocked || 0}/3)`
+          : "Nog geen VIP-naam ingesteld.";
+      }
+    }
+
+    function renderAll() {
+      const loginScreen = document.getElementById("login-screen");
+      const appScreen = document.getElementById("app-screen");
+      const mainLayout = document.getElementById("main-layout");
+
+      if (!clientMode || (clientMode === "player" && mySeatIndex === null)) {
+        loginScreen.classList.remove("hidden");
+        appScreen.classList.add("hidden");
+        return;
+      }
+
+      loginScreen.classList.add("hidden");
+      appScreen.classList.remove("hidden");
+
+      const headerId = document.getElementById("header-identity");
+      if (clientMode === "tv") {
+        mainLayout.classList.add("tv-layout");
+        headerId.innerHTML = "📺 8e Groot Scherm (Spelverloop)";
+        headerId.style.background = "rgba(245, 158, 11, 0.2)";
+      } else {
+        mainLayout.classList.remove("tv-layout");
+        const seat = gameState.seats[mySeatIndex];
+        const role = ROLE_MAP[seat.roleId];
+        headerId.innerHTML = `${role.emoji} ${esc(seat.playerName)} — ${role.name}`;
+        headerId.style.background = role.color;
+        headerId.style.color = role.textColor;
+      }
+
+      renderTurnAndActions();
+      renderBoard();
+      renderPlayerSide();
+      renderRoster();
+      renderAdminModalList();
+      checkPrivateRevealPopup();
+    }
+
+    function checkPrivateRevealPopup() {
+      if (clientMode !== "player" || mySeatIndex === null || !gameState) return;
+      const sug = gameState.suggestion;
+      if (gameState.phase === "END_OR_ACCUSE" && sug && sug.bySeatIndex === mySeatIndex && sug.revealedCard) {
+        const key = `${gameState.gameId}_${sug.bySeatIndex}_${sug.revealedCard}_${sug.revealedBySeatIndex}_${gameState.lastMoveId}`;
+        if (lastShownRevealKey !== key) {
+          lastShownRevealKey = key;
+          const revSeat = gameState.seats[sug.revealedBySeatIndex];
+          const card = CARD_MAP[sug.revealedCard];
+          document.getElementById("private-modal-title").textContent = "🤫 Geheime Aanwijzing!";
+          document.getElementById("private-modal-body").innerHTML = `
+            <p>${esc(revSeat.playerName || ROLE_MAP[revSeat.roleId].name)} heeft jou stiekem deze kaart getoond:</p>
+            <div style="max-width:170px; margin:12px auto;">
+              <div class="clue-card">
+                <div class="clue-card-type">${card.type}</div>
+                ${cardImgHTML(card)}
+                <div class="clue-card-title">${esc(card.name)}</div>
+              </div>
+            </div>
+            <p class="small-muted">Tip: Streep deze kaart direct af op je Detectiveblad!</p>
+          `;
+          document.getElementById("private-modal").classList.remove("hidden");
+        }
+      }
+    }
+
+    function triggerPathAnimationIfNew(data) {
+      if (!data.lastMoveId || data.lastMoveId === lastAnimatedMoveId) return;
+      lastAnimatedMoveId = data.lastMoveId;
+
+      if (!Array.isArray(data.lastPath) || data.lastPath.length <= 1 || data.lastMoveSeat === null) return;
+      if (animTimer) clearInterval(animTimer);
+
+      let step = 0;
+      const path = data.lastPath;
+      const seatIdx = data.lastMoveSeat;
+
+      animTimer = setInterval(() => {
+        if (step >= path.length) {
+          clearInterval(animTimer);
+          animTimer = null;
+          delete animOverrides[seatIdx];
+          renderBoard();
+          return;
+        }
+        const pt = path[step];
+        animOverrides[seatIdx] = { x: pt.x, y: pt.y, roomId: pt.roomId || null };
+        renderBoard();
+        step++;
+      }, 170);
+    }
+
+    function startConfetti() {
+      const canvas = document.getElementById("confetti-canvas");
+      canvas.classList.remove("hidden");
+      const ctx = canvas.getContext("2d");
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      const colors = ["#f59e0b", "#ef4444", "#22c55e", "#fde68a", "#ffffff", "#3b82f6"];
+      const pieces = Array.from({ length: 130 }, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * -canvas.height,
+        r: 4 + Math.random() * 6,
+        d: 2 + Math.random() * 4,
+        c: colors[Math.floor(Math.random() * colors.length)],
+        tilt: Math.random() * 10
+      }));
+      let frames = 0;
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        pieces.forEach(p => {
+          ctx.fillStyle = p.c;
+          ctx.fillRect(p.x, p.y, p.r, p.r * 1.4);
+          p.y += p.d;
+          p.x += Math.sin(frames * 0.04 + p.tilt) * 1.3;
+          if (p.y > canvas.height) { p.y = -10; p.x = Math.random() * canvas.width; }
+        });
+        frames++;
+        if (confettiActive && frames < 420) requestAnimationFrame(draw);
+        else { ctx.clearRect(0, 0, canvas.width, canvas.height); canvas.classList.add("hidden"); }
+      }
+      draw();
+    }
+
+    async function ensureGameExists() {
+      await runTransaction(gameRef, cur => {
+        if (cur && cur.seats && cur.seats.length === 7) return cur;
+        return createFreshGameObject(DEFAULT_VIP_NAME);
+      });
+    }
+
+    async function joinAsPlayer(rawName) {
+      const cleanName = rawName.trim();
+      if (!cleanName) return alert("Vul eerst je voornaam in!");
+      await ensureGameExists();
+
+      let assignedIdx = null;
+      let errMsg = null;
+
+      await runTransaction(gameRef, cur => {
+        if (!cur) return cur;
+        const existing = cur.seats.find(s => s.playerName && s.playerName.toLowerCase() === cleanName.toLowerCase());
+        if (existing) {
+          assignedIdx = existing.index;
+          return cur;
+        }
+        const freeSeats = cur.seats.filter(s => !s.playerName);
+        if (freeSeats.length === 0) {
+          errMsg = "Alle 7 rollen zijn al bezet! Gebruik je eerder gekozen naam, of kies het 8e Scherm.";
+          return;
+        }
+        const pick = freeSeats[Math.floor(Math.random() * freeSeats.length)];
+        cur.seats[pick.index].playerName = cleanName;
+        assignedIdx = pick.index;
+        addLog(cur, `👋 ${cleanName} doet mee als ${ROLE_MAP[pick.roleId].name}!`, "info");
+        return cur;
+      });
+
+      if (errMsg) return alert(errMsg);
+      if (assignedIdx !== null) {
+        clientMode = "player";
+        myPlayerName = cleanName;
+        mySeatIndex = assignedIdx;
+        localStorage.setItem("cluedo_mode", "player");
+        localStorage.setItem("cluedo_name", cleanName);
+        renderAll();
+      }
+    }
+
+    function autoResolveUnclaimedRefuters(cur) {
+      const sug = cur.suggestion;
+      while (cur.phase === "REFUTING") {
+        if (sug.checkingSeatIndex === sug.bySeatIndex) {
+          sug.revealedBySeatIndex = -1;
+          sug.revealedCard = null;
+          cur.phase = "END_OR_ACCUSE";
+          addLog(cur, "😲 Niemand aan tafel kon dit vermoeden weerleggen!", "suggest");
+          break;
+        }
+        const checker = cur.seats[sug.checkingSeatIndex];
+        if (checker.playerName) break;
+
+        const match = [sug.suspectId, sug.attributeId, sug.roomId].find(id => checker.cards.includes(id));
+        if (match) {
+          sug.revealedBySeatIndex = checker.index;
+          sug.revealedCard = match;
+          cur.phase = "END_OR_ACCUSE";
+          addLog(cur, `🤫 ${ROLE_MAP[checker.roleId].name} (automatisch) toonde 1 kaart aan ${cur.seats[sug.bySeatIndex].playerName || ROLE_MAP[cur.seats[sug.bySeatIndex].roleId].name}.`, "suggest");
+          break;
+        } else {
+          sug.passedSeats = [...(sug.passedSeats || []), checker.index];
+          sug.checkingSeatIndex = (checker.index + 1) % 7;
+        }
+      }
+    }
+
+    document.getElementById("btn-join-player").addEventListener("click", () => {
+      joinAsPlayer(document.getElementById("player-name-input").value);
+    });
+    document.getElementById("player-name-input").addEventListener("keydown", e => {
+      if (e.key === "Enter") joinAsPlayer(e.target.value);
+    });
+    document.getElementById("btn-join-tv").addEventListener("click", () => {
+      clientMode = "tv";
+      localStorage.setItem("cluedo_mode", "tv");
+      renderAll();
+    });
+    document.getElementById("btn-logout").addEventListener("click", () => {
+      clientMode = null;
+      mySeatIndex = null;
+      localStorage.removeItem("cluedo_mode");
+      renderAll();
+    });
+
+    document.getElementById("btn-open-admin").addEventListener("click", () => document.getElementById("admin-modal").classList.remove("hidden"));
+    document.getElementById("btn-open-admin-login").addEventListener("click", () => document.getElementById("admin-modal").classList.remove("hidden"));
+    document.getElementById("btn-close-admin").addEventListener("click", () => document.getElementById("admin-modal").classList.add("hidden"));
+    document.getElementById("btn-close-private").addEventListener("click", () => document.getElementById("private-modal").classList.add("hidden"));
+    document.getElementById("btn-cancel-accuse").addEventListener("click", () => document.getElementById("accuse-modal").classList.add("hidden"));
+
+    document.getElementById("btn-unlock-sint").addEventListener("click", () => {
+      const panel = document.getElementById("sint-secret-panel");
+      if (!panel.classList.contains("hidden")) {
+        panel.classList.add("hidden");
+        return;
+      }
+      const pin = prompt("Voer spelleidercode in:");
+      if (pin === SINT_SECRET_PIN) {
+        panel.classList.remove("hidden");
+      } else if (pin !== null) {
+        alert("Verkeerde code!");
       }
     });
 
-    initDatabase();
-    render();
+    document.getElementById("btn-save-vip").addEventListener("click", async () => {
+      const nameVal = document.getElementById("admin-vip-input").value.trim();
+      await update(gameRef, { vipName: nameVal });
+      alert(nameVal ? `👑 VIP ingesteld op "${nameVal}". Zij wint altijd!` : "VIP-stand uitgeschakeld.");
+    });
+
+    document.getElementById("btn-boost-vip").addEventListener("click", async () => {
+      await update(gameRef, { vipHintsUnlocked: 3 });
+      alert("🚀 Alle 3 de Sint-hints zijn nu direct zichtbaar op haar telefoon!");
+    });
+
+    document.getElementById("btn-admin-start").addEventListener("click", async () => {
+      await runTransaction(gameRef, cur => {
+        if (!cur) return cur;
+        cur.status = "PLAYING";
+        cur.phase = "ROLL_OR_PASSAGE";
+        addLog(cur, "🔔 Het spel is gestart! De Actrice mag als eerste gooien.", "info");
+        return cur;
+      });
+      document.getElementById("admin-modal").classList.add("hidden");
+    });
+
+    document.getElementById("btn-admin-newgame").addEventListener("click", async () => {
+      if (!confirm("Weet je zeker dat je een compleet nieuw spel wilt schudden?")) return;
+      const keepVip = gameState?.vipName || DEFAULT_VIP_NAME;
+      await set(gameRef, createFreshGameObject(keepVip));
+      localStorage.removeItem("cluedo_name");
+      myPlayerName = "";
+      mySeatIndex = null;
+      if (clientMode === "player") clientMode = null;
+      document.getElementById("admin-modal").classList.add("hidden");
+      renderAll();
+    });
+
+    document.getElementById("btn-confirm-accuse").addEventListener("click", async () => {
+      const suspect = document.getElementById("accuse-suspect").value;
+      const attribute = document.getElementById("accuse-attribute").value;
+      const room = document.getElementById("accuse-room").value;
+      document.getElementById("accuse-modal").classList.add("hidden");
+
+      const mySeat = gameState?.seats?.[mySeatIndex];
+      const amVip = isVipSeat(mySeat, gameState);
+      const env = gameState?.secretEnvelope;
+
+      // Bescherming voor het lootje: als ze te vroeg fout gokt, ligt ze NOOIT uit het spel!
+      if (amVip && env && (suspect !== env.suspect || attribute !== env.attribute || room !== env.room)) {
+        await runTransaction(gameRef, cur => {
+          if (!cur) return cur;
+          cur.vipHintsUnlocked = Math.min(3, (cur.vipHintsUnlocked || 0) + 1);
+          return cur;
+        });
+        document.getElementById("private-modal-title").textContent = "🤫 Psst — Sint helpt je een handje!";
+        document.getElementById("private-modal-body").innerHTML = `
+          <p>Die combinatie was net niet helemaal goed, maar Sinterklaas geeft zijn favoriete speurder <strong>een extra kans</strong>!</p>
+          <p style="color:#86efac; font-weight:700;">Je blijft gewoon in het spel én je hebt nu een extra Geheime Sint-Tip gekregen bovenaan je scherm!</p>
+        `;
+        document.getElementById("private-modal").classList.remove("hidden");
+        return;
+      }
+
+      await runTransaction(gameRef, cur => {
+        if (!cur || cur.status !== "PLAYING" || cur.turnIndex !== mySeatIndex) return cur;
+        const seat = cur.seats[mySeatIndex];
+        const roleName = ROLE_MAP[seat.roleId].name;
+        const pName = seat.playerName || roleName;
+        const cEnv = cur.secretEnvelope;
+        const seatIsVip = isVipSeat(seat, cur);
+        const matchesEnvelope = (suspect === cEnv.suspect && attribute === cEnv.attribute && room === cEnv.room);
+
+        if (matchesEnvelope && (seatIsVip || !cur.vipName)) {
+          cur.status = "WON";
+          cur.winner = mySeatIndex;
+          addLog(cur, `🎉 ${pName} (${roleName}) beschuldigde JUIST en wint Sinterklaas Cluedo!`, "win");
+        } else {
+          // Niet-VIP mag niet vóór de VIP winnen, ook niet bij toeval
+          seat.eliminated = true;
+          const extraMsg = matchesEnvelope && cur.vipName
+            ? " (Sint had stiekem een geheim zegel op de envelop gezet!)"
+            : "";
+          addLog(cur, `💥 ${pName} (${roleName}) deed een foute beschuldiging en ligt uit het spel!${extraMsg}`, "fail");
+          const next = getNextActiveSeat(cur.seats, cur.turnIndex);
+          if (next === -1) {
+            cur.status = "LOST";
+            addLog(cur, "😱 Niemand heeft nog beurten over — het mysterie blijft onopgelost!", "fail");
+          } else {
+            cur.turnIndex = next;
+            cur.phase = "ROLL_OR_PASSAGE";
+            cur.dice = null;
+            cur.suggestion = null;
+          }
+        }
+        return cur;
+      });
+    });
+
+    document.querySelectorAll(".tab-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        activeTab = btn.dataset.tab;
+        document.querySelectorAll(".tab-btn").forEach(b => b.classList.toggle("active", b.dataset.tab === activeTab));
+        ["cards", "notes", "logs"].forEach(t => {
+          document.getElementById(`tab-${t}`).classList.toggle("hidden", t !== activeTab);
+        });
+      });
+    });
+
+    document.body.addEventListener("click", async e => {
+      const target = e.target.closest("[data-action]");
+      if (!target || !gameState) return;
+      const action = target.dataset.action;
+
+      if (action === "start-game") {
+        await runTransaction(gameRef, cur => {
+          if (!cur || cur.status !== "LOBBY") return cur;
+          cur.status = "PLAYING";
+          cur.phase = "ROLL_OR_PASSAGE";
+          addLog(cur, "🔔 Het onderzoek is begonnen! De Actrice is als eerste aan zet.", "info");
+          return cur;
+        });
+      }
+      else if (action === "new-game") {
+        if (!confirm("Nieuw spel starten en alle kaarten opnieuw verdelen?")) return;
+        const keepVip = gameState?.vipName || DEFAULT_VIP_NAME;
+        await set(gameRef, createFreshGameObject(keepVip));
+      }
+      else if (action === "kick-seat") {
+        const sIdx = Number(target.dataset.seat);
+        await runTransaction(gameRef, cur => {
+          if (!cur) return cur;
+          cur.seats[sIdx].playerName = "";
+          return cur;
+        });
+      }
+      else if (action === "roll-dice") {
+        const mySeat = gameState.seats[mySeatIndex];
+        const amVip = isVipSeat(mySeat, gameState);
+        const [d1, d2] = rollDiceSmart(mySeat, gameState.seats, amVip);
+
+        await runTransaction(gameRef, cur => {
+          if (!cur || cur.turnIndex !== mySeatIndex || cur.phase !== "ROLL_OR_PASSAGE") return cur;
+          cur.dice = [d1, d2];
+          cur.stepsLeft = d1 + d2;
+          cur.phase = "MOVE";
+          cur.seats[mySeatIndex].wasPulledToRoom = false;
+          const s = cur.seats[mySeatIndex];
+          addLog(cur, `🎲 ${s.playerName || ROLE_MAP[s.roleId].name} gooit ${d1} + ${d2} = ${d1 + d2}.`, "move");
+          return cur;
+        });
+      }
+      else if (action === "use-passage") {
+        await runTransaction(gameRef, cur => {
+          if (!cur || cur.turnIndex !== mySeatIndex || cur.phase !== "ROLL_OR_PASSAGE") return cur;
+          const s = cur.seats[mySeatIndex];
+          const fromRoom = ROOM_MAP[s.roomId];
+          if (!fromRoom || !fromRoom.passageTo) return cur;
+          const toRoom = ROOM_MAP[fromRoom.passageTo];
+          const center = toRoom.cells[Math.floor(toRoom.cells.length / 2)];
+          s.roomId = toRoom.id;
+          s.x = center.x;
+          s.y = center.y;
+          s.wasPulledToRoom = false;
+          cur.lastMoveId = (cur.lastMoveId || 0) + 1;
+          cur.lastMoveSeat = mySeatIndex;
+          cur.lastPath = [{ x: center.x, y: center.y, roomId: toRoom.id }];
+          cur.phase = "SUGGEST_OR_END";
+          addLog(cur, `🕳️ ${s.playerName || ROLE_MAP[s.roleId].name} sluipt via de geheime gang naar ${toRoom.name}!`, "move");
+          return cur;
+        });
+      }
+      else if (action === "stay-suggest") {
+        await runTransaction(gameRef, cur => {
+          if (!cur || cur.turnIndex !== mySeatIndex || cur.phase !== "ROLL_OR_PASSAGE") return cur;
+          cur.seats[mySeatIndex].wasPulledToRoom = false;
+          cur.phase = "SUGGEST_OR_END";
+          return cur;
+        });
+      }
+      else if (action === "move-room") {
+        const roomId = target.dataset.room;
+        await runTransaction(gameRef, cur => {
+          if (!cur || cur.turnIndex !== mySeatIndex || cur.phase !== "MOVE") return cur;
+          const s = cur.seats[mySeatIndex];
+          const reach = computeReachable(s, cur.stepsLeft, cur.seats);
+          const path = reach.reachableRooms[roomId];
+          if (!path) return cur;
+          const dest = path[path.length - 1];
+          s.x = dest.x; s.y = dest.y; s.roomId = roomId; s.wasPulledToRoom = false;
+          cur.lastMoveId = (cur.lastMoveId || 0) + 1;
+          cur.lastMoveSeat = mySeatIndex;
+          cur.lastPath = path;
+          cur.phase = "SUGGEST_OR_END";
+          addLog(cur, `🚪 ${s.playerName || ROLE_MAP[s.roleId].name} loopt naar ${ROOM_MAP[roomId].name}.`, "move");
+          return cur;
+        });
+      }
+      else if (action === "move-hall") {
+        const tx = Number(target.dataset.x);
+        const ty = Number(target.dataset.y);
+        await runTransaction(gameRef, cur => {
+          if (!cur || cur.turnIndex !== mySeatIndex || cur.phase !== "MOVE") return cur;
+          const s = cur.seats[mySeatIndex];
+          const reach = computeReachable(s, cur.stepsLeft, cur.seats);
+          const path = reach.reachableHalls[`${tx},${ty}`];
+          if (!path) return cur;
+          s.x = tx; s.y = ty; s.roomId = null; s.wasPulledToRoom = false;
+          cur.lastMoveId = (cur.lastMoveId || 0) + 1;
+          cur.lastMoveSeat = mySeatIndex;
+          cur.lastPath = path;
+          cur.phase = "END_OR_ACCUSE";
+          addLog(cur, `👣 ${s.playerName || ROLE_MAP[s.roleId].name} loopt de gang in.`, "move");
+          return cur;
+        });
+      }
+      else if (action === "submit-suggestion") {
+        const suspectId = document.getElementById("suggest-suspect").value;
+        const attributeId = document.getElementById("suggest-attribute").value;
+
+        await runTransaction(gameRef, cur => {
+          if (!cur || cur.turnIndex !== mySeatIndex || cur.phase !== "SUGGEST_OR_END") return cur;
+          const s = cur.seats[mySeatIndex];
+          const roomId = s.roomId;
+          const rm = ROOM_MAP[roomId];
+
+          const targetSeat = cur.seats.find(st => st.roleId === suspectId);
+          if (targetSeat && targetSeat.roomId !== roomId) {
+            const center = rm.cells[Math.floor(rm.cells.length / 2)];
+            targetSeat.roomId = roomId;
+            targetSeat.x = center.x;
+            targetSeat.y = center.y;
+            targetSeat.wasPulledToRoom = true;
+          }
+          cur.attributeLocations[attributeId] = roomId;
+
+          cur.suggestion = {
+            bySeatIndex: mySeatIndex,
+            suspectId,
+            attributeId,
+            roomId,
+            checkingSeatIndex: (mySeatIndex + 1) % 7,
+            passedSeats: [],
+            revealedBySeatIndex: null,
+            revealedCard: null
+          };
+          cur.phase = "REFUTING";
+          addLog(cur, `🗣️ ${s.playerName || ROLE_MAP[s.roleId].name} vermoedt: ${ROLE_MAP[suspectId].name} in ${rm.name} met ${CARD_MAP[attributeId].name}!`, "suggest");
+
+          if (isVipSeat(s, cur)) {
+            cur.vipHintsUnlocked = Math.min(3, (cur.vipHintsUnlocked || 0) + 1);
+          }
+
+          autoResolveUnclaimedRefuters(cur);
+          return cur;
+        });
+      }
+      else if (action === "pass-refute") {
+        await runTransaction(gameRef, cur => {
+          if (!cur || cur.phase !== "REFUTING" || cur.suggestion?.checkingSeatIndex !== mySeatIndex) return cur;
+          const s = cur.seats[mySeatIndex];
+          cur.suggestion.passedSeats = [...(cur.suggestion.passedSeats || []), mySeatIndex];
+          cur.suggestion.checkingSeatIndex = (mySeatIndex + 1) % 7;
+          addLog(cur, `❌ ${s.playerName || ROLE_MAP[s.roleId].name} kan niets weerleggen.`, "info");
+          autoResolveUnclaimedRefuters(cur);
+          return cur;
+        });
+      }
+      else if (action === "reveal-card") {
+        const cardId = target.dataset.card;
+        await runTransaction(gameRef, cur => {
+          if (!cur || cur.phase !== "REFUTING" || cur.suggestion?.checkingSeatIndex !== mySeatIndex) return cur;
+          const s = cur.seats[mySeatIndex];
+          if (!s.cards.includes(cardId)) return cur;
+          cur.suggestion.revealedBySeatIndex = mySeatIndex;
+          cur.suggestion.revealedCard = cardId;
+          cur.phase = "END_OR_ACCUSE";
+          const bySeat = cur.seats[cur.suggestion.bySeatIndex];
+          addLog(cur, `🤫 ${s.playerName || ROLE_MAP[s.roleId].name} heeft stiekem 1 kaart getoond aan ${bySeat.playerName || ROLE_MAP[bySeat.roleId].name}!`, "suggest");
+          return cur;
+        });
+      }
+      else if (action === "end-turn") {
+        await runTransaction(gameRef, cur => {
+          if (!cur || cur.turnIndex !== mySeatIndex) return cur;
+          const s = cur.seats[mySeatIndex];
+          if (isVipSeat(s, cur) && cur.phase !== "END_OR_ACCUSE") {
+            cur.vipHintsUnlocked = Math.min(3, (cur.vipHintsUnlocked || 0) + 1);
+          }
+          const next = getNextActiveSeat(cur.seats, cur.turnIndex);
+          cur.turnIndex = next === -1 ? 0 : next;
+          cur.phase = "ROLL_OR_PASSAGE";
+          cur.dice = null;
+          cur.stepsLeft = 0;
+          cur.suggestion = null;
+          return cur;
+        });
+      }
+      else if (action === "open-accuse") {
+        document.getElementById("accuse-suspect").innerHTML = ROLES.map(r => `<option value="${r.id}">${r.emoji} ${r.name}</option>`).join("");
+        document.getElementById("accuse-attribute").innerHTML = ATTRIBUTES.map(a => `<option value="${a.id}">${a.emoji} ${a.name}</option>`).join("");
+        document.getElementById("accuse-room").innerHTML = ROOMS.map(rm => `<option value="${rm.id}">${rm.emoji} ${rm.name}</option>`).join("");
+
+        const mySeat = gameState.seats[mySeatIndex];
+        const desc = document.getElementById("accuse-modal-desc");
+        if (isVipSeat(mySeat, gameState) && (gameState.vipHintsUnlocked || 0) >= 3) {
+          document.getElementById("accuse-suspect").value = gameState.secretEnvelope.suspect;
+          document.getElementById("accuse-attribute").value = gameState.secretEnvelope.attribute;
+          document.getElementById("accuse-room").value = gameState.secretEnvelope.room;
+          desc.innerHTML = `<span style="color:#86efac; font-weight:700;">✨ Op basis van jouw geheime Sint-tips staan de juiste antwoorden al voor je ingevuld! Klik op "Open Envelop!" om te winnen!</span>`;
+        } else {
+          desc.textContent = "Weet je 100% zeker wat er in de Sinterklaas-envelop zit? Let op: als je fout zit, lig je uit het spel (je blijft wel kaarten laten zien)!";
+        }
+        document.getElementById("accuse-modal").classList.remove("hidden");
+      }
+      else if (action === "toggle-note") {
+        const cid = target.dataset.card;
+        const order = ["", "no", "maybe", "yes"];
+        const curMark = (allNotes?.[gameState.gameId]?.[mySeatIndex]?.[cid]) || "";
+        const nextMark = order[(order.indexOf(curMark) + 1) % order.length];
+        await update(ref(db, `cluedoNotes/${gameState.gameId}/${mySeatIndex}`), { [cid]: nextMark });
+      }
+    });
+
+    async function init() {
+      try {
+        await ensureGameExists();
+      } catch (err) {
+        document.getElementById("login-status").innerHTML =
+          `<span style="color:#fca5a5;">⚠️ Kan geen verbinding maken met Firebase. Controleer of je Realtime Database regels op testmodus (read/write: true) staan!</span>`;
+        return;
+      }
+
+      onValue(notesRef, snap => {
+        allNotes = snap.val() || {};
+        renderNotesOnly();
+      });
+
+      onValue(gameRef, snap => {
+        const data = snap.val();
+        if (!data) return;
+        gameState = data;
+
+        if (clientMode === "player" && myPlayerName) {
+          const match = data.seats.find(s => s.playerName && s.playerName.toLowerCase() === myPlayerName.toLowerCase());
+          mySeatIndex = match ? match.index : null;
+          if (mySeatIndex === null) {
+            clientMode = null;
+            localStorage.removeItem("cluedo_mode");
+          }
+        }
+
+        triggerPathAnimationIfNew(data);
+        renderAll();
+      });
+    }
+
+    init();
   </script>
 </body>
 </html>
