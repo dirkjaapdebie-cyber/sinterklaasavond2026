@@ -85,15 +85,16 @@
       box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
       text-align: left;
     }
-    .login-box input, .modal-input {
+    .login-box input, .modal-input, textarea.modal-input {
       width: 100%;
-      padding: 12px 14px;
+      padding: 10px 12px;
       border-radius: 10px;
       border: 2px solid rgba(245, 158, 11, 0.35);
       background: #16050b;
       color: white;
-      font-size: 1.05rem;
-      margin: 8px 0 14px;
+      font-size: 0.96rem;
+      font-family: inherit;
+      margin: 5px 0 10px;
     }
     .login-box input:focus, .modal-input:focus { outline: none; border-color: var(--gold); }
 
@@ -161,15 +162,39 @@
       border-color: var(--accent-green);
       box-shadow: 0 0 18px rgba(34, 197, 94, 0.2);
     }
+    .turn-thumb {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 2.5px solid white;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+    }
 
+    /* GEHEIME TIP-GEDICHTJES VOOR HAAR */
     .vip-hint-box {
-      background: linear-gradient(135deg, rgba(245, 158, 11, 0.22), rgba(124, 45, 18, 0.45));
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(124, 45, 18, 0.45));
       border: 1.5px solid #fbbf24;
-      border-radius: 12px;
-      padding: 10px 12px;
+      border-radius: 14px;
+      padding: 12px;
       margin-bottom: 12px;
-      font-size: 0.9rem;
-      box-shadow: 0 4px 14px rgba(245, 158, 11, 0.2);
+      box-shadow: 0 4px 16px rgba(245, 158, 11, 0.22);
+    }
+    .tip-poem-card {
+      background: var(--cream);
+      color: #2b0912;
+      border-left: 4px solid #b45309;
+      border-radius: 8px;
+      padding: 9px 12px;
+      margin-top: 8px;
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 0.93rem;
+      line-height: 1.48;
+      white-space: pre-wrap;
     }
 
     .board-wrapper {
@@ -290,40 +315,57 @@
     }
 
     .pawn {
-      width: 82%;
-      height: 82%;
+      width: 94%;
+      height: 94%;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: clamp(9px, 1.35vw, 16px);
-      border: 2px solid #ffffff;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.8);
+      font-size: clamp(9px, 1.3vw, 15px);
+      border: 2.5px solid #ffffff;
+      box-shadow: 0 0 0 1.5px rgba(0,0,0,0.75), 0 3px 8px rgba(0,0,0,0.9);
       z-index: 10;
       position: relative;
       transition: transform 0.15s ease;
     }
+    .pawn-thumb-wrap {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .pawn-thumb {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 20%;
+      display: block;
+    }
     .pawn.active-pawn {
-      box-shadow: 0 0 0 3px #22c55e, 0 0 12px #22c55e;
-      transform: scale(1.16);
+      box-shadow: 0 0 0 2px #ffffff, 0 0 0 4.5px #22c55e, 0 0 14px #22c55e;
+      transform: scale(1.22);
       z-index: 15;
     }
     .pawn.eliminated-pawn {
       opacity: 0.45;
-      filter: grayscale(0.8);
+      filter: grayscale(0.85);
     }
     .pawn-name-tag {
       position: absolute;
       bottom: -11px;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(0,0,0,0.85);
+      background: rgba(0,0,0,0.88);
       color: white;
       font-size: clamp(6px, 0.75vw, 9px);
-      padding: 0 3px;
+      padding: 0 4px;
       border-radius: 3px;
       white-space: nowrap;
       pointer-events: none;
+      border: 1px solid rgba(255,255,255,0.2);
     }
 
     .tabs {
@@ -478,10 +520,11 @@
       background: rgba(34, 197, 94, 0.14);
     }
     .roster-dot {
-      width: 24px; height: 24px; border-radius: 50%;
+      width: 34px; height: 34px; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      border: 1.5px solid white;
+      border: 2.5px solid white;
       flex-shrink: 0;
+      overflow: hidden;
     }
 
     .action-box { display: flex; flex-direction: column; gap: 10px; }
@@ -496,12 +539,13 @@
     }
     select.game-select {
       width: 100%;
-      padding: 9px 10px;
+      padding: 8px 10px;
       border-radius: 8px;
       background: #16050b;
       color: white;
       border: 1px solid var(--gold);
-      font-size: 0.95rem;
+      font-size: 0.92rem;
+      margin: 4px 0 8px;
     }
     .form-grid {
       display: grid;
@@ -514,7 +558,7 @@
     .modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.75);
+      background: rgba(0,0,0,0.78);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -526,11 +570,38 @@
       border: 2px solid var(--gold);
       border-radius: 18px;
       padding: 20px;
-      max-width: 460px;
+      max-width: 520px;
       width: 100%;
       max-height: 90vh;
       overflow-y: auto;
     }
+    .win-modal-card {
+      max-width: 600px;
+      box-shadow: 0 0 40px rgba(245, 158, 11, 0.45);
+      text-align: center;
+    }
+    .gift-spot-banner {
+      background: linear-gradient(135deg, rgba(34, 197, 94, 0.25), rgba(245, 158, 11, 0.28));
+      border: 2px solid #4ade80;
+      border-radius: 14px;
+      padding: 12px;
+      margin: 12px 0;
+    }
+    .poem-scroll {
+      background: var(--cream);
+      color: #2b0912;
+      border: 2px solid #b45309;
+      border-radius: 14px;
+      padding: 16px 18px;
+      margin-top: 14px;
+      text-align: left;
+      white-space: pre-wrap;
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 1.02rem;
+      line-height: 1.6;
+      box-shadow: inset 0 0 18px rgba(180, 83, 9, 0.16);
+    }
+
     .hidden { display: none !important; }
     .small-muted { font-size: 0.8rem; color: var(--text-muted); }
 
@@ -658,14 +729,40 @@
           <button id="btn-unlock-sint" class="btn-ghost" style="width:100%; border-color:var(--gold); color:var(--gold-light);">
             🔐 Sint-Geheim (Alleen voor de Spelleider)
           </button>
-          <div id="sint-secret-panel" class="hidden" style="margin-top:10px; background:rgba(245,158,11,0.1); padding:10px; border-radius:10px; border:1px solid var(--gold);">
+          <div id="sint-secret-panel" class="hidden" style="margin-top:10px; background:rgba(245,158,11,0.1); padding:12px; border-radius:10px; border:1px solid var(--gold);">
             <label class="small-muted" style="color:var(--gold-light); font-weight:700;">👑 Voornaam van het Lootje (zij wint altijd):</label>
-            <input id="admin-vip-input" class="modal-input" type="text" placeholder="Bijv. Sophie" style="margin-bottom:8px;" />
-            <div style="display:flex; gap:8px; flex-wrap:wrap;">
-              <button id="btn-save-vip" class="btn-gold" style="flex:1;">💾 VIP Opslaan</button>
-              <button id="btn-boost-vip" class="btn-green" style="flex:1;">🚀 Geef nu alle 3 hints</button>
+            <input id="admin-vip-input" class="modal-input" type="text" placeholder="Bijv. Sophie" />
+
+            <label class="small-muted" style="color:var(--gold-light); font-weight:700;">📍 Ruimte waar het slachtoffer &amp; cadeau ligt:</label>
+            <select id="admin-room-select" class="game-select"></select>
+
+            <label class="small-muted" style="color:var(--gold-light); font-weight:700;">🕵️ Dader (optioneel vastzetten voor jouw rijmpjes):</label>
+            <select id="admin-suspect-select" class="game-select"></select>
+
+            <label class="small-muted" style="color:var(--gold-light); font-weight:700;">🛠️ Attribuut (optioneel vastzetten voor jouw rijmpjes):</label>
+            <select id="admin-attr-select" class="game-select"></select>
+
+            <div class="small-muted" style="margin:6px 0 4px; color:#fde68a;">
+              ✍️ <strong>3 geheime tip-gedichtjes</strong> (je mag <code>{kamer}</code>, <code>{attribuut}</code> en <code>{verdachte}</code> gebruiken, of je eigen cryptische rijm typen!):
             </div>
-            <div id="admin-vip-status" class="small-muted" style="margin-top:6px;"></div>
+            <label class="small-muted">Tip-gedichtje 1 (na beurt 1):</label>
+            <textarea id="admin-tip1-input" class="modal-input" rows="3"></textarea>
+
+            <label class="small-muted">Tip-gedichtje 2 (na beurt 2):</label>
+            <textarea id="admin-tip2-input" class="modal-input" rows="3"></textarea>
+
+            <label class="small-muted">Tip-gedichtje 3 (na beurt 3):</label>
+            <textarea id="admin-tip3-input" class="modal-input" rows="3"></textarea>
+
+            <label class="small-muted" style="color:var(--gold-light); font-weight:700;">📜 Eindgedicht (verschijnt in het confettischerm):</label>
+            <textarea id="admin-poem-input" class="modal-input" rows="4" placeholder="Plak of typ hier jouw Sinterklaasgedicht..."></textarea>
+
+            <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:4px;">
+              <button id="btn-save-sint" class="btn-gold" style="flex:1;">💾 Opslaan</button>
+              <button id="btn-next-tip-vip" class="btn-green" style="flex:1;">💌 +1 Tip-gedicht sturen</button>
+              <button id="btn-boost-vip" class="btn-ghost" style="border-color:var(--gold); color:var(--gold-light);">🚀 Alle 3</button>
+            </div>
+            <div id="admin-vip-status" class="small-muted" style="margin-top:8px;"></div>
           </div>
         </div>
       </div>
@@ -709,6 +806,20 @@
     </div>
   </div>
 
+  <!-- WIN / CONFETTI + POEM MODAL -->
+  <div id="win-poem-modal" class="modal-backdrop hidden" style="z-index: 150;">
+    <div class="modal-card win-modal-card">
+      <h2 id="win-modal-title" style="margin:0 0 8px; color:#86efac;"></h2>
+      <div id="win-modal-gift-spot" class="gift-spot-banner"></div>
+      <div id="win-modal-cards" class="cards-grid" style="margin-top:10px;"></div>
+      <div id="win-modal-poem-wrap" class="hidden">
+        <div style="margin-top:14px; font-weight:800; color:var(--gold-light);">📜 Gedicht van Sinterklaas</div>
+        <div id="win-modal-poem" class="poem-scroll"></div>
+      </div>
+      <button id="btn-close-win-modal" class="btn-gold" style="margin-top:16px; width:100%;">Sluiten</button>
+    </div>
+  </div>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js";
     import { getDatabase, ref, set, update, onValue, runTransaction } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-database.js";
@@ -731,8 +842,24 @@
     const gameRef = ref(db, "cluedoGame");
     const notesRef = ref(db, "cluedoNotes");
 
-    // 👑 HIER EVENTUEEL ALVAST HAAR VOORNAAM INVULLEN (of tijdens de avond via ⚙️ -> 🔐 Sint-Geheim, code 0512):
+    // 👑 OPTIONEEEL VOORAF INVULLEN (of tijdens de avond via ⚙️ -> 🔐 Sint-Geheim, code 0512):
     const DEFAULT_VIP_NAME = "";
+    const DEFAULT_FORCED_ROOM = "";    // bijv. "huiskamer", "schoorsteen", "pakjeskamer", etc.
+    const DEFAULT_FORCED_SUSPECT = ""; // bijv. "tandarts", "agent", etc. (leeg = willekeurig)
+    const DEFAULT_FORCED_ATTR = "";    // bijv. "tandartsboor", "handboeien", etc. (leeg = willekeurig)
+    const DEFAULT_TIP_POEM_1 = `Psst... Sint keek stiekem even met je mee,
+En schrijft alleen voor jou dit rijmpje, heel tevree:
+De juiste kamer is {kamer} — onthoud dat maar goed,
+Maar verklap nog niets aan de rest van de stoet!`;
+    const DEFAULT_TIP_POEM_2 = `Piet zag jou net zo knap speuren door het huis,
+Dus fluistert hij jou dit geheimpje stiekem thuis:
+Het gebruikte voorwerp is {attribuut},
+Speur nu maar vrolijk verder — niemand die jou stuit!`;
+    const DEFAULT_TIP_POEM_3 = `De allerlaatste aanwijzing, maar hou je lach nog in:
+De dader van het hele spel is {verdachte}, naar Sint zijn zin!
+Je hebt nu alle drie de stukjes op een rij,
+Doe snel een beschuldiging en maak jezelf blij!`;
+    const DEFAULT_POEM = ``;
     const SINT_SECRET_PIN = "0512";
 
     const ROLES = [
@@ -828,6 +955,7 @@
     ];
     const CARD_MAP = Object.fromEntries(ALL_CARDS.map(c => [c.id, c]));
     const ROLE_MAP = Object.fromEntries(ROLES.map(r => [r.id, r]));
+    const ATTR_MAP = Object.fromEntries(ATTRIBUTES.map(a => [a.id, a]));
     const ROOM_MAP = Object.fromEntries(ROOMS.map(r => [r.id, r]));
 
     ROOMS.forEach(rm => {
@@ -855,6 +983,7 @@
     let lastShownRevealKey = null;
     let lastActionBoxKey = "";
     let confettiActive = false;
+    let shownWinModalGameId = null;
 
     if (new URLSearchParams(window.location.search).get("mode") === "tv") {
       clientMode = "tv";
@@ -880,15 +1009,35 @@
       return seat.playerName.trim().toLowerCase() === data.vipName.trim().toLowerCase();
     }
 
-    function createFreshGameObject(keepVipName = DEFAULT_VIP_NAME) {
-      const suspectPool = shuffle(ROLES.map(r => r.id));
-      const attrPool = shuffle(ATTRIBUTES.map(a => a.id));
-      const roomPool = shuffle(ROOMS.map(r => r.id));
+    function forceEnvelopeCategory(cur, category, targetCardId) {
+      if (!targetCardId || !cur.secretEnvelope || cur.secretEnvelope[category] === targetCardId) return;
+      const oldCard = cur.secretEnvelope[category];
+      cur.seats.forEach(s => {
+        if (!Array.isArray(s.cards)) return;
+        const idx = s.cards.indexOf(targetCardId);
+        if (idx !== -1) s.cards[idx] = oldCard;
+      });
+      cur.secretEnvelope[category] = targetCardId;
+    }
+
+    function createFreshGameObject(opts = {}) {
+      const vipName = opts.vipName ?? DEFAULT_VIP_NAME;
+      const forcedRoom = ROOM_MAP[opts.forcedRoom] ? opts.forcedRoom : (ROOM_MAP[DEFAULT_FORCED_ROOM] ? DEFAULT_FORCED_ROOM : "");
+      const forcedSuspect = ROLE_MAP[opts.forcedSuspect] ? opts.forcedSuspect : (ROLE_MAP[DEFAULT_FORCED_SUSPECT] ? DEFAULT_FORCED_SUSPECT : "");
+      const forcedAttr = ATTR_MAP[opts.forcedAttr] ? opts.forcedAttr : (ATTR_MAP[DEFAULT_FORCED_ATTR] ? DEFAULT_FORCED_ATTR : "");
+
+      let suspectPool = shuffle(ROLES.map(r => r.id));
+      let attrPool = shuffle(ATTRIBUTES.map(a => a.id));
+      let roomPool = shuffle(ROOMS.map(r => r.id));
+
+      const chosenSuspect = forcedSuspect ? (suspectPool = suspectPool.filter(x => x !== forcedSuspect), forcedSuspect) : suspectPool.pop();
+      const chosenAttr = forcedAttr ? (attrPool = attrPool.filter(x => x !== forcedAttr), forcedAttr) : attrPool.pop();
+      const chosenRoom = forcedRoom ? (roomPool = roomPool.filter(x => x !== forcedRoom), forcedRoom) : roomPool.pop();
 
       const secretEnvelope = {
-        suspect: suspectPool.pop(),
-        attribute: attrPool.pop(),
-        room: roomPool.pop()
+        suspect: chosenSuspect,
+        attribute: chosenAttr,
+        room: chosenRoom
       };
 
       const deck = shuffle([...suspectPool, ...attrPool, ...roomPool]);
@@ -913,7 +1062,14 @@
       return {
         gameId: "game_" + Date.now(),
         status: "LOBBY",
-        vipName: keepVipName || "",
+        vipName: vipName || "",
+        forcedRoom,
+        forcedSuspect,
+        forcedAttr,
+        tipPoem1: opts.tipPoem1 ?? DEFAULT_TIP_POEM_1,
+        tipPoem2: opts.tipPoem2 ?? DEFAULT_TIP_POEM_2,
+        tipPoem3: opts.tipPoem3 ?? DEFAULT_TIP_POEM_3,
+        poem: opts.poem ?? DEFAULT_POEM,
         vipHintsUnlocked: 0,
         secretEnvelope,
         turnIndex: 0,
@@ -957,6 +1113,25 @@
           <div class="clue-card-emoji" style="display:none;">${card.emoji}</div>
         </div>
       `;
+    }
+
+    function roleThumbHTML(role) {
+      return `
+        <img class="pawn-thumb" src="${role.id}.png" alt="${esc(role.name)}"
+             onerror="if(!this.dataset.j){this.dataset.j='1';this.src='${role.id}.jpg';}else{this.style.display='none';this.nextElementSibling.style.display='flex';}" />
+        <span style="display:none; width:100%; height:100%; align-items:center; justify-content:center;">${role.emoji}</span>
+      `;
+    }
+
+    function formatTipPoem(template, env) {
+      if (!template || !env) return "";
+      const kamer = CARD_MAP[env.room]?.name || "";
+      const attribuut = CARD_MAP[env.attribute]?.name || "";
+      const verdachte = CARD_MAP[env.suspect]?.name || "";
+      return String(template)
+        .replace(/\{kamer\}/gi, kamer)
+        .replace(/\{attribuut\}/gi, attribuut)
+        .replace(/\{verdachte\}/gi, verdachte);
     }
 
     function computeReachable(seat, stepsLeft, allSeats) {
@@ -1054,7 +1229,6 @@
       };
     }
 
-    // Subtiele gunstige dobbelsteenworp voor de VIP zodat zij moeiteloos kamers bereikt
     function rollDiceSmart(seat, seats, isVip) {
       if (!isVip) {
         return [1 + Math.floor(Math.random() * 6), 1 + Math.floor(Math.random() * 6)];
@@ -1156,9 +1330,11 @@
             const isTurn = (gameState.status === "PLAYING" && gameState.turnIndex === pawnSeat.index);
             inner = `
               <div class="pawn ${isTurn ? "active-pawn" : ""} ${pawnSeat.eliminated ? "eliminated-pawn" : ""}"
-                   style="background:${role.color}; color:${role.textColor};"
+                   style="background:${role.color}; color:${role.textColor}; border-color:${role.color};"
                    title="${esc(role.name)} (${esc(pawnSeat.playerName || 'Vrij')})">
-                ${role.emoji}
+                <div class="pawn-thumb-wrap">
+                  ${roleThumbHTML(role)}
+                </div>
                 ${pawnSeat.playerName ? `<span class="pawn-name-tag">${esc(pawnSeat.playerName)}</span>` : ""}
               </div>
             `;
@@ -1213,26 +1389,63 @@
       }
 
       const env = gameState.secretEnvelope;
-      const roomC = CARD_MAP[env.room];
-      const attrC = CARD_MAP[env.attribute];
-      const suspC = CARD_MAP[env.suspect];
+      const t1 = formatTipPoem(gameState.tipPoem1 || DEFAULT_TIP_POEM_1, env).trim();
+      const t2 = formatTipPoem(gameState.tipPoem2 || DEFAULT_TIP_POEM_2, env).trim();
+      const t3 = formatTipPoem(gameState.tipPoem3 || DEFAULT_TIP_POEM_3, env).trim();
 
-      const lines = [];
-      if (level >= 1) lines.push(`📍 <strong>Kamer:</strong> ${roomC.emoji} ${esc(roomC.name)}`);
-      if (level >= 2) lines.push(`🛠️ <strong>Attribuut:</strong> ${attrC.emoji} ${esc(attrC.name)}`);
-      if (level >= 3) lines.push(`🕵️ <strong>Verdachte:</strong> ${suspC.emoji} ${esc(suspC.name)}`);
+      const cards = [];
+      if (level >= 1 && t1) cards.push(`<div class="tip-poem-card">${esc(t1)}</div>`);
+      if (level >= 2 && t2) cards.push(`<div class="tip-poem-card">${esc(t2)}</div>`);
+      if (level >= 3 && t3) cards.push(`<div class="tip-poem-card">${esc(t3)}</div>`);
 
       box.innerHTML = `
         <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
-          <strong style="color:#fde68a;">🎅 Geheime Sint-Tip (alleen voor jou!)</strong>
-          <span class="small-muted" style="color:#fde68a;">${level}/3</span>
+          <strong style="color:#fde68a;">📜 Geheime Sint-Rijmpjes (alleen voor jou!)</strong>
+          <span class="small-muted" style="color:#fde68a;">${Math.min(level, 3)}/3</span>
         </div>
-        <div style="margin-top:5px; line-height:1.45;">
-          ${lines.join("<br>")}
-          ${level >= 3 ? `<div style="margin-top:6px; color:#86efac; font-weight:700;">✨ Je hebt nu alle 3 de antwoorden! Klik in je beurt op "⚖️ Beschuldigen" om het spel te winnen!</div>` : ""}
-        </div>
+        ${cards.join("")}
+        ${level >= 3 ? `<div style="margin-top:8px; color:#86efac; font-weight:700; font-size:0.88rem;">✨ Je hebt alle 3 de rijmpjes! Klik in je beurt op "⚖️ Beschuldigen" en vul de antwoorden in om te winnen!</div>` : ""}
       `;
       box.classList.remove("hidden");
+    }
+
+    function openWinPoemModal() {
+      if (!gameState || gameState.status !== "WON") return;
+      const env = gameState.secretEnvelope;
+      const winSeat = gameState.winner !== null ? gameState.seats[gameState.winner] : null;
+      const winRole = winSeat ? ROLE_MAP[winSeat.roleId] : null;
+      const roomCard = CARD_MAP[env.room];
+
+      document.getElementById("win-modal-title").textContent =
+        `🎉 ${winSeat ? `${winSeat.playerName} (${winRole.name})` : "De Winnares"} heeft het opgelost!`;
+
+      document.getElementById("win-modal-gift-spot").innerHTML = `
+        <div style="font-size:1.08rem; font-weight:800; color:#86efac;">
+          📍 Het slachtoffer ligt in: ${roomCard.emoji} ${esc(roomCard.name)}!
+        </div>
+        <div class="small-muted" style="color:#fde68a; margin-top:4px;">
+          🎁 Zoek snel in deze ruimte — daar ligt jouw Sinterklaascadeau verstopt!
+        </div>
+      `;
+
+      document.getElementById("win-modal-cards").innerHTML = [CARD_MAP[env.suspect], CARD_MAP[env.attribute], roomCard].map(c => `
+        <div class="clue-card">
+          <div class="clue-card-type">${c.type}</div>
+          ${cardImgHTML(c)}
+          <div class="clue-card-title">${esc(c.name)}</div>
+        </div>
+      `).join("");
+
+      const poemWrap = document.getElementById("win-modal-poem-wrap");
+      const poemText = (gameState.poem || "").trim();
+      if (poemText) {
+        document.getElementById("win-modal-poem").textContent = poemText;
+        poemWrap.classList.remove("hidden");
+      } else {
+        poemWrap.classList.add("hidden");
+      }
+
+      document.getElementById("win-poem-modal").classList.remove("hidden");
     }
 
     function renderTurnAndActions() {
@@ -1265,23 +1478,34 @@
         const env = gameState.secretEnvelope;
         const winSeat = gameState.winner !== null ? gameState.seats[gameState.winner] : null;
         const winRole = winSeat ? ROLE_MAP[winSeat.roleId] : null;
+        const roomCard = CARD_MAP[env.room];
+
         bannerEl.className = "turn-banner my-turn";
         bannerEl.innerHTML = gameState.status === "WON"
           ? `<strong style="font-size:1.15rem; color:#86efac;">🎉 ${esc(winSeat.playerName)} (${winRole.name}) HEEFT HET MYSTERIE OPGELOST! 🎁</strong>`
           : `<strong style="font-size:1.15rem; color:#fca5a5;">😱 Alle spelers liggen uit het spel!</strong>`;
 
-        if (gameState.status === "WON" && !confettiActive) {
-          confettiActive = true;
-          startConfetti();
+        if (gameState.status === "WON") {
+          if (!confettiActive) {
+            confettiActive = true;
+            startConfetti();
+          }
+          if (shownWinModalGameId !== gameState.gameId) {
+            shownWinModalGameId = gameState.gameId;
+            openWinPoemModal();
+          }
         }
 
         actionBox.classList.add("hidden");
         lastActionBoxKey = gameState.status;
         statusSide.classList.remove("hidden");
         statusSide.innerHTML = `
-          <h3 style="margin:0 0 10px; color:var(--gold-light); text-align:center;">✉️ De Geheime Sinterklaas-Envelop</h3>
+          <h3 style="margin:0 0 8px; color:var(--gold-light); text-align:center;">✉️ De Geheime Envelop</h3>
+          <div class="gift-spot-banner" style="text-align:center; padding:8px; margin:0 0 10px;">
+            <strong>📍 Slachtoffer &amp; Cadeau:</strong> ${roomCard.emoji} ${esc(roomCard.name)}
+          </div>
           <div class="cards-grid">
-            ${[CARD_MAP[env.suspect], CARD_MAP[env.attribute], CARD_MAP[env.room]].map(c => `
+            ${[CARD_MAP[env.suspect], CARD_MAP[env.attribute], roomCard].map(c => `
               <div class="clue-card">
                 <div class="clue-card-type">${c.type}</div>
                 ${cardImgHTML(c)}
@@ -1289,7 +1513,8 @@
               </div>
             `).join("")}
           </div>
-          <button class="btn-gold" style="width:100%; margin-top:12px;" data-action="new-game">🔄 Nieuw Spel Starten</button>
+          ${gameState.status === "WON" ? `<button class="btn-green" style="width:100%; margin-top:12px;" data-action="show-win-modal">📜 Toon Gedicht &amp; Confettischerm</button>` : ""}
+          <button class="btn-gold" style="width:100%; margin-top:8px;" data-action="new-game">🔄 Nieuw Spel Starten</button>
         `;
         return;
       }
@@ -1320,14 +1545,19 @@
       bannerEl.className = `turn-banner ${isMyTurn ? "my-turn" : ""}`;
       bannerEl.innerHTML = `
         <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
-          <div>
-            <div style="font-size:0.82rem; color:var(--gold-light); text-transform:uppercase; font-weight:700;">
-              ${isMyTurn ? "🟢 JIJ BENT AAN DE BEURT!" : "Beurt van:"}
+          <div style="display:flex; align-items:center; gap:10px;">
+            <div class="turn-thumb" style="background:${activeRole.color}; color:${activeRole.textColor}; border-color:${activeRole.color};">
+              ${roleThumbHTML(activeRole)}
             </div>
-            <div style="font-size:1.08rem; font-weight:800;">
-              ${activeRole.emoji} ${esc(activeSeat.playerName || activeRole.name)} <span class="small-muted">(${activeRole.name})</span>
+            <div>
+              <div style="font-size:0.82rem; color:var(--gold-light); text-transform:uppercase; font-weight:700;">
+                ${isMyTurn ? "🟢 JIJ BENT AAN DE BEURT!" : "Beurt van:"}
+              </div>
+              <div style="font-size:1.08rem; font-weight:800;">
+                ${esc(activeSeat.playerName || activeRole.name)} <span class="small-muted">(${activeRole.name})</span>
+              </div>
+              <div class="small-muted" style="margin-top:3px; color:#fff;">${statusLine}</div>
             </div>
-            <div class="small-muted" style="margin-top:3px; color:#fff;">${statusLine}</div>
           </div>
           ${gameState.dice ? `
             <div class="dice-row">
@@ -1574,7 +1804,9 @@
         const isCur = gameState.status === "PLAYING" && gameState.turnIndex === s.index;
         return `
           <div class="roster-card ${isCur ? "current" : ""}">
-            <div class="roster-dot" style="background:${r.color}; color:${r.textColor};">${r.emoji}</div>
+            <div class="roster-dot" style="background:${r.color}; color:${r.textColor}; border-color:${r.color};">
+              ${roleThumbHTML(r)}
+            </div>
             <div style="overflow:hidden;">
               <div style="font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
                 ${s.playerName ? esc(s.playerName) : `<span style="opacity:0.5;">Nog vrij</span>`}
@@ -1600,15 +1832,43 @@
         `;
       }).join("");
 
-      const vipInput = document.getElementById("admin-vip-input");
-      if (vipInput && document.activeElement !== vipInput) {
-        vipInput.value = gameState.vipName || "";
+      const roomSel = document.getElementById("admin-room-select");
+      if (roomSel && roomSel.options.length === 0) {
+        roomSel.innerHTML = `<option value="">🎲 Willekeurig</option>` +
+          ROOMS.map(rm => `<option value="${rm.id}">${rm.emoji} ${rm.name}</option>`).join("");
       }
+      if (roomSel && document.activeElement !== roomSel) roomSel.value = gameState.forcedRoom || "";
+
+      const suspSel = document.getElementById("admin-suspect-select");
+      if (suspSel && suspSel.options.length === 0) {
+        suspSel.innerHTML = `<option value="">🎲 Willekeurig</option>` +
+          ROLES.map(r => `<option value="${r.id}">${r.emoji} ${r.name}</option>`).join("");
+      }
+      if (suspSel && document.activeElement !== suspSel) suspSel.value = gameState.forcedSuspect || "";
+
+      const attrSel = document.getElementById("admin-attr-select");
+      if (attrSel && attrSel.options.length === 0) {
+        attrSel.innerHTML = `<option value="">🎲 Willekeurig</option>` +
+          ATTRIBUTES.map(a => `<option value="${a.id}">${a.emoji} ${a.name}</option>`).join("");
+      }
+      if (attrSel && document.activeElement !== attrSel) attrSel.value = gameState.forcedAttr || "";
+
+      const bindVal = (id, val) => {
+        const el = document.getElementById(id);
+        if (el && document.activeElement !== el) el.value = val;
+      };
+      bindVal("admin-vip-input", gameState.vipName || "");
+      bindVal("admin-tip1-input", gameState.tipPoem1 ?? DEFAULT_TIP_POEM_1);
+      bindVal("admin-tip2-input", gameState.tipPoem2 ?? DEFAULT_TIP_POEM_2);
+      bindVal("admin-tip3-input", gameState.tipPoem3 ?? DEFAULT_TIP_POEM_3);
+      bindVal("admin-poem-input", gameState.poem || "");
+
       const vipStatus = document.getElementById("admin-vip-status");
-      if (vipStatus) {
-        vipStatus.textContent = gameState.vipName
-          ? `Actief voor: "${gameState.vipName}" (Hints vrijgespeeld: ${gameState.vipHintsUnlocked || 0}/3)`
-          : "Nog geen VIP-naam ingesteld.";
+      if (vipStatus && gameState.secretEnvelope) {
+        const e = gameState.secretEnvelope;
+        vipStatus.innerHTML =
+          `VIP: <strong>${esc(gameState.vipName || "geen")}</strong> (${gameState.vipHintsUnlocked || 0}/3 rijmpjes)<br>` +
+          `Spiekbriefje envelop: <strong>${ROLE_MAP[e.suspect]?.name}</strong> • <strong>${ATTR_MAP[e.attribute]?.name}</strong> • <strong>${ROOM_MAP[e.room]?.name}</strong>`;
       }
     }
 
@@ -1620,6 +1880,7 @@
       if (!clientMode || (clientMode === "player" && mySeatIndex === null)) {
         loginScreen.classList.remove("hidden");
         appScreen.classList.add("hidden");
+        renderAdminModalList();
         return;
       }
 
@@ -1735,7 +1996,7 @@
     async function ensureGameExists() {
       await runTransaction(gameRef, cur => {
         if (cur && cur.seats && cur.seats.length === 7) return cur;
-        return createFreshGameObject(DEFAULT_VIP_NAME);
+        return createFreshGameObject();
       });
     }
 
@@ -1827,6 +2088,7 @@
     document.getElementById("btn-close-admin").addEventListener("click", () => document.getElementById("admin-modal").classList.add("hidden"));
     document.getElementById("btn-close-private").addEventListener("click", () => document.getElementById("private-modal").classList.add("hidden"));
     document.getElementById("btn-cancel-accuse").addEventListener("click", () => document.getElementById("accuse-modal").classList.add("hidden"));
+    document.getElementById("btn-close-win-modal").addEventListener("click", () => document.getElementById("win-poem-modal").classList.add("hidden"));
 
     document.getElementById("btn-unlock-sint").addEventListener("click", () => {
       const panel = document.getElementById("sint-secret-panel");
@@ -1842,15 +2104,50 @@
       }
     });
 
-    document.getElementById("btn-save-vip").addEventListener("click", async () => {
+    document.getElementById("btn-save-sint").addEventListener("click", async () => {
       const nameVal = document.getElementById("admin-vip-input").value.trim();
-      await update(gameRef, { vipName: nameVal });
-      alert(nameVal ? `👑 VIP ingesteld op "${nameVal}". Zij wint altijd!` : "VIP-stand uitgeschakeld.");
+      const roomVal = document.getElementById("admin-room-select").value;
+      const suspectVal = document.getElementById("admin-suspect-select").value;
+      const attrVal = document.getElementById("admin-attr-select").value;
+      const tip1Val = document.getElementById("admin-tip1-input").value;
+      const tip2Val = document.getElementById("admin-tip2-input").value;
+      const tip3Val = document.getElementById("admin-tip3-input").value;
+      const poemVal = document.getElementById("admin-poem-input").value;
+
+      await runTransaction(gameRef, cur => {
+        if (!cur) return cur;
+        cur.vipName = nameVal;
+        cur.forcedRoom = roomVal;
+        cur.forcedSuspect = suspectVal;
+        cur.forcedAttr = attrVal;
+        cur.tipPoem1 = tip1Val;
+        cur.tipPoem2 = tip2Val;
+        cur.tipPoem3 = tip3Val;
+        cur.poem = poemVal;
+
+        forceEnvelopeCategory(cur, "room", roomVal);
+        forceEnvelopeCategory(cur, "suspect", suspectVal);
+        forceEnvelopeCategory(cur, "attribute", attrVal);
+        return cur;
+      });
+
+      alert("✅ Alle geheime Sint-instellingen en gedichtjes zijn opgeslagen!");
+    });
+
+    document.getElementById("btn-next-tip-vip").addEventListener("click", async () => {
+      let newLvl = 0;
+      await runTransaction(gameRef, cur => {
+        if (!cur) return cur;
+        cur.vipHintsUnlocked = Math.min(3, (cur.vipHintsUnlocked || 0) + 1);
+        newLvl = cur.vipHintsUnlocked;
+        return cur;
+      });
+      alert(`💌 Tip-gedichtje ${newLvl}/3 is nu zichtbaar op haar telefoon!`);
     });
 
     document.getElementById("btn-boost-vip").addEventListener("click", async () => {
       await update(gameRef, { vipHintsUnlocked: 3 });
-      alert("🚀 Alle 3 de Sint-hints zijn nu direct zichtbaar op haar telefoon!");
+      alert("🚀 Alle 3 de tip-gedichtjes staan nu direct op haar telefoon!");
     });
 
     document.getElementById("btn-admin-start").addEventListener("click", async () => {
@@ -1866,13 +2163,24 @@
 
     document.getElementById("btn-admin-newgame").addEventListener("click", async () => {
       if (!confirm("Weet je zeker dat je een compleet nieuw spel wilt schudden?")) return;
-      const keepVip = gameState?.vipName || DEFAULT_VIP_NAME;
-      await set(gameRef, createFreshGameObject(keepVip));
+      const fresh = createFreshGameObject({
+        vipName: gameState?.vipName ?? DEFAULT_VIP_NAME,
+        forcedRoom: gameState?.forcedRoom ?? DEFAULT_FORCED_ROOM,
+        forcedSuspect: gameState?.forcedSuspect ?? DEFAULT_FORCED_SUSPECT,
+        forcedAttr: gameState?.forcedAttr ?? DEFAULT_FORCED_ATTR,
+        tipPoem1: gameState?.tipPoem1 ?? DEFAULT_TIP_POEM_1,
+        tipPoem2: gameState?.tipPoem2 ?? DEFAULT_TIP_POEM_2,
+        tipPoem3: gameState?.tipPoem3 ?? DEFAULT_TIP_POEM_3,
+        poem: gameState?.poem ?? DEFAULT_POEM
+      });
+      await set(gameRef, fresh);
       localStorage.removeItem("cluedo_name");
       myPlayerName = "";
       mySeatIndex = null;
+      shownWinModalGameId = null;
       if (clientMode === "player") clientMode = null;
       document.getElementById("admin-modal").classList.add("hidden");
+      document.getElementById("win-poem-modal").classList.add("hidden");
       renderAll();
     });
 
@@ -1886,17 +2194,16 @@
       const amVip = isVipSeat(mySeat, gameState);
       const env = gameState?.secretEnvelope;
 
-      // Bescherming voor het lootje: als ze te vroeg fout gokt, ligt ze NOOIT uit het spel!
       if (amVip && env && (suspect !== env.suspect || attribute !== env.attribute || room !== env.room)) {
         await runTransaction(gameRef, cur => {
           if (!cur) return cur;
           cur.vipHintsUnlocked = Math.min(3, (cur.vipHintsUnlocked || 0) + 1);
           return cur;
         });
-        document.getElementById("private-modal-title").textContent = "🤫 Psst — Sint helpt je een handje!";
+        document.getElementById("private-modal-title").textContent = "🤫 Psst — lees de rijmpjes nog eens!";
         document.getElementById("private-modal-body").innerHTML = `
-          <p>Die combinatie was net niet helemaal goed, maar Sinterklaas geeft zijn favoriete speurder <strong>een extra kans</strong>!</p>
-          <p style="color:#86efac; font-weight:700;">Je blijft gewoon in het spel én je hebt nu een extra Geheime Sint-Tip gekregen bovenaan je scherm!</p>
+          <p>Die combinatie klopte nog niet helemaal, maar Sinterklaas geeft zijn favoriete speurder <strong>een extra kans</strong>!</p>
+          <p style="color:#86efac; font-weight:700;">Je blijft gewoon in het spel — kijk goed naar de Sint-rijmpjes bovenaan je scherm!</p>
         `;
         document.getElementById("private-modal").classList.remove("hidden");
         return;
@@ -1916,7 +2223,6 @@
           cur.winner = mySeatIndex;
           addLog(cur, `🎉 ${pName} (${roleName}) beschuldigde JUIST en wint Sinterklaas Cluedo!`, "win");
         } else {
-          // Niet-VIP mag niet vóór de VIP winnen, ook niet bij toeval
           seat.eliminated = true;
           const extraMsg = matchesEnvelope && cur.vipName
             ? " (Sint had stiekem een geheim zegel op de envelop gezet!)"
@@ -1961,10 +2267,24 @@
           return cur;
         });
       }
+      else if (action === "show-win-modal") {
+        openWinPoemModal();
+      }
       else if (action === "new-game") {
         if (!confirm("Nieuw spel starten en alle kaarten opnieuw verdelen?")) return;
-        const keepVip = gameState?.vipName || DEFAULT_VIP_NAME;
-        await set(gameRef, createFreshGameObject(keepVip));
+        shownWinModalGameId = null;
+        document.getElementById("win-poem-modal").classList.add("hidden");
+        const fresh = createFreshGameObject({
+          vipName: gameState?.vipName ?? DEFAULT_VIP_NAME,
+          forcedRoom: gameState?.forcedRoom ?? DEFAULT_FORCED_ROOM,
+          forcedSuspect: gameState?.forcedSuspect ?? DEFAULT_FORCED_SUSPECT,
+          forcedAttr: gameState?.forcedAttr ?? DEFAULT_FORCED_ATTR,
+          tipPoem1: gameState?.tipPoem1 ?? DEFAULT_TIP_POEM_1,
+          tipPoem2: gameState?.tipPoem2 ?? DEFAULT_TIP_POEM_2,
+          tipPoem3: gameState?.tipPoem3 ?? DEFAULT_TIP_POEM_3,
+          poem: gameState?.poem ?? DEFAULT_POEM
+        });
+        await set(gameRef, fresh);
       }
       else if (action === "kick-seat") {
         const sIdx = Number(target.dataset.seat);
@@ -2143,11 +2463,8 @@
 
         const mySeat = gameState.seats[mySeatIndex];
         const desc = document.getElementById("accuse-modal-desc");
-        if (isVipSeat(mySeat, gameState) && (gameState.vipHintsUnlocked || 0) >= 3) {
-          document.getElementById("accuse-suspect").value = gameState.secretEnvelope.suspect;
-          document.getElementById("accuse-attribute").value = gameState.secretEnvelope.attribute;
-          document.getElementById("accuse-room").value = gameState.secretEnvelope.room;
-          desc.innerHTML = `<span style="color:#86efac; font-weight:700;">✨ Op basis van jouw geheime Sint-tips staan de juiste antwoorden al voor je ingevuld! Klik op "Open Envelop!" om te winnen!</span>`;
+        if (isVipSeat(mySeat, gameState) && (gameState.vipHintsUnlocked || 0) >= 1) {
+          desc.innerHTML = `<span style="color:#fde68a;">✨ Tip: kijk nog even naar jouw geheime Sint-rijmpjes voordat je de envelop opent!</span>`;
         } else {
           desc.textContent = "Weet je 100% zeker wat er in de Sinterklaas-envelop zit? Let op: als je fout zit, lig je uit het spel (je blijft wel kaarten laten zien)!";
         }
